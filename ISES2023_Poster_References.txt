@@ -1,17 +1,12 @@
 1.  Phillips, K. A., Wambaugh, J. F., Grulke, C. M., Dionisio, K. L., & Isaacs, K. K. (2017). High-throughput screening of chemicals as functional substitutes using structure-based classification models. Green Chemistry, 19(4), 1063-1074.  
-2.  Djoumbou Feunang, Y., Eisner, R., Knox, C., Chepelev, L., Hastings, J., Owen, G., ... & Wishart, D. S. (2016). ClassyFire: automated chemical classification with a comprehensive, computable taxonomy. Journal of cheminformatics, 8, 1-20.
+2.  Williams, A. J., Grulke, C. M., Edwards, J., McEachran, A. D., Mansouri, K., Baker, N. C., ... & Richard, A. M. (2017). The CompTox Chemistry Dashboard: a community data resource for environmental chemistry. Journal of cheminformatics, 9, 1-27.
+3.  Dionisio, K., Phillips, K., Price, P. et al. The Chemical and Products Database, a resource for exposure-relevant data on chemicals in consumer products. Sci Data 5, 180125 (2018). https://doi.org/10.1038/sdata.2018.125.  Database website:  https://comptox.epa.gov/chemexpo/ 
+4.  Djoumbou Feunang, Y., Eisner, R., Knox, C., Chepelev, L., Hastings, J., Owen, G., ... & Wishart, D. S. (2016). ClassyFire: automated chemical classification with a comprehensive, computable taxonomy. Journal of cheminformatics, 8, 1-20.
 
 Other Relevant Papers
 1.  Phillips, K. A., Yau, A., Favela, K. A., Isaacs, K. K., McEachran, A., Grulke, C., ... & Wambaugh, J. F. (2018). Suspect screening analysis of chemicals in consumer products. Environmental science & technology, 52(5), 3125-3135.
-2.  Gu, Z., Eils, R., & Schlesner, M. (2016). Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics, 32(18), 2847-2849.
-3.  Yu, G., Using ggtree to Visualize Data on Tree-Like Structures. Curr Protoc Bioinformatics, 2020. 69(1): p. e96.
-4.  Yu, G., et al., ggtree: an R package for visualization and annotation of phylogenetic trees with their covariates and other associated data. Methods in Ecology and Evolution, 2016. 8(1): p. 28-36.
-5.  Wang, L.G., et al., Treeio: An R Package for Phylogenetic Tree Input and Output with Richly Annotated and Associated Data. Mol Biol Evol, 2020. 37(2): p. 599-603.
-6.  Revell, L.J., phytools: an R package for phylogenetic comparative biology (and other things). Methods in Ecology and Evolution, 2012. 3(2): p. 217-223.
-7.  Paradis, E. and K. Schliep, ape 5.0: an environment for modern phylogenetics and evolutionary analyses in R. Bioinformatics, 2019. 35(3): p. 526-528.
-8.  Schliep, K., et al., Intertwining phylogenetic trees and networks. Methods in Ecology and Evolution, 2017. 8(10): p. 1212-1220.
-9.  Schliep, K.P., phangorn: phylogenetic analysis in R. Bioinformatics, 2011. 27(4): p. 592-3.
-10.  Gu, Z., R. Eils, and M. Schlesner, Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics, 2016. 32(18): p. 2847-9.
-11.  Glur, C., data.tree: General Purpose Hierarchical Data Structure. R package version 1.0.0. 2020.
-12.  Williams, A. J., Grulke, C. M., Edwards, J., McEachran, A. D., Mansouri, K., Baker, N. C., ... & Richard, A. M. (2017). The CompTox Chemistry Dashboard: a community data resource for environmental chemistry. Journal of cheminformatics, 9, 1-27.
-13.  Dionisio, K., Phillips, K., Price, P. et al. The Chemical and Products Database, a resource for exposure-relevant data on chemicals in consumer products. Sci Data 5, 180125 (2018). https://doi.org/10.1038/sdata.2018.125.  Database website:  https://comptox.epa.gov/chemexpo/ 
+2.  Lowe, C. N., Phillips, K. A., Favela, K. A., Yau, A. Y., Wambaugh, J. F., Sobus, J. R., ... & Isaacs, K. K. (2021). Chemical characterization of recycled consumer products using suspect screening analysis. Environmental science & technology, 55(16), 11375-11387.
+3.  Wickham, H. (2011). ggplot2. Wiley interdisciplinary reviews: computational statistics, 3(2), 180-185.
+4.  Gu, Z., Eils, R., & Schlesner, M. (2016). Complex heatmaps reveal patterns and correlations in multidimensional genomic data. Bioinformatics, 32(18), 2847-2849.
+5.  Yu, G., Using ggtree to Visualize Data on Tree-Like Structures. Curr Protoc Bioinformatics, 2020. 69(1): p. e96.
+6.  Yu, G., et al., ggtree: an R package for visualization and annotation of phylogenetic trees with their covariates and other associated data. Methods in Ecology and Evolution, 2016. 8(1): p. 28-36.
