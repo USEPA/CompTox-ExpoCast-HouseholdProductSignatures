@@ -9,5 +9,22 @@ Consumer products are a major source of chemical exposure and therefore potentia
 For this work, a list of household consumer product categories and products of certain types were selected using multiple sources of information.  A range of products from five product categories were purchased from  various department stores, resulting in 118 unique products to be analyzed using two-dimensional gas chromatography time-of-flight mass spectrometry (GC x GC-TOFMS).  Some samples were duplicates of the same item or repeats (one sample from each of two identical product items), for a total of 170 samples, in order to asses variability of the analytical method and of the individaul products themselves.  Products were extracted with dichloromethane (DCM). After addition of an internal standard at 1 ppm, each extraction was analyzed via GC X GC-TOFMS to obtain its mass spectra. The spectra were matched to the 2017 NIST database and analytical standards were used to confirm a subset of the chemical identifications.  A total of 489 unique chemicals were confirmed or tentatively identified. Chemicals were annotated by reported or predicted functional uses and structural classification via ClassyFire. This study provides a baseline set of chemical ingredients (that is, representative mixtures) across common types of consumer products, which will help in evaluating new and existing products. Separating constituent chemicals into typical and atypical might inform exposure assessment, in vitro bioactivity screening, and ultimately the risk related to using such products.
 
 ## Repo Organization
-Processed NTA data was provided by the task order contractor.  These files, various database files, and intermediate instances of the data during processing steps are included in the data/ directory.  Functions are included in the R/ directory.  Analysis outcomes and final data for figures are included in the results/ direcotry.  All analysis is contained in the single vignette file titled mainAnalysisPipeline.Rmd is included in the Rmd/ directory.  Lastly, all figures are included in the plots/ directory.  A file containing references and relevant papers for a poster presented at ISES 2023 is also provided.   
+* raw_data/
+  + NTA data and files provided by the task order contractor   
+* data/
+  + Intermediate instances of the data during processing steps
+  + All files needed to complete data processing or downstream analyses
+* R/
+  + Functions
+* results/
+  + Analysis outcomes
+  + Final data tables for figures
+* Rmd/
+  + The single vignette file needed to complete all analyses, titled mainAnalysisPipeline.Rmd
+* plots/
+  + All figures grouped by analysis type
+* other
+  + Work in progress poster presented at the International Society of Exposure Science (ISES) 2023 conference
+  + A file containing references and relevant papers for the poster presented at ISES 2023
+ 
 
