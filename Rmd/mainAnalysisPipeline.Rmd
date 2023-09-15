@@ -59,6 +59,8 @@ myPath <- "/ccte/home1/zstanfie/HouseholdProdNTA"
 myFiles <- c("Sequence1 Clothing.xlsx", "Sequence1 Personal Care Products.xlsx", "Sequence2 Kitchen.xlsx",
                 "Sequence2 Shampoo.xlsx", "Sequence3 Fabric.xlsx")
 data_files <- paste(myPath, "raw_data", myFiles, sep = "/")
+upc_file <- "EPA task 10 items_26Feb18.xlsx"
+prodGroups <- c("Cotton clothing", "Shampoo", "Baby soap", "Fabric upholstery", "Silicone kitchen tools")
 ```
 
 ## Process the raw data
@@ -67,7 +69,8 @@ This function parses the raw data into multiple formats for downstream analysis 
 
 ```{r process}
 source(paste(myPath, "R/processRawData.R", sep = "/"))
-processRawData(data_files, myPath)
+processNTAfiles(data_files, myPath)
+cleanForUPCs(upc_file, myPath, prodGroups)
 ```
 
 
@@ -295,6 +298,17 @@ save(preds, file = paste(myPath, "results", "predAndKnownFuncUse_chemsAcrossAllS
 #save(preds, file = paste(myPath, "results", "predFuncUse_chemsAcrossAllSamps_prob.RData", sep = "/"))
 
 ```
+
+### Make Functional Use Plots
+```{r usePlots}
+load(file = paste(myPath, "results", "predAndKnownFuncUse_chemsAcrossAllSamps_probs.RData", sep = "/"))
+
+# Chemical name by functional use, so I need to pull my occurrence matrices for each product category
+# to get a product by use matrix
+
+
+```
+
 
 
 ### ClassyFire Analysis
