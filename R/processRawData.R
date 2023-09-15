@@ -1,6 +1,6 @@
 
 
-#' processRawData
+#' processNTAfiles
 #'
 #' @param data_files Character vector of the raw data files complete with the path
 #' @param myPath Path to the directory in which you want to save files, plots, etc.
@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-processRawData <- function(data_files, myPath){
+processNTAfiles <- function(data_files, myPath){
   
   # Each NTA result is in an Excel workbook.  Each workbook has a sheet called
   # List of Samples that describes all samples that make up the other sheets in
@@ -143,3 +143,66 @@ processRawData <- function(data_files, myPath){
   #save(chemXsamp_conc, file = paste(myPath, "data", "chemXsamp_conc_full.RData", sep = "/"))
   
 }
+
+
+
+
+#' cleanForUPCs
+#'
+#' @param upc_file 
+#' @param myPath 
+#' @param prodGroups
+#'
+#' @return
+#' @export
+#'
+#' @examples
+cleanForUPCs <- function(upc_file, myPath, prodGroups){
+  
+  myData <- list()
+  for (i in 1:length(prodGroups)){
+    myData[[i]] <- as.data.frame(read_xlsx(paste(myPath, "raw_data", upc_file, sep = "/"), sheet = i, col_names = TRUE, skip = 1))
+    
+    # An empty column separates the 2 task orders
+    indNA <- which(is.na(myData[[i]][1,]))
+    temp <- myData[[i]][,(indNA+1):dim(myData[[i]])[2]]
+    myData[[i]] <- myData[[i]][,1:(indNA-1)]
+    
+    # Some sheets have a notes column at the end to provide more details about the samples. Create one if not there.
+    if (length(grep("Notes", colnames(temp))) == 0){
+      colnames(temp) <- sapply(colnames(temp), function(x) strsplit(x, "[.]")[[1]][1])
+      colnames(myData[[i]]) <- colnames(temp)
+      myData[[i]] <- rbind(myData[[i]], temp)
+      myData[[i]]$Notes <- NA
+    } else {
+      colnames(temp) <- sapply(colnames(temp), function(x) strsplit(x, "[.]")[[1]][1])
+      myData[[i]]$Notes <- NA
+      colnames(myData[[i]]) <- colnames(temp)
+      myData[[i]] <- rbind(myData[[i]], temp)
+    }
+    
+    # Add a column for product category
+    myData[[i]] <- cbind("Category" = rep(prodGroups[i], dim(myData[[i]])[1]), myData[[i]])
+  }
+
+  # Make the final table
+  myProdUPCs <- as.data.frame(rbindlist(myData, fill = TRUE))
+  # There are some extra rows due to unneeded info at the bottom of the sheets
+  myProdUPCs <- myProdUPCs[!is.na(myProdUPCs$`SwRI ID`),]
+  
+  # Save result
+  save(myProdUPCs, file = paste(myPath, "data", "prodPurchaseDetails_withUPCs.RData", sep = "/"))
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
