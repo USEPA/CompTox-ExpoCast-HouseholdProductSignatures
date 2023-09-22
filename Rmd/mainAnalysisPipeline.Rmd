@@ -1,40 +1,34 @@
 ---
 title: "Main Analysis Pipeline"
 author: "Zachary Stanfield"
-date: "4/3/2023"
-output: html_document
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    theme: united
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-## Description
-Analyze non-targeted analysis dataset of household consumer products.  We have 5 categories
-of products that include multiple dilutions, duplicate samples, and repeated products.  The
-main goal is to develop a chemical ingredient signature at multiple levels (broad category down
-to specific grouping levels like brand and socks within the clothing category).  Also want to
-assess within-product similarity of samples.
+# Description
 
-### Table of Contents
-1. Package loading and path (Line ~30)
-2. Process raw data (Line ~60)
-3. Quick, simple examination of the processed data (Line ~70)
-4. Combine dilutions and create the prodList object (Line ~95)
-5. Functional use (Line ~190)
-6. ClassyFire and tree visualizations (Line ~255)
-7. Product category heatmaps with concentration (Line ~365; 
-   7.a. Product similarity heatmaps with updated plotting approach (Line ~675)
-8. Simple signature identification (Line ~890)
-   8.a. Classify Phillips pilot study using signatures (Line ~950)
-9. Signature analysis at different product levels (Line ~1000)
-10. Make upset plot (Line ~1025)
-11. Chemical clustering to identify chemical groups (Line ~1055)
-12. Machine learning model to predict product type (Line ~1220)
+Analyze non-targeted analysis dataset of household consumer products. We
+have 5 categories of products that include multiple dilutions, duplicate
+samples, and repeated products. The main goal is to develop a chemical
+ingredient signature at multiple levels (broad category down to specific
+grouping levels like brand and socks within the clothing category). Also
+want to assess within-product similarity of samples.
 
+# Load Packages and Data Objects
 
-## Load packages and needed data objects
-```{r setup, echo = FALSE}
+```{r setEnv}
 library(readxl)
 library(reshape2)
 library(treecompareR)
@@ -55,6 +49,7 @@ library(data.table)
 library(ggtree)
 library(circlize)
 library(proxy)
+library(stringr)
 myPath <- "/ccte/home1/zstanfie/HouseholdProdNTA"
 myFiles <- c("Sequence1 Clothing.xlsx", "Sequence1 Personal Care Products.xlsx", "Sequence2 Kitchen.xlsx",
                 "Sequence2 Shampoo.xlsx", "Sequence3 Fabric.xlsx")
@@ -63,43 +58,26 @@ upc_file <- "EPA task 10 items_26Feb18.xlsx"
 prodGroups <- c("Cotton Clothing", "Shampoo", "Baby Soap", "Fabric Upholstery", "Silicone Kitchen Tools")
 ```
 
+# Process the Raw Data
 
-## Process the raw data
+This function parses the raw data into multiple formats for downstream
+analysis and saves them to the data directory
 
-This function parses the raw data into multiple formats for downstream analysis and saves them to the data directory
-
-```{r process}
+```{r processRaw}
 source(paste(myPath, "R/processRawData.R", sep = "/"))
 processNTAfiles(data_files, myPath)
 cleanForUPCs(upc_file, myPath, prodGroups)
 ```
 
+# Final Processing Steps
 
-## Examine the data
-```{r examine}
-load(paste(myPath, "data", "masterSampleList.RData", sep = "/"))
-as.data.frame(table(allSamps$Product))
-as.data.frame(table(allSamps$`Customer ID`[allSamps$Product == "Clothing"]))
-as.data.frame(table(allSamps$`Customer ID`[allSamps$Product == "Personal Care Products"]))
-as.data.frame(table(allSamps$`Customer ID`[allSamps$Product == "Kitchen"]))
-as.data.frame(table(allSamps$`Customer ID`[allSamps$Product == "Shampoo"]))
-as.data.frame(table(allSamps$`Customer ID`[allSamps$Product == "Fabric"]))
+## Combine Dilutions
 
-prods <- unique(allSamps$Product)
-temp <- list()
-for (i in 1:length(prods)){
-  peaks <- as.numeric(allSamps$`Total Reported Peaks (A+B)`[allSamps$Product == prods[i]])
-  temp[[i]] <- c(mean(peaks, na.rm = TRUE), sd(peaks, na.rm = TRUE))
-}
+Will use the resulting samples, including duplicates and repeats, to
+assess within- product variability for occurrence, concentration,
+functional use, and ClassyFire.
 
-```
-
-## Final Processing Steps
-
-### Combine Dilutions
-Will use the resulting samples, including duplicates and repeats, to assess within-
-product variability for occurrence, concentration, functional use, and ClassyFire.
-```{r process}
+```{r combineDilutions}
 # Load data
 load(paste(myPath, "data", "masterSampleList.RData", sep = "/"))
 load(paste(myPath, "data", "chemXsamp_binary_full.RData", sep = "/"))
@@ -146,7 +124,8 @@ for (i in 1:length(sampNames)){
     chemXsamp_group_red <- cbind(chemXsamp_group_red, chemXsamp_group[,indS])
   } else {
     chemXsamp_binary_red <- cbind(chemXsamp_binary_red, as.numeric(do.call("|", chemXsamp_binary[,indS])))
-    chemXsamp_conc_red <- cbind(chemXsamp_conc_red, unlist(apply(chemXsamp_conc[,indS], 1, function(x) mean(x, na.rm = TRUE))))
+    chemXsamp_conc_red <- cbind(chemXsamp_conc_red, unlist(apply(chemXsamp_conc[,indS], 1, 
+                                                                 function(x) mean(x, na.rm = TRUE))))
     chemXsamp_group_red <- cbind(chemXsamp_group_red, 
                                  unlist(apply(chemXsamp_group[,indS], 1, 
                                               function(x) ifelse(sum(is.na(x)) == 2, NA, 
@@ -160,7 +139,6 @@ colnames(chemXsamp_group_red) <- sampNames
 row.names(chemXsamp_binary_red) <- row.names(chemXsamp_binary)
 row.names(chemXsamp_conc_red) <- row.names(chemXsamp_binary)
 row.names(chemXsamp_group_red) <- row.names(chemXsamp_binary)
-
 
 # Extract Product-specific matrices
 # The order of samples in allSamps matches that in our matrices
@@ -177,10 +155,12 @@ names(prodList) <- prodGroups
 
 ```
 
+## Combine Duplicates and Repeats
 
-### Combine Duplicates and Repeats
-Will use the resulting set of samples for clustering, upset plots, and machine learning model to 
-classify samples into their product categories.
+Will use the resulting set of samples for clustering, upset plots, and
+machine learning model to classify samples into their product
+categories.
+
 ```{r combineDupsReps}
 load(paste(myPath, "data", "masterSampleList.RData", sep = "/"))
 ind <- grep("SOL",allSamps$`Customer ID`)
@@ -195,11 +175,13 @@ for (i in 1:length(DUPs)){
   # Can do easily b/c they share a sample name
   indS <- grep(substr(DUPs[i], 1, nchar(DUPs[i])-4), colnames(chemXsamp_binary_red))
   chemXsamp_binary_red2 <- cbind(chemXsamp_binary_red2, unlist(apply(chemXsamp_binary_red[,indS], 1, max)))
-  chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, unlist(apply(chemXsamp_conc_red[,indS], 1, function(x) mean(x, na.rm = TRUE))))
+  chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, unlist(apply(chemXsamp_conc_red[,indS], 1, 
+                                                                 function(x) mean(x, na.rm = TRUE))))
   chemXsamp_group_red2 <- cbind(chemXsamp_group_red2, unlist(apply(chemXsamp_group_red[,indS], 1, 
                                                                function(x) ifelse(sum(is.na(x)) == 2, NA, 
-                                                                                      ifelse(sum(is.na(x)) == 1, x[!is.na(x)],
-                                                                                             ifelse("xc" %in% x, "xc", "xt"))))))
+                                                                                  ifelse(sum(is.na(x)) == 1,
+                                                                                  x[!is.na(x)],
+                                                                                  ifelse("xc" %in% x, "xc", "xt"))))))
 }
 colnames(chemXsamp_binary_red2) <- substr(DUPs, 1, nchar(DUPs)-4)
 colnames(chemXsamp_conc_red2) <- substr(DUPs, 1, nchar(DUPs)-4)
@@ -217,12 +199,16 @@ for (i in 1:length(REPs)){
   indR <- allSamps$`System ID`[allSamps$`Customer ID` == REPs[i]]
   indS <- match(indR, sampNames)
   allSamps <- allSamps[!allSamps$`System ID` %in% indR,]
-  chemXsamp_binary_red2 <- cbind(chemXsamp_binary_red2, unlist(apply(chemXsamp_binary_red[,indS], 1, function(x) max(x, na.rm = TRUE))))
-  chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, unlist(apply(chemXsamp_conc_red[,indS], 1, function(x) mean(x, na.rm = TRUE))))
-  chemXsamp_group_red2 <- cbind(chemXsamp_group_red2, unlist(apply(chemXsamp_group_red[,indS], 1, 
-                                                               function(x) ifelse(sum(is.na(x)) == 2, NA, 
-                                                                                      ifelse(sum(is.na(x)) == 1, x[!is.na(x)],
-                                                                                             ifelse("xc" %in% x, "xc", "xt"))))))
+  chemXsamp_binary_red2 <- cbind(chemXsamp_binary_red2, 
+                                 unlist(apply(chemXsamp_binary_red[,indS], 1, function(x) max(x, na.rm = TRUE))))
+  chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, 
+                               unlist(apply(chemXsamp_conc_red[,indS], 1, function(x) mean(x, na.rm = TRUE))))
+  chemXsamp_group_red2 <- cbind(chemXsamp_group_red2, 
+                                unlist(apply(chemXsamp_group_red[,indS], 1, 
+                                             function(x) ifelse(sum(is.na(x)) == 2, NA, 
+                                              ifelse(sum(is.na(x)) == 1, x[!is.na(x)],
+                                               ifelse("xc" %in% x, "xc", "xt"))))))
+  
   colnames(chemXsamp_binary_red2)[dim(chemXsamp_binary_red2)[2]] <- sampNames[indS[1]]
   colnames(chemXsamp_conc_red2)[dim(chemXsamp_binary_red2)[2]] <- sampNames[indS[1]]
   colnames(chemXsamp_group_red2)[dim(chemXsamp_binary_red2)[2]] <- sampNames[indS[1]]
@@ -230,9 +216,12 @@ for (i in 1:length(REPs)){
 
 # Now add in the single sample products
 singles <- allSamps$`System ID`
-chemXsamp_binary_red2 <- cbind(chemXsamp_binary_red2, chemXsamp_binary_red[,colnames(chemXsamp_binary_red) %in% singles])
-chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, chemXsamp_conc_red[,colnames(chemXsamp_binary_red) %in% singles])
-chemXsamp_group_red2 <- cbind(chemXsamp_group_red2, chemXsamp_group_red[,colnames(chemXsamp_binary_red) %in% singles])
+chemXsamp_binary_red2 <- cbind(chemXsamp_binary_red2, 
+                               chemXsamp_binary_red[,colnames(chemXsamp_binary_red) %in% singles])
+chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, 
+                             chemXsamp_conc_red[,colnames(chemXsamp_binary_red) %in% singles])
+chemXsamp_group_red2 <- cbind(chemXsamp_group_red2, 
+                              chemXsamp_group_red[,colnames(chemXsamp_binary_red) %in% singles])
 
 # Put back in order
 load(paste(myPath, "data", "masterSampleList.RData", sep = "/"))
@@ -250,19 +239,22 @@ allProdTypesMat <- list("binary" = chemXsamp_binary_red2, "conc" = chemXsamp_con
 
 ```
 
+# Annotate Chemicals
 
-## Annotate Chemicals with Functional Uses and the ClassyFire Ontology
-The unique set of chemicals identified (confirmed or tentative; xc or xt) across all samples
-was saved as a text file during the processRawData function.  This was run through the CompTox
-Dashboard to obtain chemical identifiers (DTXSID, CAS, InChIKey) for ClassyFire and the
-ToxPrints for functional uses.  Perform annotations first to be able to add them to certain
-plots in the downstream analysis if desired.
+The unique set of chemicals identified (confirmed or tentative; xc or
+xt) across all samples was saved as a text file during the
+processRawData function. This was run through the CompTox Dashboard to
+obtain chemical identifiers (DTXSID, CAS, InChIKey) for ClassyFire and
+the ToxPrints for functional uses. Perform annotations first to be able
+to add them to certain plots in the downstream analysis if desired.
 
+## Functional Uses
 
-### Functional Uses
-For all chemicals, run Phillips et. al. 2017 functional use QSUR model. Only keep those in the 
-applicability domain and with a probability >= 0.8. Then, if a chemical has a reported use in FUse DB, 
-assign it to that chemical as well with a probability of 1.  
+For all chemicals, run Phillips et. al. 2017 functional use QSUR model.
+Only keep those in the applicability domain and with a probability \>=
+0.8. Then, if a chemical has a reported use in FUse DB, assign it to
+that chemical as well with a probability of 1.
+
 ```{r funcUse}
 # Read in dashboard query file that has the toxprints and process.  Input for function 
 # is a tab-separated file with ID and the toxprints
@@ -359,17 +351,15 @@ preds <- as.data.frame(preds)
 ind <- match(preds$chemical_id, curatedTPs$DTXSID)
 row.names(preds) <- curatedTPs$INPUT[ind]
 save(preds, file = paste(myPath, "results", "predAndKnownFuncUse_chemsAcrossAllSamps_probs.RData", sep = "/"))
-# old versions
-#save(preds, file = paste(myPath, "results", "predFuncUse_chemsAcrossAllSamps.RData", sep = "/"))
-#save(preds, file = paste(myPath, "results", "predFuncUse_chemsAcrossAllSamps_prob.RData", sep = "/"))
 
 ```
 
+## Make Functional Use Plots
 
+Have one plot showing all 5 categories and the distribution of predicted
+and reported uses. Have one plot for each product category showing the
+number of reported uses in each sample.
 
-### Make Functional Use Plots
-Have one plot showing all 5 categories and the districution of predicted and reported uses.
-Have one plot for each product category showing the number of reported uses in each sample.
 ```{r usePlots}
 # Uses reported and predicted
 load(file = paste(myPath, "results", "predAndKnownFuncUse_chemsAcrossAllSamps_probs.RData", sep = "/"))
@@ -408,7 +398,8 @@ for (i in 1:length(prodGroups)){
   catChems <- unique(unlist(apply(temp, 2, function(x) which(x == 1))))
   
   # High Level
-  useFlags <- apply(preds[catChems,-1], 1, function(x) ifelse(any(x > 0.9999), "Reported", ifelse(any(x >= 0.8), "Predicted", NA)))
+  useFlags <- apply(preds[catChems,-1], 1, function(x) ifelse(any(x > 0.9999), "Reported", 
+                                                              ifelse(any(x >= 0.8), "Predicted", NA)))
   allCatUses <- rbind(allCatUses, cbind(prodGroups[i], length(catChems), sum(useFlags == "Reported", na.rm = TRUE),
                                         sum(useFlags == "Predicted", na.rm = TRUE), sum(is.na(useFlags))))
   
@@ -423,8 +414,8 @@ for (i in 1:length(prodGroups)){
   # Get anonymized sample and brand name, subtype. temp and refTable are in the same order, just have to remove blanks
   refTable <- refTable[!refTable$Group3 == "blank",]
   indSamp <- refTable$Group2 == prodGroups[i]
-  prodCatUses[[i]] <- cbind(colnames(temp), gsub(" ", "_", refTable$`Anon Sample`[indSamp]), refTable$`Anon Brand`[indSamp], 
-                            gsub(" ", "_", refTable$Group3[indSamp]), repUses)
+  prodCatUses[[i]] <- cbind(colnames(temp), gsub(" ", "_", refTable$`Anon Sample`[indSamp]), 
+                            refTable$`Anon Brand`[indSamp], gsub(" ", "_", refTable$Group3[indSamp]), repUses)
   colnames(prodCatUses[[i]]) <- c("CustomerID", "SampleName", "BrandName", "Type", colnames(repUses))
 }
 colnames(allCatUses) <- c("Category", "Unique Chemicals", "Reported Use", "Predicted Use", "NoUse")
@@ -437,13 +428,15 @@ library(stringr)
 df <- allCatUses[,-5]
 df <- df %>% gather(Annotation, Count, -Category)
 df$Count <- as.numeric(df$Count)
-df$Annotation <- factor(df$Annotation, levels = c("Unique Chemicals", "Reported Use", "Predicted Use"), ordered = TRUE)
+df$Annotation <- factor(df$Annotation, levels = c("Unique Chemicals", "Reported Use", "Predicted Use"), 
+                        ordered = TRUE)
 df$Category <- factor(df$Category, level = prodGroups, ordered = TRUE)
 g <- ggplot(df, aes(fill = Annotation, y = Count, x = Category)) +
   geom_bar(position = "dodge", stat = "identity") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
   theme(text = element_text(size = 13)) +
-  labs(title = "Functional Use Distribution of Product Category Chemicals", x = "Product Category", y = "Chemical Count")
+  labs(title = "Functional Use Distribution of Product Category Chemicals", 
+       x = "Product Category", y = "Chemical Count")
 pdf(file = paste(myPath, "plots", "funUseAnnoAll5CatsBarPlot_withDupReps.pdf", sep = "/"), width = 8, height = 7)
   print(g)
 dev.off()
@@ -502,22 +495,22 @@ for (i in 1:length(prodGroups)){
   
   # Make plot
   if (prodGroups[i] == "Fabric Upholstery"){
-    ht <- Heatmap(temp, col = col_fun, heatmap_legend_param = list(title = "Unique Chemicals", at = mySeq, labels = as.character(mySeq)), 
-                na_col = "white",  
-                row_title = "Samples", column_title = paste("Reported Functional Use ", prodGroups[i], sep = ""),
-                cluster_rows = TRUE, cluster_columns = FALSE, show_row_names = TRUE, show_column_names = TRUE, column_names_rot = 90, 
-                #column_names_gp = gpar(fontsize = 10), row_names_gp = gpar(fontsize = 10), 
-                rect_gp = gpar(col = "white", lwd = 2, cex = 1.3))
+    ht <- Heatmap(temp, col = col_fun, 
+                  heatmap_legend_param = list(title = "Unique Chemicals", at = mySeq, labels = as.character(mySeq)), 
+                  na_col = "white", row_title = "Samples", 
+                  column_title = paste("Reported Functional Use ", prodGroups[i], sep = ""),
+                  cluster_rows = TRUE, cluster_columns = FALSE, show_row_names = TRUE, show_column_names = TRUE,
+                  column_names_rot = 90, rect_gp = gpar(col = "white", lwd = 2, cex = 1.3))
   } else {
-    ht <- Heatmap(temp, col = col_fun, heatmap_legend_param = list(title = "Unique Chemicals", at = mySeq, labels = as.character(mySeq)), 
-                  na_col = "white", left_annotation = column_ha, 
-                  row_title = "Samples", column_title = paste("Reported Functional Uses in ", prodGroups[i], sep = ""),
-                  cluster_rows = TRUE, cluster_columns = FALSE, show_row_names = TRUE, show_column_names = TRUE, column_names_rot = 90, 
-                  #column_names_gp = gpar(fontsize = 10), row_names_gp = gpar(fontsize = 10), 
-                  rect_gp = gpar(col = "white", lwd = 2, cex = 1.3))
+    ht <- Heatmap(temp, col = col_fun, 
+                  heatmap_legend_param = list(title = "Unique Chemicals", at = mySeq, labels = as.character(mySeq)), 
+                  na_col = "white", left_annotation = column_ha, row_title = "Samples", 
+                  column_title = paste("Reported Functional Uses in ", prodGroups[i], sep = ""),
+                  cluster_rows = TRUE, cluster_columns = FALSE, show_row_names = TRUE, show_column_names = TRUE,
+                  column_names_rot = 90, rect_gp = gpar(col = "white", lwd = 2, cex = 1.3))
   }
-  pdf(file = paste(myPath, "plots", paste("prodCatHeatmap_ReportedUses_", prodGroups[i], "_withDupReps.pdf", sep = ""), 
-                   sep = "/"), width = 10, height = 7.5)
+  pdf(file = paste(myPath, "plots", paste("prodCatHeatmap_ReportedUses_", prodGroups[i], 
+                                          "_withDupReps.pdf", sep = ""), sep = "/"), width = 10, height = 7.5)
     draw(ht)
   dev.off()
 }
@@ -525,18 +518,20 @@ for (i in 1:length(prodGroups)){
 ```
 
 
-
-### ClassyFire Analysis
-Use the treeCompareR package written by Paul Kruse to annotate my chemicals via the ClassyFire
-API and then make a series fo tree diagrams.
+## ClassyFire
+Use the treeCompareR package written by Paul Kruse to annotate my
+chemicals via the ClassyFire API and then make a series fo tree
+diagrams.
 ```{r classyfire}
-#devtools::install_git(url = 'https://ccte-bitbucket.epa.gov/scm/~pkruse/treecomparer.git', ref = "merge_kr_rcpp_kruse")
+#devtools::install_git(url = 'https://ccte-bitbucket.epa.gov/scm/~pkruse/treecomparer.git', 
+#                       ref = "merge_kr_rcpp_kruse")
 
 # Read in my dashboard file
 HPnta <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 # Check for rows that didn't have a match
 as.data.frame(table(HPnta$FOUND_BY))
-todrop <- c("Searched by Synonym: Found 0 results", "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
+todrop <- c("Searched by Synonym: Found 0 results", 
+            "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
             "Synonym - WARNING: Synonym mapped to two or more chemicals")
 curatedHPnta <- HPnta[!HPnta$FOUND_BY %in% todrop,]
 colnames(curatedHPnta)[1:20]
@@ -603,9 +598,10 @@ for (i in 1:length(myProds)){
   # Samples of type i
   prodSamps <- allProdTypesMat$prodType == myProds[i]
   # Chems measured in samples of type i
-  prodChems <- row.names(allProdTypesMat$binary)[which(unlist(apply(allProdTypesMat$binary[indP, prodSamps], 1, sum)) > 0)]
-  # Now reduce full tree to tree for product type i. Note that not all chemicals had dashboard entries, so a couple of 
-  # chemicals from each product type will be missing
+  prodChems <- row.names(allProdTypesMat$binary)[which(unlist(apply(allProdTypesMat$binary[indP, prodSamps], 
+                                                                    1, sum)) > 0)]
+  # Now reduce full tree to tree for product type i. Note that not all chemicals had dashboard entries, 
+  # so a couple of chemicals from each product type will be missing
   ind <- match(prodChems, myData$Chemical)
   temp <- myData[ind,]
   temp <- temp[!is.na(temp$Chemical),]
@@ -634,14 +630,13 @@ label_bars(data_list)
 
 ```
 
+# Within-product Category Similarity
 
-
-## Look at within-product similarity
-
-### Sample by Sample Similarity for Chemical Occurrence
+## By Chemical Occurrence
 ```{r prodSimOccur}
 # Get curated table of group levels and brands
-prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", sep = "/")))
+prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", 
+                                                sep = "/")))
 # Remove blanks
 prodOnt <- prodOnt[!prodOnt$Group3 == "blank",]
 # Change NA brand to "unknown"
@@ -660,8 +655,9 @@ for (i in 1:length(prodList)){
     row.names(distances[[i]]) <- prodList[[i]]$prod_names
   
     # Build annotation for chemical count in each sample
-    right_ha <- rowAnnotation("Chemical Count" = anno_barplot(unlist(apply(prodList[[i]]$binary, 2, function(x) sum(x!=0)))),
-                              annotation_name_rot = 90)
+    right_ha <- rowAnnotation("Chemical Count" = anno_barplot(unlist(apply(prodList[[i]]$binary, 
+                                                                           2, function(x) sum(x!=0)))),
+                                                                           annotation_name_rot = 90)
     
     # Set colors and range
     col_fun <- colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
@@ -714,17 +710,19 @@ for (i in 1:length(prodList)){
                                    col = list("Type" = type_col, "Brand" = brand_col))
     
     # Build annotation for chemical count in each sample
-    right_ha <- rowAnnotation("Chemical Count" = anno_barplot(unlist(apply(prodList[[i]]$binary, 2, function(x) sum(x!=0)))),
-                              annotation_name_rot = 90)
-    
+    right_ha <- rowAnnotation("Chemical Count" = anno_barplot(unlist(apply(prodList[[i]]$binary, 
+                                                                           2, function(x) sum(x!=0)))),
+                                                                           annotation_name_rot = 90)
     # Set colors and range
     col_fun <- colorRamp2(c(0, 0.5, 1), c("blue", "white", "red"))
     
-    a <- Heatmap(distances[[i]], name = "Distance", col = col_fun, top_annotation = column_ha, right_annotation = right_ha, 
+    a <- Heatmap(distances[[i]], name = "Distance", col = col_fun, top_annotation = column_ha, 
+                 right_annotation = right_ha, 
                  column_names_gp = grid::gpar(fontsize = 9), show_row_names = FALSE,
                  column_title = paste(names(prodList)[i], "Products", sep = " "))
-    pdf(file = paste(myPath, "plots", paste("withinProdSimilarityHeatmap_", names(prodList)[i], "_anonSampBrand.pdf", sep = ""), sep = "/"))
-    print(a)
+    pdf(file = paste(myPath, "plots", paste("withinProdSimilarityHeatmap_", names(prodList)[i], 
+                                            "_anonSampBrand.pdf", sep = ""), sep = "/"))
+      print(a)
     dev.off()
   }
 }
@@ -732,8 +730,7 @@ for (i in 1:length(prodList)){
 ```
 
 
-
-### Sample by Sample Similarity for Chemical Concentration
+## By Chemical Concentration
 ```{r prodSimConc}
 # Load functional uses.  Object name is preds
 load(paste(myPath, "/results/predAndKnownFuncUse_chemsAcrossAllSamps_probs.RData", sep = ""))
@@ -810,14 +807,16 @@ for (i in 1:length(prodList)){
   # Set up annotation
   left_ha <- rowAnnotation("Top Functional Uses" = anno_simple(as.matrix(probOrder), 
                             col = colorRamp2(c(0,1), c("white", "darkred")), na_col = "grey", 
-                            which = "row", pch = as.matrix(usePCH), pt_gp = gpar(col = "white"), pt_size = unit(1, "snpc")*0.475))
+                            which = "row", pch = as.matrix(usePCH), pt_gp = gpar(col = "white"), 
+                            pt_size = unit(1, "snpc")*0.475))
   lgd_prob <- Legend(title = "Confidence of Use", col_fun = colorRamp2(c(0,1), c("white", "darkred")), 
                      at = c(0, 1), labels = c("0.8", "1"))
   lgd_pch <- Legend(title = "Top Functional Uses", pch = LETTERS[1:length(newUses)], type = "points", labels = myUses)
   
   # Use anonymized sample names
   # Get curated table of group levels and brands
-  prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", sep = "/")))
+  prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", 
+                                                  sep = "/")))
   # Remove blanks
   prodOnt <- prodOnt[!prodOnt$Group3 == "blank",]
   # Get brand, product sub-category, and curated sample names using master table
@@ -828,15 +827,17 @@ for (i in 1:length(prodList)){
   temp <- temp/1000
   column_ha <- HeatmapAnnotation(Total_Conc_Sample = unlist(apply(temp, 2, function(x) sum(x, na.rm = TRUE))), 
                                  Chems_in_Sample = anno_barplot(unlist(apply(temp, 2, function(x) sum(!is.na(x))))))
-  row_ha <- rowAnnotation(Total_Conc_Chem = unlist(apply(temp, 1, function(x) sum(x, na.rm = TRUE))), annotation_name_rot = 90,
-                              Samples_with_Chem = anno_barplot(unlist(apply(temp, 1, function(x) sum(!is.na(x))))))
+  row_ha <- rowAnnotation(Total_Conc_Chem = unlist(apply(temp, 1, function(x) sum(x, na.rm = TRUE))),
+                          annotation_name_rot = 90,
+                          Samples_with_Chem = anno_barplot(unlist(apply(temp, 1, function(x) sum(!is.na(x))))))
   
   # Make plot
   ht <- Heatmap(temp, name = "Concentration (ug/g)", top_annotation = column_ha, right_annotation = row_ha, 
-                left_annotation = left_ha, row_title = "Chemicals", column_title = paste(prodGroups[i], " Samples", sep = ""), 
+                left_annotation = left_ha, row_title = "Chemicals", 
+                column_title = paste(prodGroups[i], " Samples", sep = ""), 
                 cluster_rows = FALSE, cluster_columns = TRUE, show_row_names = FALSE, column_names_rot = 90, 
                 column_names_gp = gpar(fontsize = 11.3), column_names_max_height = unit(4, "cm"))
-  pdf(file = paste(myPath, "plots", paste("prodSpecificHeatmap_conc_", prodGroups[i], "_newUseAnno_v2.pdf", sep = ""), 
+  pdf(file = paste(myPath, "plots", paste("prodSpecificHeatmap_conc_", prodGroups[i], "_newUseAnno_v2.pdf", sep = ""),
                    sep = "/"), width = 11, height = 13)
     draw(ht, annotation_legend_list = list(lgd_prob, lgd_pch))
   dev.off()
@@ -845,11 +846,10 @@ for (i in 1:length(prodList)){
 ```
 
 
-
-## Pull Chemicals Appearing in Most Products of a Specific Type
-This is a simple first-pass way of finding a chemical signature for each product type.
-Use the concentration matrix to get an idea of the fraction of mass each chemical makes up.
-
+# Simple Signature Identification
+This is a simple first-pass way of finding a chemical signature for each
+product type. Use the concentration matrix to get an idea of the
+fraction of mass each chemical makes up.
 ```{r simpleSig}
 # Load prodList
 load(paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
@@ -896,7 +896,8 @@ g <- ggplot(df, aes(x = reorder_within(Chemical, -Mean, Product_Type), y = Conc,
   geom_boxplot() +
   scale_y_log10() +
   scale_x_reordered() +
-  facet_grid(~Product_Type, scales = "free_x", space = "free", labeller = labeller(Product_Type = label_wrap_gen(5))) +
+  facet_grid(~Product_Type, scales = "free_x", space = "free", 
+             labeller = labeller(Product_Type = label_wrap_gen(5))) +
   theme_bw() +
   ylab("log10(Conc in ug/g)") +
   ggtitle("Chemical Signatures of Product Categories") +
@@ -905,18 +906,19 @@ g <- ggplot(df, aes(x = reorder_within(Chemical, -Mean, Product_Type), y = Conc,
   theme(text =element_text(size = 13)) +
   theme(legend.text = element_text(size = 10))
 pdf(file = paste(myPath, "plots", "mostPrevChemsPerProduct_boxplotConc_v2.pdf", sep = "/"), width = 12, height = 7)
-print(g)
+  print(g)
 dev.off()
 
 # Save data for figure ##
 #write.table(df, file = paste(myPath, "results", "Figure_#_data.txt", sep = "/"), sep = "\t", row.names = FALSE)
 
-```  
+```
 
 
-### Look at Signatures at Different Levels of Product Groupings
-Do for multiple different levels, not just the above 5 categories. Any different set 
-of groupings can be used, so some manual input is needed at the start of this section
+## Signatures at Different Category Levels
+Do for multiple different levels, not just the above 5 categories. Any
+different set of groupings can be used, so some manual input is needed
+at the start of this section
 ```{r levelSigs}
 load(paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 refTable <- as.data.frame(read_xlsx(paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", sep = "/")))
@@ -927,11 +929,12 @@ refTable_2 <- refTable[ind,]
 colnames(refTable_2)[1:3] <- c("Lvl1", "Lvl2", "Lvl3")
 
 # List of groups to look at
-myGroups <- list(c("Clothing", "Fabric"), "Cotton Clothing", "Fabric Upholstery", "baby_onesie", "shorts_or_pants", "baby_socks", 
-                 "GERBER", "JOHNSON'S", c("Shampoo", "Baby Soap"), "Shampoo", "Baby Soap", "baby_wash", "natural", "traditional", 
+myGroups <- list(c("Clothing", "Fabric"), "Cotton Clothing", "Fabric Upholstery", "baby_onesie", 
+                 "shorts_or_pants", "baby_socks", "GERBER", "JOHNSON'S", c("Shampoo", "Baby Soap"), 
+                 "Shampoo", "Baby Soap", "baby_wash", "natural", "traditional", 
                  "Silicone Kitchen Tools", "spatula", "cup")
-names(myGroups) <- c("Lvl1", "Lvl2", "Lvl2", "Lvl3", "Lvl3", "Lvl3", "Brand", "Brand", "Lvl2", "Lvl2", "Lvl2", "Lvl3", 
-                     "Lvl3", "Lvl3", "Lvl2", "Lvl3", "Lvl3")
+names(myGroups) <- c("Lvl1", "Lvl2", "Lvl2", "Lvl3", "Lvl3", "Lvl3", "Brand", "Brand", "Lvl2", "Lvl2", 
+                     "Lvl2", "Lvl3", "Lvl3", "Lvl3", "Lvl2", "Lvl3", "Lvl3")
 
 topSignats <- list()
 topConcs <- list()
@@ -940,7 +943,8 @@ for (i in 1:length(myGroups)){
   indS <- which(refTable_2[,colnames(refTable_2) %in% names(myGroups)[i]] %in% myGroups[[i]])
   sampleCount <- c(sampleCount, length(indS))
   rowcounts <- unlist(apply(allProdTypesMat$binary[,indS], 1, function(x) sum(x != 0))) 
-  rowMeans <- unlist(apply(allProdTypesMat$conc[,indS], 1, function(x) median(x/1000, na.rm = TRUE)))  # Get median conc. in ug/g across samples
+  # Get median conc. in ug/g across samples
+  rowMeans <- unlist(apply(allProdTypesMat$conc[,indS], 1, function(x) median(x/1000, na.rm = TRUE)))  
   prevChems <- which(rowcounts/length(indS) >= 0.8)
   topSignats[[i]] <- row.names(allProdTypesMat$binary)[prevChems]
   topConcs[[i]] <- rowMeans[prevChems]
@@ -954,7 +958,8 @@ for (i in 1:length(myGroups)){
 # Want to pull the concentration values to get a median concentration
 # Also want functional use for chemicals and sample count for each group of samples
 sigChems <- unique(unlist(topSignats))
-mydf <- as.data.frame(matrix(data = NA, nrow = length(sigChems), ncol = length(topSignats), dimnames = list(sigChems, names(topSignats))))
+mydf <- as.data.frame(matrix(data = NA, nrow = length(sigChems), ncol = length(topSignats), 
+                             dimnames = list(sigChems, names(topSignats))))
 for (i in 1:length(topSignats)){
   ind <- match(topSignats[[i]], sigChems)
   mydf[ind, names(topSignats)[i]] <- topConcs[[i]]
@@ -966,7 +971,8 @@ load(paste(myPath, "results", "predFuncUse_chemsAcrossAllSamps_prob.RData", sep 
 preds$chemical_id <- NULL
 preds <- as.matrix(preds)
 ind <- match(row.names(mydf), row.names(preds))
-useInd <- unlist(apply(preds[ind,], 1, function(x) ifelse(sum(is.na(x)) == length(x) | sum(x) == 0, NA, which(x == max(x)))))
+useInd <- unlist(apply(preds[ind,], 1, function(x) ifelse(sum(is.na(x)) == length(x) | 
+                                                          sum(x) == 0, NA, which(x == max(x)))))
 uses <- colnames(preds)[useInd]
 uses <- as.factor(uses)
 
@@ -984,8 +990,9 @@ right_ha <- rowAnnotation("Chemical Count" = anno_barplot(unlist(apply(mydf, 1, 
                           annotation_name_rot = 90, annotation_name_gp = grid::gpar(fontsize = 8))
 
 a <- Heatmap(as.matrix(mydf), name = "Median Conc. (ug/g)", top_annotation = column_ha, right_annotation = right_ha, 
-             column_names_gp = grid::gpar(fontsize = 7), show_row_names = TRUE, cluster_rows = FALSE, cluster_columns = FALSE,
-             column_title = "Chemical Signatures at Different Product Levels", column_split = c(1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6),
+             column_names_gp = grid::gpar(fontsize = 7), show_row_names = TRUE, cluster_rows = FALSE, 
+             cluster_columns = FALSE, column_title = "Chemical Signatures at Different Product Levels", 
+             column_split = c(1,1,1,2,2,2,3,3,4,4,4,5,5,5,6,6,6),
              row_names_side = "left", row_names_gp = grid::gpar(fontsize = 6.25), left_annotation = left_ha)
 pdf(file = paste(myPath, "plots", "ChemSignatureHeatmap_withConc.pdf", sep = "/"))
   print(a)
@@ -994,14 +1001,16 @@ dev.off()
 ```
 
 
-### Classify External Data
-Do a simple classification of the data from Phillips et. al. 2017 using the signatures in our data.
+## Classify External Data
+Do a simple classification of the data from Phillips et. al. 2017 using
+the signatures in our data.
 ```{r simpleClassif}
 #Bring in the dashboard result for my chemicals and remove those without a dashboard entry
 myChems <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 myChems <- myChems[,1:5]
 # Drop chemicals that didn't have a match
-todrop <- c("Searched by Synonym: Found 0 results", "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
+todrop <- c("Searched by Synonym: Found 0 results", 
+            "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
             "Synonym - WARNING: Synonym mapped to two or more chemicals")
 myChems <- myChems[!myChems$FOUND_BY %in% todrop,]
 
@@ -1037,7 +1046,8 @@ for (i in 1:length(sets)){
 lapply(uniqSigList, dim)  
 
 # From Phillips et al 2017 supplemental data, 20 product types (5 samples each)
-occurMat <- as.data.frame(read_xlsx(path = paste(myPath, "data", "KPhillips_SSofConsumerProds_SuppTables.xlsx", sep = "/"), sheet = 3))
+occurMat <- as.data.frame(read_xlsx(path = paste(myPath, "data", "KPhillips_SSofConsumerProds_SuppTables.xlsx", 
+                                                 sep = "/"), sheet = 3))
 
 # Remove any NAs in the CAS column
 occurMat <- occurMat[!is.na(occurMat$casrn),]  # Down from 6010 rows to 5982
@@ -1089,7 +1099,7 @@ classDF <- cbind("Classfication" = callCol, classDF)
 ```
 
 
-## Make Upset plot
+# Make Upset plot
 ```{r upset}
 # Aggregate by product
 prods <- unique(allSamps$Product)
@@ -1103,8 +1113,9 @@ names(upset_list) <- prods
 lengths(upset_list)
 
 pdf(file = paste(myPath, "plots", "ProductGroup_chemOccurrence_upsetPlot.pdf", sep = "/"), width = 8, height = 6)
-upset(fromList(upset_list), order.by = "freq", point.size = 3, line.size = 1.5, mainbar.y.label = "Chemical Intersections",
-      sets.x.label = "Product Type", text.scale = c(1.5, 1.3, 1.3, 1.1, 1.4, 1.2))
+upset(fromList(upset_list), order.by = "freq", point.size = 3, line.size = 1.5, 
+      mainbar.y.label = "Chemical Intersections", sets.x.label = "Product Type", 
+      text.scale = c(1.5, 1.3, 1.3, 1.1, 1.4, 1.2))
 dev.off()
 
 # Save the data for this plot
@@ -1114,10 +1125,9 @@ dev.off()
 ```
 
 
-
-## Perform Clustering Analysis on Binary Chemical Occurrence Matrix
-Want to identify ubiquitous chemicals, chemicals specific to certain subsets of
-samples, and chemicals with similar signatures.
+# Clustering of Chemicals by Occurrence
+Want to identify ubiquitous chemicals, chemicals specific to certain
+subsets of samples, and chemicals with similar signatures.
 ```{r clustering, echo=FALSE}
 load(file = paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 
@@ -1177,11 +1187,14 @@ names(mycols) <- unique(prodOrd)
                      
 column_ha <- HeatmapAnnotation(Chems_in_Sample = anno_barplot(unlist(apply(temp, 2, function(x) sum(x!=0)))),
                                col = list(ProductType = mycols))
-row_ha <- rowAnnotation(Samples_with_Chem = anno_barplot(unlist(apply(temp, 1, function(x) sum(x!=0)))), annotation_name_rot = 90)
+row_ha <- rowAnnotation(Samples_with_Chem = anno_barplot(unlist(apply(temp, 1, function(x) sum(x!=0)))),
+                        annotation_name_rot = 90)
 #left_ha <- rowAnnotation(Functional_Use = uses, col = list(FuncUse = cols), annotation_name_rot = 90)
 
-pdf(file = paste(myPath, "plots", "occurrenceHeatmap_allCombined_clustered6_kmeans.pdf", sep = "/"), width = 9, height = 11)
-Heatmap(temp, name = "Occurrence", col = c("grey", "gold"), top_annotation = column_ha, right_annotation = row_ha, #left_annotation = left_ha,
+pdf(file = paste(myPath, "plots", "occurrenceHeatmap_allCombined_clustered6_kmeans.pdf", sep = "/"), 
+    width = 9, height = 11)
+Heatmap(temp, name = "Occurrence", col = c("grey", "gold"), top_annotation = column_ha, right_annotation = row_ha,
+        #left_annotation = left_ha,
         row_title = "Chemicals", column_title = "Product Samples", cluster_rows = FALSE, na_col = "grey",
         cluster_columns = FALSE, show_row_names = FALSE, column_names_rot = 90, column_names_gp = gpar(fontsize = 6), 
         column_names_max_height = unit(4, "cm"), row_split = cluster_assignments, column_split = prodOrd)
@@ -1190,12 +1203,10 @@ dev.off()
 ```
 
 
-
-## Build a sparse model to predict product type
-Want to build a sparse machine learning model based on all samples with all chemicals
-to predict the product type and identify the most influential chemicals for each class.
-This should give us a minimal signature for each product.
-
+# Build Model to Predict Product Type
+Want to build a sparse machine learning model based on chemical
+occurrence. Use all samples with all chemicals to predict the product
+type and identify the most influential chemicals for each class.
 ```{r sparsemodel}
 load(paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 
@@ -1203,7 +1214,8 @@ load(paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 myChems <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 myChems <- myChems[,1:5]
 # Drop chemicals that didn't have a match
-todrop <- c("Searched by Synonym: Found 0 results", "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
+todrop <- c("Searched by Synonym: Found 0 results", 
+            "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
             "Synonym - WARNING: Synonym mapped to two or more chemicals")
 myChems <- myChems[!myChems$FOUND_BY %in% todrop,]
 
@@ -1233,7 +1245,8 @@ def_elnet_yrand <- train(Type ~ ., data = data_yrand, method = "rf", trControl =
 
 ##### Now predict the product type of an external set of samples
 # From Phillips et al 2017 supplemental data, 20 product types (5 samples each)
-occurMat <- as.data.frame(read_xlsx(path = paste(myPath, "data", "KPhillips_SSofConsumerProds_SuppTables.xlsx", sep = "/"), sheet = 3))
+occurMat <- as.data.frame(read_xlsx(path = paste(myPath, "data", "KPhillips_SSofConsumerProds_SuppTables.xlsx", 
+                                                 sep = "/"), sheet = 3))
 
 # Examine data
 length(unique(occurMat$chemical_name))  # 1602
@@ -1266,7 +1279,8 @@ extDF[is.na(extDF)] <- 0
 finalDF <- as.data.frame(matrix(data = NA, nrow = dim(extDF)[1], ncol = dim(featMat)[2], 
                               dimnames = list(row.names(extDF), colnames(featMat))))
 for (i in 1:dim(finalDF)[2]){
-  ind1 <- which(myChems$INPUT == colnames(finalDF)[i])  # Get the index for this chemical so I can pull CAS of our final feature chemicals
+  # Get the index for this chemical so I can pull CAS of our final feature chemicals
+  ind1 <- which(myChems$INPUT == colnames(finalDF)[i])  
   if (length(ind1) == 0){  # If there is no match, it is one of the 63 chemicals in my data without a dashboard entry
     finalDF[,i] <- 0    # meaning we can't say anything about occurrence
   } else {     # otherwise we want to match the CAS of our chemical to the external set
@@ -1274,7 +1288,8 @@ for (i in 1:dim(finalDF)[2]){
     if (length(ind2) == 0){  # If there is no match, the chemical occurred in my data but not the external data
       finalDF[,i] <- 0    # meaning this chemical isn't present in the samples
     } else {
-      finalDF[,i] <- extDF[,ind2]  # If we do find a match, use the external occurrence matrix to fill in the binary column
+      # If we do find a match, use the external occurrence matrix to fill in the binary column
+      finalDF[,i] <- extDF[,ind2]  
     }
   }  
 }
@@ -1300,7 +1315,8 @@ vecTrue <- gsub("\\.", "", gsub(" ", "", tolower(true_names$anonymous)))
 ind <- match(vecRef, vecTrue)
 
 refSamp <- cbind("product_name" = true_names$product_name[ind], refSamp)
-#save(refSamp, file = paste(myPath, "results", "PilotStudyPreds_RandForest_3cv_dashChemsAllSamps_binary.RData", sep = "/"))
+#save(refSamp, file = paste(myPath, "results", "PilotStudyPreds_RandForest_3cv_dashChemsAllSamps_binary.RData", 
+#                            sep = "/"))
 
 ### AD Assessment
 # Need a train and predicted matrix with labels
@@ -1320,11 +1336,3 @@ refSamp$InDomain <- "No"
 refSamp$InDomain[indomain_DTXSIDs] <- "Yes"
 
 ```
-
-
-
-
-
-
-
-
