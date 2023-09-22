@@ -60,8 +60,9 @@ myFiles <- c("Sequence1 Clothing.xlsx", "Sequence1 Personal Care Products.xlsx",
                 "Sequence2 Shampoo.xlsx", "Sequence3 Fabric.xlsx")
 data_files <- paste(myPath, "raw_data", myFiles, sep = "/")
 upc_file <- "EPA task 10 items_26Feb18.xlsx"
-prodGroups <- c("Cotton clothing", "Shampoo", "Baby soap", "Fabric upholstery", "Silicone kitchen tools")
+prodGroups <- c("Cotton Clothing", "Shampoo", "Baby Soap", "Fabric Upholstery", "Silicone Kitchen Tools")
 ```
+
 
 ## Process the raw data
 
@@ -299,13 +300,162 @@ save(preds, file = paste(myPath, "results", "predAndKnownFuncUse_chemsAcrossAllS
 
 ```
 
+
+
 ### Make Functional Use Plots
 ```{r usePlots}
+# Uses reported and predicted
 load(file = paste(myPath, "results", "predAndKnownFuncUse_chemsAcrossAllSamps_probs.RData", sep = "/"))
 
-# Chemical name by functional use, so I need to pull my occurrence matrices for each product category
-# to get a product by use matrix
+# Is a matrix of chemical name by functional use. Want to combine with the matrix I made in the previous section
+load(file = paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
 
+# prodList is a list of all 5 groups with 4 elements each.  Pull the binary matrices and concatenate them.
+# First match the order with prodGroups
+prodList <- prodList[match(names(prodList), prodGroups)]
+allProdsMat <- list()
+for (i in 1:length(prodGroups)){
+  temp <- prodList[[i]][[1]]
+  colnames(temp) <- prodList[[i]][[4]]
+  allProdsMat$binary <- cbind(allProdsMat$binary, temp)
+  allProdsMat$prodType <- c(allProdsMat$prodType, rep(prodGroups[i], dim(temp)[2]))
+}
+
+# The row names are the same, so reduce our chemical X sample matrix to those with uses
+allProdsMat$binary <- allProdsMat$binary[row.names(allProdsMat$binary) %in% row.names(preds),]
+
+## Get a summary plot for all categories.  Want a split bar for each category.  One color for all chemicals,
+## one for reported use, and one for predicted use (>= 0.8)
+# First load master sample list so I can use anonymized sample names in the product-specific figures
+refTable <- as.data.frame(read_xlsx(paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", sep = "/")))
+
+# Step through each category, select samples, and aggregate uses over chemicals 
+allCatUses <- c()
+prodCatUses <- list()
+predsRep <- preds[,-1]
+predsRep[predsRep < 0.9999] <- 0
+# Remove uses that aren't assigned to any chemical
+ind <- unlist(apply(predsRep, 2, sum))
+predsRep <- predsRep[,!ind == 0]
+# Build data objects needed for plotting
+for (i in 1:length(prodGroups)){
+  temp <- allProdsMat$binary[,allProdsMat$prodType == prodGroups[i]]
+  catChems <- unique(unlist(apply(temp, 2, function(x) which(x == 1))))
+  
+  # High Level
+  useFlags <- apply(preds[catChems,-1], 1, function(x) ifelse(any(x > 0.9999), "Reported", ifelse(any(x >= 0.8), "Predicted", NA)))
+  allCatUses <- rbind(allCatUses, cbind(prodGroups[i], length(catChems), sum(useFlags == "Reported", na.rm = TRUE),
+                                        sum(useFlags == "Predicted", na.rm = TRUE), sum(is.na(useFlags))))
+  
+  # Per Category
+  # Want to count those with a reported use per sample. 
+  repUses <- c()
+  for (j in 1:dim(temp)[2]){
+    sampChems <- which(temp[,j] == 1)
+    repUses <- rbind(repUses, apply(predsRep[sampChems,], 2, sum))
+  }
+  
+  # Get anonymized sample and brand name, subtype. temp and refTable are in the same order, just have to remove blanks
+  refTable <- refTable[!refTable$Group3 == "blank",]
+  indSamp <- refTable$Group2 == prodGroups[i]
+  prodCatUses[[i]] <- cbind(colnames(temp), gsub(" ", "_", refTable$`Anon Sample`[indSamp]), refTable$`Anon Brand`[indSamp], 
+                            gsub(" ", "_", refTable$Group3[indSamp]), repUses)
+  colnames(prodCatUses[[i]]) <- c("CustomerID", "SampleName", "BrandName", "Type", colnames(repUses))
+}
+colnames(allCatUses) <- c("Category", "Unique Chemicals", "Reported Use", "Predicted Use", "NoUse")
+allCatUses <- as.data.frame(allCatUses)
+names(prodCatUses) <- prodGroups
+
+
+# Plot high level
+library(stringr)
+df <- allCatUses[,-5]
+df <- df %>% gather(Annotation, Count, -Category)
+df$Count <- as.numeric(df$Count)
+df$Annotation <- factor(df$Annotation, levels = c("Unique Chemicals", "Reported Use", "Predicted Use"), ordered = TRUE)
+df$Category <- factor(df$Category, level = prodGroups, ordered = TRUE)
+g <- ggplot(df, aes(fill = Annotation, y = Count, x = Category)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+  theme(text = element_text(size = 13)) +
+  labs(title = "Functional Use Distribution of Product Category Chemicals", x = "Product Category", y = "Chemical Count")
+pdf(file = paste(myPath, "plots", "funUseAnnoAll5CatsBarPlot_withDupReps.pdf", sep = "/"), width = 8, height = 7)
+  print(g)
+dev.off()
+
+
+# Build a heatmap for each product category
+# Want to show product subcategory and anonymized brand, so use complex heatmap
+for (i in 1:length(prodGroups)){
+  
+  temp <- prodCatUses[[i]][,-c(1:4)]
+  temp <- as.data.frame(apply(temp, 2, as.numeric))
+  row.names(temp) <- prodCatUses[[i]][,2]
+  tempAnno <- as.data.frame(prodCatUses[[i]][,1:4])
+  
+  # The columns I want to use for annotations need to be ordered factors. Subset to the product
+  # category so the brand labels don't get mixed up
+  tempAnno$BrandName <- as.factor(as.character(tempAnno$BrandName))
+  tempAnno$Type <- as.factor(as.character(tempAnno$Type))
+  
+  palettes <- ggthemes_data[["tableau"]][["color-palettes"]][["regular"]]
+  brand_col <- palettes$`Tableau 20`$value[1:length(unique(tempAnno$BrandName))]
+  names(brand_col) <- levels(tempAnno$BrandName)
+  palettes <- ggthemes_data[["wsj"]][["palettes"]]
+  type_col <- palettes$`colors6`$value[1:length(unique(tempAnno$Type))]
+  names(type_col) <- levels(tempAnno$Type)
+  
+  #type_col <- brewer.pal(length(unique(tempAnno$Type)), "Dark2")
+  #names(type_col) <- levels(tempAnno$Type)
+  
+  # Minimum number of elements for the palette is 3, so it adds a 3rd color. Remove this.
+  if(length(unique(tempAnno$Type)) < 3){
+    type_col <- type_col[1:length(unique(tempAnno$Type))]
+  }
+  
+  # To visualize the colors that are pulled
+  #if (test){
+  #  plot(NULL, xlim =c(0, length(brand_col)), ylim =c(0,1), xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+  #  rect(0:(length(brand_col)-1), 0, 1:length(brand_col), 1, col = brand_col)
+  #  plot(NULL, xlim =c(0, length(type_col)), ylim =c(0,1), xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+  #  rect(0:(length(type_col)-1), 0, 1:length(type_col), 1, col = type_col)
+  #}
+  
+  column_ha <- rowAnnotation(SubCategory = tempAnno$Type, Brand = tempAnno$BrandName,   
+                                 col = list("SubCategory" = type_col, "Brand" = brand_col))
+  temp[temp == 0] <- NA
+  col_fun = colorRamp2(c(1, max(temp, na.rm = TRUE)), c("darkblue", "yellow"))
+  
+  # Sort uses by most chemicals
+  useCounts <- unlist(apply(temp, 2, function(x) sum(x, na.rm = TRUE)))
+  ind0 <- useCounts == 0
+  temp <- temp[,!ind0]
+  temp <- temp[,order(useCounts[!ind0], decreasing = TRUE)]
+  
+  # For count legend
+  mySeq <- round(seq.int(from = 1, to = max(temp, na.rm = TRUE), length.out = 4))
+  
+  # Make plot
+  if (prodGroups[i] == "Fabric Upholstery"){
+    ht <- Heatmap(temp, col = col_fun, heatmap_legend_param = list(title = "Unique Chemicals", at = mySeq, labels = as.character(mySeq)), 
+                na_col = "white",  
+                row_title = "Samples", column_title = paste("Reported Functional Use ", prodGroups[i], sep = ""),
+                cluster_rows = TRUE, cluster_columns = FALSE, show_row_names = TRUE, show_column_names = TRUE, column_names_rot = 90, 
+                #column_names_gp = gpar(fontsize = 10), row_names_gp = gpar(fontsize = 10), 
+                rect_gp = gpar(col = "white", lwd = 2, cex = 1.3))
+  } else {
+    ht <- Heatmap(temp, col = col_fun, heatmap_legend_param = list(title = "Unique Chemicals", at = mySeq, labels = as.character(mySeq)), 
+                  na_col = "white", left_annotation = column_ha, 
+                  row_title = "Samples", column_title = paste("Reported Functional Uses in ", prodGroups[i], sep = ""),
+                  cluster_rows = TRUE, cluster_columns = FALSE, show_row_names = TRUE, show_column_names = TRUE, column_names_rot = 90, 
+                  #column_names_gp = gpar(fontsize = 10), row_names_gp = gpar(fontsize = 10), 
+                  rect_gp = gpar(col = "white", lwd = 2, cex = 1.3))
+  }
+  pdf(file = paste(myPath, "plots", paste("prodCatHeatmap_ReportedUses_", prodGroups[i], "_withDupReps.pdf", sep = ""), 
+                   sep = "/"), width = 10, height = 7.5)
+    draw(ht)
+  dev.off()
+}
 
 ```
 
@@ -896,6 +1046,7 @@ for (i in 1:length(prodList)){
 ```
 
 
+
 ## Pull Chemicals Appearing in Most Products of a Specific Type
 This is a simple first-pass way of finding a chemical signature for each product type.
 Use the concentration matrix to get an idea of the fraction of mass each chemical makes up.
@@ -1325,6 +1476,7 @@ dev.off()
 
 
 ```
+
 
 
 
