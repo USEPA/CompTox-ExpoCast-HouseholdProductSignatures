@@ -28,7 +28,7 @@ want to assess within-product similarity of samples.
 
 # Load Packages and Data Objects
 
-```{r setEnv}
+```{r setEnv, include=FALSE}
 library(readxl)
 library(reshape2)
 library(treecompareR)
@@ -791,12 +791,18 @@ load(paste(myPath, "/results/predAndKnownFuncUse_chemsAcrossAllSamps_probs.RData
 # Load our list of product group matrices
 load(paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
 
+# Get curated table of group levels and brands
+prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", 
+                                                  sep = "/")))
+# Remove blanks
+prodOnt <- prodOnt[!prodOnt$Group3 == "blank",]
+
 for (i in 1:length(prodList)){
   temp <- prodList[[i]]$conc
   
   # Remove chemicals not in any of the samples
   indRem <- unlist(apply(temp, 1, function(x) sum(is.na(x)) == dim(temp)[2])) 
-  temp <- temp[!indRem,]  # down to 137 chemicals
+  temp <- temp[!indRem,]  
   
   # Perform clustering of rows
   set.seed(788)
@@ -812,19 +818,24 @@ for (i in 1:length(prodList)){
   preds$chemical_id <- NULL
   ind <- match(row.names(temp), row.names(preds))
   preds <- preds[ind,]
-  row.names(preds) <- row.names(temp)
+  # Step through each row and get a vector of indices where the 1st element represents the use with the highest probability
+  # and the last the lowest probability.  Will have the same size as preds
   rnkOrder <- t(apply(preds, 1, function(x) order(x, decreasing = TRUE)))
   # Use this matrix to make a ranked probability and use name matrix
   probOrder <- as.data.frame(matrix(data = NA, nrow = dim(preds)[1], ncol = dim(preds)[2], 
                                     dimnames = list(row.names(preds), paste("Use", 1:dim(preds)[2], sep = ""))))
   useOrder <- probOrder
-  for (i in 1:dim(preds)[1]){
-    useOrder[i,] <- colnames(preds)[rnkOrder[i,]]
-    probOrder[i,] <- preds[i,rnkOrder[i,]]
-    if (!is.na(probOrder[i,1])){
-      ind0 <- as.numeric(probOrder[i,]) < 0.8
-      useOrder[i,ind0] <- NA
-      probOrder[i,ind0] <- NA
+  # Step through each row and pull the column names from preds based on the sorted vector
+  # Do the same, but pull the probabilities as we want both pieces of information
+  for (j in 1:dim(preds)[1]){
+    useOrder[j,] <- colnames(preds)[rnkOrder[j,]]
+    probOrder[j,] <- preds[j,rnkOrder[j,]]
+    # For those with a valid predicted use below our assignment threshold, change to 
+    # NA so those are not printed in the annotation area
+    if (!is.na(probOrder[j,1])){
+      ind0 <- as.numeric(probOrder[j,]) < 0.8
+      useOrder[j,ind0] <- NA
+      probOrder[j,ind0] <- NA
     }
   }
   indNA <- is.na(probOrder)
@@ -836,25 +847,27 @@ for (i in 1:length(prodList)){
   # I need to turn useOrder into a matrix with integers or single letters but keep the relationship
   myUses <- unique(as.vector(as.matrix(useOrder)))
   usePCH <- probOrder
-  for (i in 1:dim(usePCH)[2]){
-    ind <- match(useOrder[,i], myUses)
-    usePCH[,i] <- ind
+  for (j in 1:dim(usePCH)[2]){
+    ind <- match(useOrder[,j], myUses)
+    usePCH[,j] <- ind
   }
-  # Don't NA use was assigned #6. Don't want a symbol for NA.
-  ind6 <- usePCH == 6
-  usePCH[ind6] <- NA
-  usePCH <- apply(usePCH, 2, function(x) ifelse(x > 6, x-1, x))
-  myUses <- myUses[-6]
+  # NA use will be assigned a number if it is in myUses. Don't want a symbol for NA in plot annotation.
+  indNA <- which(is.na(myUses))
+  indNA2 <- usePCH == indNA
+  usePCH[indNA2] <- NA
+  # Since indNA is NA, need to reduce any indices with a value above this
+  usePCH <- apply(usePCH, 2, function(x) ifelse(x > indNA, x-1, x))
+  myUses <- myUses[-indNA]
   
-  # Want the top use colsest to the heatmap
+  # Want the top use closest to the heatmap
   usePCH <- rev(as.data.frame(usePCH))
   probOrder <- rev(probOrder)
   
   # Use letters instead of symbols for the uses
   newUses <- LETTERS[1:length(myUses)]
-  for (i in 1:dim(usePCH)[2]){
-    ind <- match(usePCH[,i], 1:length(myUses))
-    usePCH[,i] <- newUses[ind]
+  for (j in 1:dim(usePCH)[2]){
+    ind <- match(usePCH[,j], 1:length(myUses))
+    usePCH[,j] <- newUses[ind]
   }
   
   # Set up annotation
@@ -866,12 +879,7 @@ for (i in 1:length(prodList)){
                      at = c(0, 1), labels = c("0.8", "1"))
   lgd_pch <- Legend(title = "Top Functional Uses", pch = LETTERS[1:length(newUses)], type = "points", labels = myUses)
   
-  # Use anonymized sample names
-  # Get curated table of group levels and brands
-  prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", 
-                                                  sep = "/")))
-  # Remove blanks
-  prodOnt <- prodOnt[!prodOnt$Group3 == "blank",]
+  # Use anonymized sample names from prodOnt
   # Get brand, product sub-category, and curated sample names using master table
   ind <- match(colnames(temp), prodOnt$MySysID)
   colnames(temp) <- prodOnt$`Anon Sample`[ind]
@@ -890,7 +898,7 @@ for (i in 1:length(prodList)){
                 column_title = paste(prodGroups[i], " Samples", sep = ""), 
                 cluster_rows = FALSE, cluster_columns = TRUE, show_row_names = FALSE, column_names_rot = 90, 
                 column_names_gp = gpar(fontsize = 11.3), column_names_max_height = unit(4, "cm"))
-  pdf(file = paste(myPath, "plots", paste("prodSpecificHeatmap_conc_", prodGroups[i], "_newUseAnno_v2.pdf", sep = ""),
+  pdf(file = paste(myPath, "plots/singleProdCatConcHeatmaps", paste("prodSpecificHeatmap_conc_", prodGroups[i], "_newUseAnno_v2.pdf", sep = ""),
                    sep = "/"), width = 11, height = 13)
     draw(ht, annotation_legend_list = list(lgd_prob, lgd_pch))
   dev.off()
