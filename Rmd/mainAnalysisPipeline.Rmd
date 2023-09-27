@@ -418,25 +418,29 @@ for (i in 1:length(prodGroups)){
                             refTable$`Anon Brand`[indSamp], gsub(" ", "_", refTable$Group3[indSamp]), repUses)
   colnames(prodCatUses[[i]]) <- c("CustomerID", "SampleName", "BrandName", "Type", colnames(repUses))
 }
-colnames(allCatUses) <- c("Category", "Unique Chemicals", "Reported Use", "Predicted Use", "NoUse")
+colnames(allCatUses) <- c("Category", "Unique Chemicals", "Reported Use", "Predicted Use", "No Use")
 allCatUses <- as.data.frame(allCatUses)
 names(prodCatUses) <- prodGroups
 
 
 # Plot high level
 library(stringr)
-df <- allCatUses[,-5]
+df <- allCatUses[,-2]
+#df <- allCatUses[,-5]
 df <- df %>% gather(Annotation, Count, -Category)
 df$Count <- as.numeric(df$Count)
-df$Annotation <- factor(df$Annotation, levels = c("Unique Chemicals", "Reported Use", "Predicted Use"), 
+df$Annotation <- factor(df$Annotation, levels = c("Reported Use", "Predicted Use", "No Use"), 
                         ordered = TRUE)
+#df$Annotation <- factor(df$Annotation, levels = c("Unique Chemicals", "Reported Use", "Predicted Use"), 
+ #                       ordered = TRUE)
 df$Category <- factor(df$Category, level = prodGroups, ordered = TRUE)
 g <- ggplot(df, aes(fill = Annotation, y = Count, x = Category)) +
-  geom_bar(position = "dodge", stat = "identity") +
+  geom_bar(position = "stack", stat = "identity") +
+  #geom_bar(position = "dodge", stat = "identity") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
   theme(text = element_text(size = 13)) +
   labs(title = "Functional Use Distribution of Product Category Chemicals", 
-       x = "Product Category", y = "Chemical Count")
+       x = "Product Category", y = "Unique Chemicals")
 pdf(file = paste(myPath, "plots", "funUseAnnoAll5CatsBarPlot_withDupReps.pdf", sep = "/"), width = 8, height = 7)
   print(g)
 dev.off()
@@ -517,11 +521,12 @@ for (i in 1:length(prodGroups)){
 
 ```
 
-
 ## ClassyFire
+
 Use the treeCompareR package written by Paul Kruse to annotate my
 chemicals via the ClassyFire API and then make a series fo tree
 diagrams.
+
 ```{r classyfire}
 #devtools::install_git(url = 'https://ccte-bitbucket.epa.gov/scm/~pkruse/treecomparer.git', 
 #                       ref = "merge_kr_rcpp_kruse")
@@ -633,6 +638,7 @@ label_bars(data_list)
 # Within-product Category Similarity
 
 ## By Chemical Occurrence
+
 ```{r prodSimOccur}
 # Get curated table of group levels and brands
 prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", 
@@ -647,6 +653,7 @@ prodOnt$`Anon Brand`[indNA] <- "unknown"
 load(paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
 
 distances <- list()
+plot <- FALSE
 for (i in 1:length(prodList)){
   if (names(prodList)[i] == "Fabric Upholstery"){
     # Doesn't have sub groups for product or brand names and the curated sample names are the same as the ID
@@ -665,10 +672,12 @@ for (i in 1:length(prodList)){
     a <- Heatmap(distances[[i]], name = "Distance", col = col_fun, right_annotation = right_ha, 
                  column_names_gp = grid::gpar(fontsize = 6), show_row_names = FALSE,
                  column_title = paste(names(prodList)[i], "Products", sep = " "))
-    pdf(file = paste(myPath, "plots", paste("withinProdSimilarityHeatmap_", names(prodList)[i], 
-                                            "_anonSampBrand.pdf", sep = ""), sep = "/"))
-    print(a)
-    dev.off()
+    if (plot){
+      pdf(file = paste(myPath, "plots/singleProdCatSimilarityHeatmaps", paste("withinProdSimilarityHeatmap_", names(prodList)[i], 
+                                              "_anonSampBrand.pdf", sep = ""), sep = "/"))
+      print(a)
+      dev.off()
+    }
     
   } else {
   
@@ -699,12 +708,12 @@ for (i in 1:length(prodList)){
     }
     
     # To visualize the colors that are pulled
-    if (test){
-      plot(NULL, xlim =c(0, length(brand_col)), ylim =c(0,1), xlab = "", ylab = "", xaxt = "n", yaxt = "n")
-      rect(0:(length(brand_col)-1), 0, 1:length(brand_col), 1, col = brand_col)
-      plot(NULL, xlim =c(0, length(type_col)), ylim =c(0,1), xlab = "", ylab = "", xaxt = "n", yaxt = "n")
-      rect(0:(length(type_col)-1), 0, 1:length(type_col), 1, col = type_col)
-    }
+    #if (test){
+    #  plot(NULL, xlim =c(0, length(brand_col)), ylim =c(0,1), xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+    #  rect(0:(length(brand_col)-1), 0, 1:length(brand_col), 1, col = brand_col)
+    #  plot(NULL, xlim =c(0, length(type_col)), ylim =c(0,1), xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+    #  rect(0:(length(type_col)-1), 0, 1:length(type_col), 1, col = type_col)
+    #}
     
     column_ha <- HeatmapAnnotation(Type = temp$Group3, Brand = temp$`Anon Brand`,   
                                    col = list("Type" = type_col, "Brand" = brand_col))
@@ -720,17 +729,61 @@ for (i in 1:length(prodList)){
                  right_annotation = right_ha, 
                  column_names_gp = grid::gpar(fontsize = 9), show_row_names = FALSE,
                  column_title = paste(names(prodList)[i], "Products", sep = " "))
-    pdf(file = paste(myPath, "plots", paste("withinProdSimilarityHeatmap_", names(prodList)[i], 
-                                            "_anonSampBrand.pdf", sep = ""), sep = "/"))
-      print(a)
-    dev.off()
+    if (plot){
+      pdf(file = paste(myPath, "plots/singleProdCatSimilarityHeatmaps", paste("withinProdSimilarityHeatmap_", names(prodList)[i], 
+                                              "_anonSampBrand.pdf", sep = ""), sep = "/"))
+        print(a)
+      dev.off()
+    }
   }
 }
 
+
+# Examine within-product category sample variability
+names(distances) <- prodGroups
+simTable <- c()
+for (i in 1:length(prodGroups)){
+  # First find where our dups and reps are
+  indDups <- grep("dup", colnames(distances[[i]]))
+  indReps <- grep("rep", colnames(distances[[i]]))
+  # All samples without the diagonal
+  indTri <- upper.tri(distances[[i]])
+  avgTot <-  mean(distances[[i]][indTri])
+  sdTot <- sd(distances[[i]][indTri])
+  # Non dups and reps
+  temp <- distances[[i]][-c(indDups, indReps), -c(indDups, indReps)]
+  indTri <- upper.tri(temp)
+  avgRed <-  mean(temp[indTri])
+  sdRed <- sd(temp[indTri])
+  # Dups
+  tempDup <- c()
+  for (j in 1:length(indDups)){
+    indreg <- colnames(distances[[i]]) == gsub("_dup", "", colnames(distances[[i]])[indDups[j]])
+    tempDup <- c(tempDup, distances[[i]][indDups[j], indreg])
+  }
+  avgDup <- mean(tempDup)
+  sdDup <- sd(tempDup)
+  # Reps
+  tempRep <- c()
+  for (j in 1:length(indReps)){
+    indreg <- colnames(distances[[i]]) == gsub("_rep", "", colnames(distances[[i]])[indReps[j]])
+    tempRep <- c(tempRep, distances[[i]][indReps[j], indreg])
+  }
+  avgRep <- mean(tempRep)
+  sdRep <- sd(tempRep)
+  # Build up data frame
+  simTable <- rbind(simTable, c(avgTot, sdTot, avgRed, sdRed, length(indDups), avgDup, sdDup, length(indReps), avgRep, sdRep))
+}
+simTable <- data.frame(simTable)
+colnames(simTable) <- c("avgTot", "sdTot", "avgRed", "sdRed", "NumDups", "avgDup", "sdDup", "NumReps", "avgRep", "sdRep")
+simTable <- cbind("ProductCategory" = prodGroups, simTable)
+#write.table(simTable, file = paste(myPath, "results", "similarityMeansForSampBySampHeatmaps.txt", sep = "/"), 
+ #           quote = FALSE, sep = "\t", row.names = FALSE)
+
 ```
 
-
 ## By Chemical Concentration
+
 ```{r prodSimConc}
 # Load functional uses.  Object name is preds
 load(paste(myPath, "/results/predAndKnownFuncUse_chemsAcrossAllSamps_probs.RData", sep = ""))
@@ -845,11 +898,12 @@ for (i in 1:length(prodList)){
 
 ```
 
-
 # Simple Signature Identification
+
 This is a simple first-pass way of finding a chemical signature for each
 product type. Use the concentration matrix to get an idea of the
 fraction of mass each chemical makes up.
+
 ```{r simpleSig}
 # Load prodList
 load(paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
@@ -914,11 +968,12 @@ dev.off()
 
 ```
 
-
 ## Signatures at Different Category Levels
+
 Do for multiple different levels, not just the above 5 categories. Any
 different set of groupings can be used, so some manual input is needed
 at the start of this section
+
 ```{r levelSigs}
 load(paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 refTable <- as.data.frame(read_xlsx(paste(myPath, "data", "masterSampleTable_withLevelsAndBrands.xlsx", sep = "/")))
@@ -1000,10 +1055,11 @@ dev.off()
 
 ```
 
-
 ## Classify External Data
+
 Do a simple classification of the data from Phillips et. al. 2017 using
 the signatures in our data.
+
 ```{r simpleClassif}
 #Bring in the dashboard result for my chemicals and remove those without a dashboard entry
 myChems <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
@@ -1098,8 +1154,8 @@ classDF <- cbind("Classfication" = callCol, classDF)
 
 ```
 
-
 # Make Upset plot
+
 ```{r upset}
 # Aggregate by product
 prods <- unique(allSamps$Product)
@@ -1124,10 +1180,11 @@ dev.off()
 
 ```
 
-
 # Clustering of Chemicals by Occurrence
+
 Want to identify ubiquitous chemicals, chemicals specific to certain
 subsets of samples, and chemicals with similar signatures.
+
 ```{r clustering, echo=FALSE}
 load(file = paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 
@@ -1202,11 +1259,12 @@ dev.off()
 
 ```
 
-
 # Build Model to Predict Product Type
+
 Want to build a sparse machine learning model based on chemical
 occurrence. Use all samples with all chemicals to predict the product
 type and identify the most influential chemicals for each class.
+
 ```{r sparsemodel}
 load(paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 
