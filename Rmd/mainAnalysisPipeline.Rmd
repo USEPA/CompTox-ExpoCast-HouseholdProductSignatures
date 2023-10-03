@@ -780,7 +780,37 @@ simTable <- cbind("ProductCategory" = prodGroups, simTable)
 #write.table(simTable, file = paste(myPath, "results", "similarityMeansForSampBySampHeatmaps.txt", sep = "/"), 
  #           quote = FALSE, sep = "\t", row.names = FALSE)
 
+
+# Get a binary vector for each product category
+prodCatVects <- c()
+for (i in 1:length(prodGroups)){
+  temp <- unlist(apply(prodList[[i]]$binary, 1, max))
+  prodCatVects <- rbind(prodCatVects, temp)
+}
+row.names(prodCatVects) <- prodGroups
+# Get the distances
+catDistances <- as.matrix(dist(prodCatVects, method = "binary"))
+# Fill in the diagonal
+diag(catDistances) <- simTable$avgTot
+
+# Make the plot
+# Set colors and range
+col_fun <- colorRamp2(c(0.4, 0.7, 1), c("blue", "white", "red"))
+
+a <- Heatmap(catDistances, name = "Distance", col = col_fun, 
+             rect_gp = gpar(col = "white", lwd = 2),
+             cell_fun = function(j, i, x, y, width, height, fill){
+               grid.text(sprintf("%.3f", catDistances[i, j]), x, y, gp = gpar(fontsize = 10))
+             },
+             column_names_gp = grid::gpar(fontsize = 11), show_row_names = FALSE,
+             column_title = "Product Category Similarity by Chemical Occurrence")
+
+pdf(file = paste(myPath, "plots", "allProdCatSimilarityHeatmap_1vect.pdf", sep = "/"))
+  print(a)
+dev.off()
+
 ```
+
 
 ## By Chemical Concentration
 
@@ -906,6 +936,7 @@ for (i in 1:length(prodList)){
 
 ```
 
+
 # Simple Signature Identification
 
 This is a simple first-pass way of finding a chemical signature for each
@@ -975,6 +1006,7 @@ dev.off()
 #write.table(df, file = paste(myPath, "results", "Figure_#_data.txt", sep = "/"), sep = "\t", row.names = FALSE)
 
 ```
+
 
 ## Signatures at Different Category Levels
 
@@ -1063,12 +1095,16 @@ dev.off()
 
 ```
 
+
 ## Classify External Data
 
 Do a simple classification of the data from Phillips et. al. 2017 using
 the signatures in our data.
 
 ```{r simpleClassif}
+# Load my data's signatures
+load(file = paste(myPath, "results", "prodCatSignatures_gte0.8sampOccurrence_all.RData", sep = "/"))
+
 #Bring in the dashboard result for my chemicals and remove those without a dashboard entry
 myChems <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 myChems <- myChems[,1:5]
@@ -1160,7 +1196,64 @@ for (i in 1:dim(classDF)[1]){
 }
 classDF <- cbind("Classfication" = callCol, classDF)
 
+
+# Get simple signatures for this external data
+extDF <- t(extDF)
+catNames <- substr(colnames(extDF), 1, nchar(colnames(extDF))-2)
+extCats <- unique(catNames)
+extSignatures <- vector(mode = "list", length = length(extCats))
+for (i in 1:length(extCats)){
+  indCat <- catNames == extCats[i]
+  rowcounts <- unlist(apply(extDF[,indCat], 1, function(x) sum(x > 0))) 
+  prevChems <- which(rowcounts/dim(extDF[,indCat])[2] >= 0.8)
+  extSignatures[[i]] <- extDF[prevChems,indCat]
+  # Some entries are NaN.  Change to NA.
+  extSignatures[[i]][is.nan(extSignatures[[i]])] <- NA
+  extSignatures[[i]] <- cbind(extSignatures[[i]], "Mean" = apply(extSignatures[[i]], 1, function(x) mean(x, na.rm = TRUE)))
+}
+names(extSignatures) <- extCats
+# Save this object for comparison with external data
+save(extSignatures, file = paste(myPath, "results", "prodCatSignatures_Phillips2018_gte0.8sampOccurrence_all.RData", sep = "/"))
+
+
+# Look at signature overlap
+# Use the CAS column in sigList to check against the row names in extSignatures
+ssdf <- as.data.frame(matrix(data = NA, nrow = 5, ncol = 20, dimnames = list(prodGroups, extCats)))
+for (i in 1:length(prodGroups)){
+  for (j in 1:length(extCats)){
+    ssdf[i,j] <- length(intersect(sigList[[i]][,4], row.names(extSignatures[[j]])))
+  }
+}
+ssdf <- t(ssdf)
+
+# Build annotation for the signanture size of both our data and the external data
+right_ha <- rowAnnotation("Signature Size" = anno_barplot(unlist(lapply(extSignatures, 
+                                                                       function(x) dim(x)[1]))),
+                                                                       annotation_name_rot = 90)
+
+column_ha <- HeatmapAnnotation("Signature Size" = anno_barplot(unlist(lapply(sigList, 
+                                                                       function(x) dim(x)[1]))))
+
+# Set colors and range
+col_fun <- colorRamp2(c(0, max(ssdf)/2, max(ssdf)), c("blue", "white", "red"))
+
+a <- Heatmap(ssdf, name = "Shared Chemicals", col = col_fun, right_annotation = right_ha,
+             top_annotation = column_ha, rect_gp = gpar(col = "white", lwd = 2),
+             cell_fun = function(j, i, x, y, width, height, fill){
+               grid.text(sprintf("%i", ssdf[i, j]), x, y, gp = gpar(fontsize = 10))},
+             column_names_gp = grid::gpar(fontsize = 10), show_row_names = TRUE,
+             column_title = "Product Categories: This Study",
+             row_names_side = "right", row_names_gp = grid::gpar(fontsize = 10),
+             column_title_side = "bottom", row_title = "Product Categories: Phillips et al 2018",
+             row_title_side = "right")
+pdf(file = paste(myPath, "plots", "prodCatSignatureOverlap_Phillips2018_Heatmap.pdf", sep = "/"))
+  print(a)
+dev.off()
+
+
+
 ```
+
 
 # Make Upset plot
 
