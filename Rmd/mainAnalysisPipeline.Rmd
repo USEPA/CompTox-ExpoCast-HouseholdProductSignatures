@@ -51,11 +51,11 @@ library(circlize)
 library(proxy)
 library(stringr)
 myPath <- "/ccte/home1/zstanfie/HouseholdProdNTA"
+prodGroups <- c("Cotton Clothing", "Shampoo", "Baby Soap", "Fabric Upholstery", "Silicone Kitchen Tools")
 myFiles <- c("Sequence1 Clothing.xlsx", "Sequence1 Personal Care Products.xlsx", "Sequence2 Kitchen.xlsx",
                 "Sequence2 Shampoo.xlsx", "Sequence3 Fabric.xlsx")
 data_files <- paste(myPath, "raw_data", myFiles, sep = "/")
 upc_file <- "EPA task 10 items_26Feb18.xlsx"
-prodGroups <- c("Cotton Clothing", "Shampoo", "Baby Soap", "Fabric Upholstery", "Silicone Kitchen Tools")
 ```
 
 # Process the Raw Data
@@ -1250,9 +1250,132 @@ pdf(file = paste(myPath, "plots", "prodCatSignatureOverlap_Phillips2018_Heatmap.
   print(a)
 dev.off()
 
+```
+
+
+## Compare with ChemExpo
+To add more context to our results and signatures, bring in reported chemical
+ingredient data using the EPA's ChemExpo Database, which has product composition
+data, product use categories, and chemical weight fractions.
+
+```{r ChemExpo}
+# Read in file containing data for UPCs in our study that were also in ChemExpo
+matchedData <- as.data.frame(read_xlsx(path = paste(myPath, "data",
+                                                    "cpdat_upcs_matching_nta_zstanfield.xlsx", sep = "/")))
+# How many products and chemicals per product?
+as.data.frame(table(matchedData$upc))
+# What categories do they belong to?
+as.data.frame(table(matchedData$gen_cat))
+as.data.frame(table(matchedData$prod_fam))
+as.data.frame(table(matchedData$prod_type))
+
+# Decide grouping and get signatures
+# My baby soap samples are where the prod_fam column == body hygiene and child specific
+# My shampoo samples are where the prod_fam column == hair styling and care
+numprodtypes <- list(c("child specific", "body hygiene"), "hair styling and care")
+prodCounts <- vector(mode = "list", length = length(numprodtypes))
+for (i in 1:length(numprodtypes)){
+  temp <- matchedData[matchedData$prod_fam %in% numprodtypes[[i]],]
+  prodCounts[[i]] <- as.data.frame(table(temp$true_cas))
+}
+
+# Use my simple signatures: run the start of the classify external data section
+# to get sigList
+# Just look to see if any of the signature chemicals were reported in one of these products
+names(sigList) <- prodGroups
+# Baby Soap
+BSoverlap <- row.names(sigList$`Baby Soap`)[sigList$`Baby Soap`$CAS %in% prodCounts[[1]]$Var1]
+# Shampoo
+SHoverlap <- row.names(sigList$Shampoo)[sigList$Shampoo$CAS %in% prodCounts[[2]]$Var1]
+
+
+# For the categories we didn't have matches for, use the bulk download composition data from ChemExpo
+# This is a very large file:  3,387,287 rows and 26 columns
+chemExpo <- read.csv(file = "/ccte/home1/zstanfie/ChemExpo_bulk_composition_chemicals.csv",
+                     header = TRUE)
+prodchemDist <- as.data.frame(table(chemExpo$Product.Name))
+summary(prodchemDist$Freq)
+pucKindDist <- as.data.frame(table(chemExpo$PUC.Kind))
+pucGenCatDist <- as.data.frame(table(chemExpo$PUC.General.Category))
+pucProdFamDist <- as.data.frame(table(chemExpo$PUC.Product.Family))
+pucProdTypeDist <- as.data.frame(table(chemExpo$PUC.Product.Type))
+sum(pucProdFamDist$Freq > 5000)
+
+# For each of our signatures, look to see how many of the chemicals occur in 
+# the most well-represented product families in ChemExpo
+pucProdFamDist <- pucProdFamDist[-1,]
+prevFams <- as.character(pucProdFamDist$Var1[pucProdFamDist$Freq >= 5000])
+appearInPrevFams <- as.data.frame(matrix(data = NA, nrow = length(prevFams), ncol = length(sigList), 
+                                         dimnames  = list(prevFams, names(sigList))))
+prevFamChems <- c()
+for (i in 1:length(prevFams)){
+  indFam <- chemExpo$PUC.Product.Family == prevFams[i]
+  famChems <- unique(chemExpo$Curated.CAS[indFam])
+  prevFamChems <- c(prevFamChems, length(famChems))
+  appearInPrevFams[i,] <- lapply(sigList, function(x) length(intersect(x[,4], famChems)))
+}
+
+# Just see how many signature chemicals are reported in any product in ChemExpo
+uniqueCEchems <- unique(chemExpo$Curated.CAS)
+appearInChemExpo <- lapply(sigList, function(x) length(intersect(x[,4], uniqueCEchems)))
+
+
+### Pull the ORAL RAT LD50 TEST estimates for our signature chemicals
+# Bring in the dashboard result for my chemicals and remove those without a dashboard entry
+myChems <- as.data.frame(read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", 
+                                         sep = "/"), sheet = 2))
+indTox <- which(colnames(myChems) == "ORAL_RAT_LD50_MOL/KG_TEST_PRED")
+myChems <- myChems[,c(1:5,indTox)]
+# Drop chemicals that didn't have a match
+todrop <- c("Searched by Synonym: Found 0 results", 
+            "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
+            "Synonym - WARNING: Synonym mapped to two or more chemicals")
+myChems <- myChems[!myChems$FOUND_BY %in% todrop,]
+
+for (i in 1:length(sigList)){
+  indDash <- match(row.names(sigList[[i]]), myChems$INPUT)
+  sigList[[i]] <- cbind(sigList[[i]], "InChemExpo" = sigList[[i]][,4] %in% uniqueCEchems,
+                        "ORAL_RAT_LD50_MOL/KG" = myChems$`ORAL_RAT_LD50_MOL/KG_TEST_PRED`[indDash])
+}
+
+# Make a plot
+df <- c()
+for (i in 1:length(sigList)){
+  df <- rbind(df, cbind(rep(names(sigList)[[i]], dim(sigList[[i]])[1]), sigList[[i]]$CAS, row.names(sigList[[i]]),
+                            sigList[[i]]$InChemExpo, sigList[[i]]$`ORAL_RAT_LD50_MOL/KG`, sigList[[i]]$Mean))
+  
+}
+colnames(df) <- c("ProductType", "CAS", "ChemicalName", "ReportedInChemExpo", "OralRatLD50molperkg", "Mean")
+df <- as.data.frame(df)
+
+df$ProductType <- factor(df$ProductType, levels = prodGroups[c(1,4,5,2,3)], ordered = TRUE)
+df$OralRatLD50molperkg <- as.numeric(df$OralRatLD50molperkg)
+df$Mean <- as.numeric(df$Mean)
+g <- ggplot(df, aes(x = reorder_within(ChemicalName, -Mean, ProductType), 
+                           y = OralRatLD50molperkg, fill = ReportedInChemExpo)) +
+  geom_bar(stat = "identity", width = 0.8) +
+  scale_x_reordered() +
+  scale_fill_manual(values = c("darkblue", "darkgreen")) +
+  facet_grid(~ProductType, scales = "free_x", space = "free",
+             labeller = labeller(ProductType = label_wrap_gen(5))) +
+  theme_bw() +
+  guides(fill = guide_legend(title = "Reported in ChemExpo")) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  ylab("Predicted Oral Rat LD50 (mol/kg)") +
+  #ggtitle("Chemical Signatures of Product Categories") +
+  theme(axis.title.x = element_blank()) +
+  theme(text =element_text(size = 13)) +
+  theme(legend.text = element_text(size = 10))
+pdf(file = paste(myPath, "plots", "prodCatSignatures_withChemExpoAndLD50.pdf", sep = "/"), width = 12, height = 7)
+  print(g)
+dev.off()
+
+
+
 
 
 ```
+
 
 
 # Make Upset plot
