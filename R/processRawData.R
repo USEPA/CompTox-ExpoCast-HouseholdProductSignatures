@@ -11,15 +11,21 @@
 #' @examples
 processNTAfiles <- function(data_files, myPath){
   
+  ### Want to save using just the name of the product category.  All data files are in
+  ### the form path/to/directory/Sequence# prod cat.xlsx. Some categories have spaces.
+  ### To do this regardless of the directory path, do this in multiple steps.
+  # Get just the file name
+  save_names <- sub('.*\\/', '', data_files)
+  # Now drop sequence#
+  save_names <- substring(save_names, 11)
+  # Drop the ".xlsx" at the end
+  save_names <- gsub(".xlsx", "", save_names)
+  
   # Each NTA result is in an Excel workbook.  Each workbook has a sheet called
   # List of Samples that describes all samples that make up the other sheets in
   # the workbook.  Work with this sheet to populate a list of sample results.
   
-  save_names <- substring(data_files, 58)
-  save_names <- gsub(".xlsx", "", save_names)
-  
   allData <- list()
-  
   for (i in 1:length(data_files)){
     
     metadata <- read_xlsx(data_files[i], sheet = "List of Samples")
@@ -40,7 +46,7 @@ processNTAfiles <- function(data_files, myPath){
                   paste(sheets[2], "_R2", sep = ""), sheets[-c(1,2)])
     } else {
       temp <- metadata[, colnames(metadata) %in% c("System ID", "Type", "Dilution Factor (A)", "Dilution Factor (B)")]
-      temp <- melt(temp, id.vars = c("System ID", "Type"))
+      temp <- reshape2::melt(temp, id.vars = c("System ID", "Type"))
       temp <- temp[!temp$value == "--",]
       temp$Type[is.na(temp$Type)] <- ""
       temp$Type[temp$Type == "Duplicate"] <- "DUP"
@@ -64,6 +70,9 @@ processNTAfiles <- function(data_files, myPath){
   }
   names(allData) <- save_names
   
+  # allData is a list (1 for each product category) of lists (1 object for each sheet in the 
+  # raw Excel file, which include the detected peaks in each sample and a master table for 
+  # each category, which is the first object).
   
   # Make a master list of the List of Samples
   allSamps <- c()
@@ -86,10 +95,36 @@ processNTAfiles <- function(data_files, myPath){
   # Now add the full sample names as a column (e.g. B29896_SB_20)
   #allSamps <- cbind("SampName" = NA, allSamps)
   #for (i in 1:save_names){
-    
   #}
   # Save this result for future reference
   #save(allSamps, file = paste(myPath, "data", "masterSampleList.RData", sep = "/"))
+  
+  # Change the names to match final results and more comprehensive product category names
+  # Will need to change this when using any other NTA dataset
+  #allSamps$Product[allSamps$Product == "Clothing"] <- "Cotton Clothing"
+  #allSamps$Product[allSamps$Product == "Personal Care Products"] <- "Baby Soap"
+  #allSamps$Product[allSamps$Product == "Kitchen"] <- "Silicone Kitchen Tools"
+  #allSamps$Product[allSamps$Product == "Shampoo"] <- "Shampoo"
+  #allSamps$Product[allSamps$Product == "Fabric"] <- "Fabric Upholstery"
+  #write.table(allSamps, file = paste(myPath, "data", "peakSummaryTableAcrossAllSamples.txt", sep= "/"), 
+  #            sep = "\t", row.names = FALSE)
+  
+  
+  # Save another table for the manuscript supplement. Concatenate all raw output files for
+  # each sample (contained in allData) to have a complete list of all identified chemicals
+  # across all samples in the study.
+  fullSampChemInfo <- c()
+  for (i in 1:length(allData)){
+    for (j in 2:length(allData[[i]])){
+      temp <- allData[[i]][[j]][,2:25]
+      #dil <- strsplit(names(allData[[i]]), "_(?!.*_)", perl = TRUE)[[j]][2]
+      temp <- cbind(rep(prodGroups[i], dim(temp)[1]), temp)
+      fullSampChemInfo <- rbind(fullSampChemInfo, temp)
+    }
+  }
+  # Change some column names
+  colnames(fullSampChemInfo)[1:3] <- c("Category", "MySysID", "Customer ID")
+  save(fullSampChemInfo, file = paste(myPath, "data", "fullSetOfSamplesWithAllChems.RData", sep = "/"))
   
   
   # Further process the data to build chemical x sample matrices
