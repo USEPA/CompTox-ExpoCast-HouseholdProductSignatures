@@ -53,8 +53,8 @@ library(proxy)
 library(stringr)
 library(colorRamp2)
 library(rcartocolor)
-#myPath <- "/ccte/home1/zstanfie/HouseholdProdNTA"
-myPath <- "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/HouseholdProdNTA"
+#myPath <- "/ccte/home1/zstanfie/HouseholdProdSSA"
+myPath <- "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsSSA/HouseholdProdSSA"
 prodGroups <- c("Cotton Clothing", "Shampoo", "Baby Soap", "Fabric Upholstery", "Silicone Kitchen Tools")
 myFiles <- c("Sequence1 Clothing.xlsx", "Sequence2 Shampoo.xlsx", "Sequence1 Personal Care Products.xlsx",
              "Sequence3 Fabric.xlsx", "Sequence2 Kitchen.xlsx")
@@ -114,7 +114,7 @@ length(unique(fullSampChemInfo$Name[indOther]))
 length(unique(fullSampChemInfo$Spectrum[indXC | indXT | indOther]))
 
 # Add chemical identifiers where available (batch search EPA CompTox Dashboard by chemical name)
-tps <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
+tps <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 ind <- match(fullSampChemInfo$Name, tps$INPUT)
 temp <- tps[ind, colnames(tps) %in% c("DTXSID", "PREFERRED_NAME", "CASRN")]
 colnames(fullSampChemInfo)[7:9] <- paste("Raw_", colnames(fullSampChemInfo)[7:9], sep = "")
@@ -140,7 +140,7 @@ write.table(xcxtChemsWithoutCCDmatch, file = paste(myPath, "data", "xcxtChemsWit
 #-------------------------------------------------------------------------------
 
 # Now add chemical identifiers of those chemicals for which a dashboard match wasn't found (curated by Tony Williams)
-curated <- read_xlsx("C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/xcxtChemsWithoutCCDmatch_TonyCurated.xlsx")
+curated <- read_xlsx("C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsSSA/xcxtChemsWithoutCCDmatch_TonyCurated.xlsx")
 # Chemicals with a value of "Approved Name", "CAS-RN", or "Expert Validated Synonym" in the FOUND_BY column were linked to existing dashboard entries
 # So remove rows not fitting this criteria
 curated <- curated[curated$FOUND_BY %in% c("Approved Name", "CAS-RN", "Expert Validated Synonym"),]
@@ -401,7 +401,7 @@ load(file = paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData"
 
 # Read in dashboard query file that has the toxprints and process.  Input for function 
 # is a tab-separated file with ID and the toxprints
-tps <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
+tps <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 #colnames(tps)[1:50]
 tps <- tps[,c(1:7,38:dim(tps)[2])]
 # Check for rows that didn't match. Can't get predicted uses without a proper ID.
@@ -760,26 +760,26 @@ devtools::install_git(url = 'https://bitbucket.epa.gov/scm/~pkruse/treecomparer.
                        ref = "merge_kr_rcpp_kruse", git = "external")
 
 # Read in my dashboard file
-HPnta <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
+HPssa <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 # Check for rows that didn't have a match
-as.data.frame(table(HPnta$FOUND_BY))
+as.data.frame(table(HPssa$FOUND_BY))
 todrop <- c("Searched by Synonym: Found 0 results", 
             "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
             "Synonym - WARNING: Synonym mapped to two or more chemicals")
-curatedHPnta <- HPnta[!HPnta$FOUND_BY %in% todrop,]
-colnames(curatedHPnta)[1:20]
-curatedHPnta <- curatedHPnta[,c(3:7)]
+curatedHPssa <- HPssa[!HPssa$FOUND_BY %in% todrop,]
+colnames(curatedHPssa)[1:20]
+curatedHPssa <- curatedHPssa[,c(3:7)]
 
 
 ###############################
 # Using ClassyFire batch search
-CFresult <- read.csv(file = "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/houseProdNTA_chems_ClassyFire_batchquery_2023-12-07.csv")
+CFresult <- read.csv(file = "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsSSA/houseProdSSA_chems_ClassyFire_batchquery_2023-12-07.csv")
 # Remove any chemicals that couldn't be classified
 CFresult <- CFresult[!CFresult$ClassyFy.Status == "Failed",]
-# Match with curatedHPnta object to add chemical name, DTXSID, and CAS
-ind <- match(CFresult$InChIKey, curatedHPnta$INCHIKEY)
-CFresult <- cbind("DTXSID" = curatedHPnta$DTXSID[ind], "PREFERRED_NAME" = curatedHPnta$PREFERRED_NAME[ind], 
-                  "CASRN" = curatedHPnta$CASRN[ind], CFresult)
+# Match with curatedHPssa object to add chemical name, DTXSID, and CAS
+ind <- match(CFresult$InChIKey, curatedHPssa$INCHIKEY)
+CFresult <- cbind("DTXSID" = curatedHPssa$DTXSID[ind], "PREFERRED_NAME" = curatedHPssa$PREFERRED_NAME[ind], 
+                  "CASRN" = curatedHPssa$CASRN[ind], CFresult)
 CFresult$ClassyFy.Status <- NULL
 # Save object for manuscript supplemental data
 write.table(CFresult, file = paste(myPath, "results", "ClassyFireAnnotation_allChems_batchAPI.txt", sep = "/"), 
@@ -788,8 +788,8 @@ write.table(CFresult, file = paste(myPath, "results", "ClassyFireAnnotation_allC
 
 
 # Classify my chemicals
-curatedHPnta <- data.table(curatedHPnta)
-myClassified <- classify_inchikeys(curatedHPnta$INCHIKEY, tax_level_labels = chemont_tax_levels, wait_min = 0.5)
+curatedHPssa<- data.table(curatedHPssa)
+myClassified <- classify_inchikeys(curatedHPssa$INCHIKEY, tax_level_labels = chemont_tax_levels, wait_min = 0.5)
 # Run again for chemicals that didn't work from this first step
 #myClassified <- classify_by_smiles(myClassified)
 
@@ -822,12 +822,12 @@ myData <- myData[,c(1:9,11,10)]
 myData <- cbind(myData, "level9" = NA, "level10" = NA, "level11" = NA)
 
 # add Chemical names and product type to this data
-ind <- match(myData$identifier, HPnta$INCHIKEY)
-myData <- cbind("Chemical" = HPnta$INPUT[ind], myData)
+ind <- match(myData$identifier, HPssa$INCHIKEY)
+myData <- cbind("Chemical" = HPssa$INPUT[ind], myData)
 
-# Look at how our NTA chemicals span the full ontology
+# Look at how our SSA chemicals span the full ontology
 pdf(file = paste(myPath, "plots", "chemsInFullTree_AllChems.pdf", sep = "/"))
-display_subtree(data_1 = myData, name_1 = 'HouseProdNTA')
+display_subtree(data_1 = myData, name_1 = 'HouseProdSSA')
 dev.off()
 
 # Visualize the tree spanned by just our chemicals
@@ -1381,7 +1381,7 @@ data, EPA's QC level, activity in ToxCast assays, and predicted oral rat LD50s.
 ```{r annotateSigChems}
 ### Pull the ORAL RAT LD50 TEST estimates for the signature chemicals
 # Bring in the dashboard result for the chemicals and remove those without a dashboard entry
-myChems <- as.data.frame(read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", 
+myChems <- as.data.frame(read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", 
                                          sep = "/"), sheet = 2))
 indTox <- which(colnames(myChems) %in% c("ORAL_RAT_LD50_MOL/KG_TEST_PRED",
                                        "BIODEGRADATION_HALF_LIFE_DAYS_DAYS_OPERA_PRED",
@@ -1404,7 +1404,7 @@ sigChemsAll <- sigChemsAll[,c(2,8:10,3:7,11:14)]
 # Add data from EPA's Comptox Chemicals Dashboard
 # Create a file of unique DTXSIDs to write a file and then use that file in the CCD batch search
 sigCCD <- unique(sigChemsAll$DTXSID)
-#write.csv(sigCCD, file = "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/signatureChemDTXSIDs_2023-11-08.txt",
+#write.csv(sigCCD, file = "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsSSA/signatureChemDTXSIDs_2023-11-08.txt",
 #          quote = FALSE, row.names = FALSE, col.names = FALSE)
 # Read in file
 CCDmetadata <- read_xlsx(path = paste(myPath, "data", "signaturechems_CurationMetaData_CCD.xlsx", sep = "/"), 
@@ -1469,7 +1469,7 @@ for (i in 1:length(prodGroups)){
 }
 
 # Check overlap with TSCA Active list
-tsca <- read_xlsx(path = "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/ChemList_TSCA_ACTIVE_NCTI_0222-2024-03-19.xlsx")
+tsca <- read_xlsx(path = "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsSSA/ChemList_TSCA_ACTIVE_NCTI_0222-2024-03-19.xlsx")
 
 # Check to make sure all chemicals are unique
 length(unique(tsca$DTXSID))
@@ -1478,7 +1478,7 @@ length(unique(tsca$DTXSID))
 sigind <- which(sigchems_unique$DTXSID %in% tsca$DTXSID)
 sigchems_unique$Chemical[-sigind]
 
-myChems <- as.data.frame(read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", 
+myChems <- as.data.frame(read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", 
                                          sep = "/"), sheet = 2))
 myChems <- myChems[!is.na(myChems$DTXSID),]
 myChems <- myChems[!duplicated(myChems$DTXSID),]
@@ -1588,7 +1588,7 @@ the signatures in our data.
 load(file = paste(myPath, "results", "prodCatSignatures_gte0.8sampOccurrence_all.RData", sep = "/"))
 
 #Bring in the dashboard result for my chemicals and remove those without a dashboard entry
-myChems <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
+myChems <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 myChems <- myChems[,1:5]
 # Drop chemicals that didn't have a match
 todrop <- c("Searched by Synonym: Found 0 results", 
@@ -1867,7 +1867,7 @@ type and identify the most influential chemicals for each class.
 load(paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 
 # Bring in the dashboard result for my chemicals and remove those without a dashboard entry
-myChems <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
+myChems <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 myChems <- myChems[,1:5]
 # Drop chemicals that didn't have a match
 todrop <- c("Searched by Synonym: Found 0 results", 
