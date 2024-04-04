@@ -1,27 +1,22 @@
 
 
-#' processNTAfiles
+#' processSSAfiles
 #'
 #' @param data_files Character vector of the raw data files complete with the path
 #' @param myPath Path to the directory in which you want to save files, plots, etc.
+#' @param prodGroups Full, easily discernible product category names to be used in
+#'                   downstream analyses/plotting/etc.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-processNTAfiles <- function(data_files, myPath){
+processSSAfiles <- function(data_files, myPath, prodGroups){
   
-  ### Want to save using just the name of the product category.  All data files are in
-  ### the form path/to/directory/Sequence# prod cat.xlsx. Some categories have spaces.
-  ### To do this regardless of the directory path, do this in multiple steps.
-  # Get just the file name
-  save_names <- sub('.*\\/', '', data_files)
-  # Now drop sequence#
-  save_names <- substring(save_names, 11)
-  # Drop the ".xlsx" at the end
-  save_names <- gsub(".xlsx", "", save_names)
+  # All data files are in the form path/to/directory/Sequence# prod cat.xlsx.
+  # Use the curated prodGroups object to save files and populate data objects.
   
-  # Each NTA result is in an Excel workbook.  Each workbook has a sheet called
+  # Each SSA result is in an Excel workbook.  Each workbook has a sheet called
   # List of Samples that describes all samples that make up the other sheets in
   # the workbook.  Work with this sheet to populate a list of sample results.
   
@@ -33,7 +28,7 @@ processNTAfiles <- function(data_files, myPath){
     # The System ID column gives the name of the sample, Type identifies blanks and 
     # duplicates, and the 2 dilution factor columns tell the dilution value.  All
     # of these make up the sheet names.
-    if (save_names[i] == "Shampoo"){
+    if (prodGroups[i] == "Shampoo"){
       # Has only 1 dilution factor but there are 2 samples for the blanks
       temp <- metadata[, colnames(metadata) %in% c("System ID", "Type", "Dilution Factor")]
       colnames(temp)[3] <- "value"
@@ -64,11 +59,11 @@ processNTAfiles <- function(data_files, myPath){
     names(data) <- c("List_of_Samples", sheets)
     
     # Save data in this minimally processed form
-    #save(data, file = paste(myPath, "data", paste(save_names[i], ".RData", sep = ""), sep = "/"))
+    #save(data, file = paste(myPath, "data", paste(prodGroups[i], ".RData", sep = ""), sep = "/"))
     
     allData[[i]] <- data
   }
-  names(allData) <- save_names
+  names(allData) <- prodGroups
   
   # allData is a list (1 for each product category) of lists (1 object for each sheet in the 
   # raw Excel file, which include the detected peaks in each sample and a master table for 
@@ -78,36 +73,22 @@ processNTAfiles <- function(data_files, myPath){
   allSamps <- c()
   for (i in 1:length(allData)){
     if (length(allSamps) == 0){
-      allSamps <- cbind("Product" = save_names[i], allData[[i]][[1]])
+      allSamps <- cbind("Product" = prodGroups[i], allData[[i]][[1]])
     } else {
-      if (save_names[i] == "Shampoo"){
+      if (prodGroups[i] == "Shampoo"){
         # Only has 1 dilution factor, so I need to alter this one a bit to be able to 
         # concatenate it with the rest of the product tables
         temp <- allData[[i]][[1]]
         temp2 <- cbind(temp[,1:7], "Dilution Factor (B)" = NA, temp[,8], "Reported Peaks (B)" = NA, temp[,8])
         colnames(temp2)[c(7,9,11)] <- c("Dilution Factor (A)", "Reported Peaks (A)", "Total Reported Peaks (A+B)")
-        allSamps <- rbind(allSamps, cbind("Product" = save_names[i], temp2))
+        allSamps <- rbind(allSamps, cbind("Product" = prodGroups[i], temp2))
       } else {
-        allSamps <- rbind(allSamps, cbind("Product" = save_names[i], allData[[i]][[1]]))
+        allSamps <- rbind(allSamps, cbind("Product" = prodGroups[i], allData[[i]][[1]]))
       }
     }
   }
-  # Now add the full sample names as a column (e.g. B29896_SB_20)
-  #allSamps <- cbind("SampName" = NA, allSamps)
-  #for (i in 1:save_names){
-  #}
   # Save this result for future reference
   #save(allSamps, file = paste(myPath, "data", "masterSampleList.RData", sep = "/"))
-  
-  # Change the names to match final results and more comprehensive product category names
-  # Will need to change this when using any other NTA dataset
-  #allSamps$Product[allSamps$Product == "Clothing"] <- "Cotton Clothing"
-  #allSamps$Product[allSamps$Product == "Personal Care Products"] <- "Baby Soap"
-  #allSamps$Product[allSamps$Product == "Kitchen"] <- "Silicone Kitchen Tools"
-  #allSamps$Product[allSamps$Product == "Shampoo"] <- "Shampoo"
-  #allSamps$Product[allSamps$Product == "Fabric"] <- "Fabric Upholstery"
-  #write.table(allSamps, file = paste(myPath, "data", "peakSummaryTableAcrossAllSamples.txt", sep= "/"), 
-  #            sep = "\t", row.names = FALSE)
   
   
   # Save another table for the manuscript supplement. Concatenate all raw output files for
@@ -127,35 +108,26 @@ processNTAfiles <- function(data_files, myPath){
   save(fullSampChemInfo, file = paste(myPath, "data", "fullSetOfSamplesWithAllChems.RData", sep = "/"))
   
   
-  # Further process the data to build chemical x sample matrices
-  # Want one that is a binary occurrence matrix for chemicals and the other
-  # to give the sample concentrations.
-  chemList <- c()
-  for (i in 1:length(allData)){
-    for (j in 2:length(allData[[i]])){  # 2 b/c 1 is always the list of samples table
-      allData[[i]][[j]] <- allData[[i]][[j]][!allData[[i]][[j]]$Group %in% c("is", "s", "ns", "xt;ui", "xu"),]
-      if (length(chemList) == 0){
-        chemList <- allData[[i]][[j]][,c("Name", "CAS", "Formula", "Group")]
-      } else {
-        chemList <- rbind(chemList, allData[[i]][[j]][,c("Name", "CAS", "Formula", "Group")])
-      }
-    }
-  }
-  
+  ## Further process the data to build chemical x sample matrices
+  ## Want one that is a binary occurrence matrix for chemicals, one for the group codes,
+  ## and one to give the sample concentrations.
+  ## Do for in 2 sets.  1. xc and xt chemicals and 2. ns, xt;ui, and xu chemicals
+  #-----------------------------------------------------------------------------
+  # Set 1 (chemicals we will carry out our analysis pipeline on)
+  ind <- fullSampChemInfo$Group %in% c("xc", "xt")
+  chemList <- fullSampChemInfo[ind, c("Name", "CAS", "Formula", "Group")]
   # Remove duplicated chemicals
   chemList <- chemList[!duplicated(chemList$Name),]
-  chemList <- as.data.frame(chemList)
   # Save this set for querying the dashboard
   #write.table(chemList, file = paste(myPath, "data", "uniqueChems_xc_and_xt_all_samples.txt", sep = "/"), quote = FALSE,
    #           sep = "\t", na = "NA", row.names = FALSE)
   
-  
   # Now build 3 data frames in the form of chemicals x samples
-  # One will be binary (was chemical measured in sample), one will contain the sample concentration,
-  # and one will contain the group code for each chemical
   sampNames <- c()
-  for (i in 1:length(save_names)){
+  sampCats <- c()
+  for (i in 1:length(prodGroups)){
     sampNames <- c(sampNames, names(allData[[i]])[-1])
+    sampCats <- c(sampCats, rep(prodGroups[i], length(allData[[i]][-1])))
   }
   chemXsamp_binary <- as.data.frame(matrix(data = NA, nrow = length(chemList$Name), ncol = length(sampNames),
                                           dimnames = list(chemList$Name, sampNames)))
@@ -173,9 +145,46 @@ processNTAfiles <- function(data_files, myPath){
     }
   }
   # Save them
-  #save(chemXsamp_binary, file = paste(myPath, "data", "chemXsamp_binary_full.RData", sep = "/"))
-  #save(chemXsamp_group, file = paste(myPath, "data", "chemXsamp_group_full.RData", sep = "/"))
-  #save(chemXsamp_conc, file = paste(myPath, "data", "chemXsamp_conc_full.RData", sep = "/"))
+  chemXsamp_matrices_xcxt <- list("binary" = chemXsamp_binary, "group" = chemXsamp_group,
+                                  "conc" = chemXsamp_conc, "category" = sampCats)
+  #save(chemXsamp_matrices_xcxt, file = paste(myPath, "data", "chemXsamp_matrices_xcxt_full.RData", sep = "/"))
+
+  #-----------------------------------------------------------------------------
+  # Set 2 (chemicals we will check for prevalence as prioritization)
+  ind <- fullSampChemInfo$Group %in% c("ns", "xt;ui", "xt;ui;PCB", "xu")
+  chemList <- fullSampChemInfo[ind, c("Name", "CAS", "Formula", "Group")]
+  # Remove duplicated chemicals
+  chemList <- chemList[!duplicated(chemList$Name),]
+  # Save this set for querying the dashboard
+  #write.table(chemList, file = paste(myPath, "data", "uniqueChems_ns-xtui-xtuiPCB-xu_all_samples.txt", sep = "/"), quote = FALSE,
+    #         sep = "\t", na = "NA", row.names = FALSE)
+  
+  # Now build 3 data frames in the form of chemicals x samples
+  sampNames <- c()
+  sampCats <- c()
+  for (i in 1:length(prodGroups)){
+    sampNames <- c(sampNames, names(allData[[i]])[-1])
+    sampCats <- c(sampCats, rep(prodGroups[i], length(allData[[i]][-1])))
+  }
+  chemXsamp_binary <- as.data.frame(matrix(data = NA, nrow = length(chemList$Name), ncol = length(sampNames),
+                                           dimnames = list(chemList$Name, sampNames)))
+  chemXsamp_group <- chemXsamp_binary
+  chemXsamp_conc <- chemXsamp_binary  
+  
+  # Populate the data frames
+  for (i in 1:length(allData)){
+    for (j in 2:length(allData[[i]])){
+      ind <- match(chemList$Name, allData[[i]][[j]]$Name)
+      indBinary <- ifelse(!is.na(ind), 1, 0)
+      chemXsamp_binary[,names(allData[[i]])[j]] <- indBinary
+      chemXsamp_group[,names(allData[[i]])[j]] <- allData[[i]][[j]]$Group[ind]
+      chemXsamp_conc[,names(allData[[i]])[j]] <- allData[[i]][[j]]$`Sample Concentration`[ind]
+    }
+  }
+  # Save them
+  chemXsamp_matrices_other <- list("binary" = chemXsamp_binary, "group" = chemXsamp_group,
+                                  "conc" = chemXsamp_conc, "category" = sampCats)
+  #save(chemXsamp_matrices_other, file = paste(myPath, "data", "chemXsamp_matrices_ns-xtui-xtuiPCB-xu_full.RData", sep = "/"))
   
 }
 

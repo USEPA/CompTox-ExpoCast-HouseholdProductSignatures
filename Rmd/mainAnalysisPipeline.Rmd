@@ -56,8 +56,8 @@ library(rcartocolor)
 #myPath <- "/ccte/home1/zstanfie/HouseholdProdNTA"
 myPath <- "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/HouseholdProdNTA"
 prodGroups <- c("Cotton Clothing", "Shampoo", "Baby Soap", "Fabric Upholstery", "Silicone Kitchen Tools")
-myFiles <- c("Sequence1 Clothing.xlsx", "Sequence1 Personal Care Products.xlsx", "Sequence2 Kitchen.xlsx",
-                "Sequence2 Shampoo.xlsx", "Sequence3 Fabric.xlsx")
+myFiles <- c("Sequence1 Clothing.xlsx", "Sequence2 Shampoo.xlsx", "Sequence1 Personal Care Products.xlsx",
+             "Sequence3 Fabric.xlsx", "Sequence2 Kitchen.xlsx")
 data_files <- paste(myPath, "raw_data", myFiles, sep = "/")
 upc_file <- "EPA task 10 items_26Feb18.xlsx"
 ```
@@ -72,7 +72,7 @@ source(paste(myPath, "R/processRawData.R", sep = "/"))
 
 ### Before running this, check the save_names assignment at the start of this function to make sure
 ### files are save in the right locations
-processNTAfiles(data_files, myPath)
+processSSAfiles(data_files, myPath, prodGroups)
 
 ### This is for organizing the UPCs across raw data files intended for the use of querying 
 ### ChemExpo programmatically in downstream analyses. Don't need to run this if that is not part of the pipeline.
@@ -107,22 +107,101 @@ length(unique(fullSampChemInfo$Name[indXT]))
 length(unique(fullSampChemInfo$Name[indXC | indXT]))
 length(unique(fullSampChemInfo$CAS[indXC | indXT]))
 # Look at non-matches
-indOther <- fullSampChemInfo$Group %in% c("xt;ui", "xt;ui;PCB", "xu")
+indOther <- fullSampChemInfo$Group %in% c("ns", "xt;ui", "xt;ui;PCB", "xu")
 length(unique(fullSampChemInfo$Spectrum[indOther]))
 length(unique(fullSampChemInfo$Name[indOther]))
 ##
 length(unique(fullSampChemInfo$Spectrum[indXC | indXT | indOther]))
 
-# Add curated chemical identifiers where available
+# Add chemical identifiers where available (batch search EPA CompTox Dashboard by chemical name)
 tps <- read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
 ind <- match(fullSampChemInfo$Name, tps$INPUT)
 temp <- tps[ind, colnames(tps) %in% c("DTXSID", "PREFERRED_NAME", "CASRN")]
 colnames(fullSampChemInfo)[7:9] <- paste("Raw_", colnames(fullSampChemInfo)[7:9], sep = "")
 fullSampChemInfo <- cbind(fullSampChemInfo[,1:9], temp, fullSampChemInfo[,-c(1:9)])
 
+#-------------------------------------------------------------------------------
+# How many xc and xt chemicals (those we keep for downstream analysis) don't have
+# a match on the CompTox Chemicals Dashboard (CCD)?
+keepChems <- unique(fullSampChemInfo$Raw_Name[indXC | indXT])
+xcxtChemsWithoutCCDmatch <- fullSampChemInfo[indXC | indXT,]
+# Get counts
+sum(is.na(xcxtChemsWithoutCCDmatch$DTXSID))
+sum(!is.na(xcxtChemsWithoutCCDmatch$DTXSID))
+xcxtChemsWithoutCCDmatch <- xcxtChemsWithoutCCDmatch[is.na(xcxtChemsWithoutCCDmatch$DTXSID),] 
+length(unique(xcxtChemsWithoutCCDmatch$Raw_Name))
+# Remove the all-NA columns
+xcxtChemsWithoutCCDmatch[,c("DTXSID", "PREFERRED_NAME", "CASRN")] <- NULL
+length(unique(xcxtChemsWithoutCCDmatch$Spectrum))
+as.data.frame(table(xcxtChemsWithoutCCDmatch$Category))
+# Save these as we might be able to register them in DSSTox
+write.table(xcxtChemsWithoutCCDmatch, file = paste(myPath, "data", "xcxtChemsWithoutCCDmatch.txt", sep= "/"), 
+              sep = "\t", row.names = FALSE)
+#-------------------------------------------------------------------------------
+
+# Now add chemical identifiers of those chemicals for which a dashboard match wasn't found (curated by Tony Williams)
+curated <- read_xlsx("C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/xcxtChemsWithoutCCDmatch_TonyCurated.xlsx")
+# Chemicals with a value of "Approved Name", "CAS-RN", or "Expert Validated Synonym" in the FOUND_BY column were linked to existing dashboard entries
+# So remove rows not fitting this criteria
+curated <- curated[curated$FOUND_BY %in% c("Approved Name", "CAS-RN", "Expert Validated Synonym"),]
+ind <- match(fullSampChemInfo$Raw_Name, curated$Raw_Name)
+ind2 <- which(!is.na(ind))
+fullSampChemInfo[ind2,c("DTXSID", "PREFERRED_NAME", "CASRN")] <- curated[ind[ind2], c("DTXSID", "PREFERRED_NAME", "Raw_CAS")]
+
 # Save for supplement
 write.table(fullSampChemInfo, file = paste(myPath, "data", "fullSetOfSamplesWithAllChems.txt", sep= "/"), 
               sep = "\t", row.names = FALSE)
+
+```
+
+
+# Examine Dilution Effect
+
+Most of our samples were run at 2 dilutions because some chemicals are more easily
+extracted/detected at a different dilution. For example, in fabric upholstery and
+cotton clothing samples, the more concentrated assays tended to be best for identifying 
+lighter compounds and aromatics whereas hydrocarbons, long-chain alcohols, etc. were 
+better observed in the more dilute assay. Use dimensionality reduction on chemical
+occurrence to see if different dilutions of different products clearly separate.
+
+```{r dilutionEffect}
+# Read in the data object that has our full chemical by sample matrices
+load(paste(myPath, "data", "chemXsamp_matrices_ns-xtui-xtuiPCB-xu_full.RData", sep = "/"))
+
+sampCats <- chemXsamp_matrices_other$category
+binmat <- chemXsamp_matrices_other$binary
+
+# Remove blanks 
+ind <- grep("SB", colnames(binmat))
+binmat[,ind] <- NULL
+sampCats <- sampCats[-ind]
+
+##### Chemical Pre-Filtering #####
+chemcounts <- unlist(apply(binmat, 1, function(x) sum(!x == 0)))
+
+# Get rid of chemicals only in 1 sample
+ind <- chemcounts < 2
+binmat <- binmat[!ind,]
+chemcounts <- chemcounts[!ind]
+
+# Now extract dilutions, which are included in the sample names
+dilus <- strsplit(colnames(binmat), "_(?!.*_)", perl = TRUE)
+dilus <- do.call("rbind", dilus)
+dilus <- dilus[,2]
+
+# Add names and transpose
+#colnames(binmat) <- sampCats
+binmat <- t(binmat)
+
+# Use TSNE
+library(tsne)
+set.seed(115)
+my.tsne <- tsne(binmat, initial_dims = 2)
+my.tsne <- data.frame(my.tsne)
+pdb <- cbind(my.tsne, "Dilution" = dilus, "Category" = sampCats)
+library(plotly)
+plot_ly(data = pdb, x = ~X1, y = ~X2, type = 'scatter', mode = 'markers',  color = sampCats, symbol = dilus)
+
 
 ```
 
@@ -213,6 +292,7 @@ names(prodList) <- prodGroups
 
 ```
 
+
 ## Combine Duplicates and Repeats
 
 Will use the resulting set of samples for clustering, upset plots, and
@@ -297,6 +377,7 @@ allProdTypesMat <- list("binary" = chemXsamp_binary_red2, "conc" = chemXsamp_con
 
 ```
 
+
 # Annotate Chemicals
 
 The unique set of chemicals identified (confirmed or tentative; xc or
@@ -305,6 +386,7 @@ processRawData function. This was run through the CompTox Dashboard to
 obtain chemical identifiers (DTXSID, CAS, InChIKey) for ClassyFire and
 the ToxPrints for functional uses. Perform annotations first to be able
 to add them to certain plots in the downstream analysis if desired.
+
 
 ## Functional Uses
 
@@ -1376,6 +1458,34 @@ dev.off()
 # Save data for figure ##
 write.table(sigChemsFinal, file = paste(myPath, "results", "signatureChemsCuratedData.txt", sep = "/"), sep = "\t", row.names = FALSE)
 
+# What ClassyFire annotations 
+sigchems <- read.delim(file = paste(myPath, "results", "signatureChemsCuratedData.txt", sep = "/"))
+classyfire <- read.delim(file = paste(myPath, "results/ClassyFireAnnotation_allChems_batchAPI.txt", sep = "/"))
+ind <- match(sigchems$DTXSID, classyfire$DTXSID)
+sigchems <- cbind(sigchems, classyfire[ind,c("Kingdom", "Superclass", "Class")])
+for (i in 1:length(prodGroups)){
+  ind <- sigchems$Category == prodGroups[i]
+  print(as.data.frame(table(sigchems$Superclass[ind])))
+}
+
+# Check overlap with TSCA Active list
+tsca <- read_xlsx(path = "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/ChemList_TSCA_ACTIVE_NCTI_0222-2024-03-19.xlsx")
+
+# Check to make sure all chemicals are unique
+length(unique(tsca$DTXSID))
+
+# Overlap with unique signature chemicals
+sigind <- which(sigchems_unique$DTXSID %in% tsca$DTXSID)
+sigchems_unique$Chemical[-sigind]
+
+myChems <- as.data.frame(read_xlsx(paste(myPath, "data/houseProdNTA_chems_CCDquery_byName_full.xlsx", 
+                                         sep = "/"), sheet = 2))
+myChems <- myChems[!is.na(myChems$DTXSID),]
+myChems <- myChems[!duplicated(myChems$DTXSID),]
+allind <- which(myChems$DTXSID %in% tsca$DTXSID)
+
+
+
 rm(list=setdiff(ls(), c("myPath", "prodGroups")))
 ```
 
@@ -1657,7 +1767,7 @@ dev.off()
 Want to identify ubiquitous chemicals, chemicals specific to certain
 subsets of samples, and chemicals with similar signatures.
 
-```{r clustering, echo=FALSE}
+```{r occur_clust, echo=FALSE}
 load(file = paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
 
 # Drop chemicals that are ubiquitous (in most samples) and scarce (in very few samples)
@@ -1728,6 +1838,21 @@ Heatmap(temp, name = "Occurrence", col = c("grey", "gold"), top_annotation = col
         cluster_columns = FALSE, show_row_names = FALSE, column_names_rot = 90, column_names_gp = gpar(fontsize = 6), 
         column_names_max_height = unit(4, "cm"), row_split = cluster_assignments, column_split = prodOrd)
 dev.off()
+
+```
+
+
+# Clustering Chemicals by Abundance
+
+See how chemicals occur across samples from different categories and how their 
+abundances range from sample to sample 
+
+```{r abund_clust}
+
+
+
+
+
 
 ```
 
