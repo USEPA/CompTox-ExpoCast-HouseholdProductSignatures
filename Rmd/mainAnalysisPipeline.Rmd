@@ -54,7 +54,7 @@ library(stringr)
 library(colorRamp2)
 library(rcartocolor)
 #myPath <- "/ccte/home1/zstanfie/HouseholdProdSSA"
-myPath <- "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsSSA/HouseholdProdSSA"
+myPath <- "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/HouseholdProdSSA"
 prodGroups <- c("Cotton Clothing", "Shampoo", "Baby Soap", "Fabric Upholstery", "Silicone Kitchen Tools")
 myFiles <- c("Sequence1 Clothing.xlsx", "Sequence2 Shampoo.xlsx", "Sequence1 Personal Care Products.xlsx",
              "Sequence3 Fabric.xlsx", "Sequence2 Kitchen.xlsx")
@@ -71,7 +71,7 @@ analysis and saves them to the data directory
 source(paste(myPath, "R/processRawData.R", sep = "/"))
 
 ### Before running this, check the save_names assignment at the start of this function to make sure
-### files are save in the right locations
+### files are saved in the right locations
 processSSAfiles(data_files, myPath, prodGroups)
 
 ### This is for organizing the UPCs across raw data files intended for the use of querying 
@@ -81,6 +81,14 @@ cleanForUPCs(upc_file, myPath, prodGroups)
 
 
 # Summarize Data
+
+Examine how many unique chemicals are in our data, how many are confirmed or tentatively
+confirmed, and what percentage of our data those make up.  Also want to generate a full
+feature table that has all the raw data from all samples and includes curated chemical
+identifiers that we add from the EPA's CompTox Chemicals Dashboard (CCD). Have some chemicals
+that were individually curated after not having a match in CCD, so need to combine these.
+Want to process the dashboard query output files for later use in chemical annotation
+and use DTXSIDs across all of our data.
 
 ```{r dataSummary}
 load(file = paste(myPath, "data", "fullSetOfSamplesWithAllChems.RData", sep = "/"))
@@ -97,6 +105,7 @@ as.data.frame(table(fullSampChemInfo$Group))
 # Counts of spectra and chemicals by flag
 indXC <- fullSampChemInfo$Group == "xc"
 indXT <- fullSampChemInfo$Group == "xt"
+
 # Unique spectra and chemical names with these flags
 length(unique(fullSampChemInfo$Spectrum[indXC]))
 length(unique(fullSampChemInfo$Spectrum[indXT]))
@@ -110,47 +119,98 @@ length(unique(fullSampChemInfo$CAS[indXC | indXT]))
 indOther <- fullSampChemInfo$Group %in% c("ns", "xt;ui", "xt;ui;PCB", "xu")
 length(unique(fullSampChemInfo$Spectrum[indOther]))
 length(unique(fullSampChemInfo$Name[indOther]))
-##
-length(unique(fullSampChemInfo$Spectrum[indXC | indXT | indOther]))
 
-# Add chemical identifiers where available (batch search EPA CompTox Dashboard by chemical name)
-tps <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
+# Write a file to use the raw chemical name for querying the EPA's CompTox Chemicals Dashboard
+xcxt_name <- unique(fullSampChemInfo$Name[indXC | indXT])
+write.table(xcxt_name, file = paste(myPath, "data", "uniqueChems_xcxt_allSamples_Name.txt", sep = "/"), 
+            quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+# Read in the result of querying the dashboard by name
+tps <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_2024-05-03.xlsx", sep = "/"), sheet = 2)
+# Process this data in case some chemicals returned multiple rows
+todrop <- c("Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
+            "Synonym - WARNING: Synonym mapped to two or more chemicals")
+tps <- tps[!tps$FOUND_BY %in% todrop,]
+# Add harmonized chemical identifiers to fullSampChemInfo object 
 ind <- match(fullSampChemInfo$Name, tps$INPUT)
 temp <- tps[ind, colnames(tps) %in% c("DTXSID", "PREFERRED_NAME", "CASRN")]
 colnames(fullSampChemInfo)[7:9] <- paste("Raw_", colnames(fullSampChemInfo)[7:9], sep = "")
 fullSampChemInfo <- cbind(fullSampChemInfo[,1:9], temp, fullSampChemInfo[,-c(1:9)])
 
-#-------------------------------------------------------------------------------
-# How many xc and xt chemicals (those we keep for downstream analysis) don't have
-# a match on the CompTox Chemicals Dashboard (CCD)?
-keepChems <- unique(fullSampChemInfo$Raw_Name[indXC | indXT])
+# Find the xc and xt chemicals without a match by name and send them to Tony Williams for curation
 xcxtChemsWithoutCCDmatch <- fullSampChemInfo[indXC | indXT,]
-# Get counts
-sum(is.na(xcxtChemsWithoutCCDmatch$DTXSID))
+# How much of our xc-xt data is this
+sum(is.na(xcxtChemsWithoutCCDmatch$DTXSID))  # rows of feature data without a matching chemical
 sum(!is.na(xcxtChemsWithoutCCDmatch$DTXSID))
+# 364/5835  # 6.24%
+# Set up file for saving these rows of the data
 xcxtChemsWithoutCCDmatch <- xcxtChemsWithoutCCDmatch[is.na(xcxtChemsWithoutCCDmatch$DTXSID),] 
+# how many unique chemicals is this?
 length(unique(xcxtChemsWithoutCCDmatch$Raw_Name))
 # Remove the all-NA columns
 xcxtChemsWithoutCCDmatch[,c("DTXSID", "PREFERRED_NAME", "CASRN")] <- NULL
-length(unique(xcxtChemsWithoutCCDmatch$Spectrum))
+# Number of features (rows) for each product category that didn't have a dashboard match (mostly shampoo and baby soap) 
 as.data.frame(table(xcxtChemsWithoutCCDmatch$Category))
-# Save these as we might be able to register them in DSSTox
+# Save these chemicals
 write.table(xcxtChemsWithoutCCDmatch, file = paste(myPath, "data", "xcxtChemsWithoutCCDmatch.txt", sep= "/"), 
               sep = "\t", row.names = FALSE)
-#-------------------------------------------------------------------------------
 
-# Now add chemical identifiers of those chemicals for which a dashboard match wasn't found (curated by Tony Williams)
-curated <- read_xlsx("C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsSSA/xcxtChemsWithoutCCDmatch_TonyCurated.xlsx")
-# Chemicals with a value of "Approved Name", "CAS-RN", or "Expert Validated Synonym" in the FOUND_BY column were linked to existing dashboard entries
-# So remove rows not fitting this criteria
-curated <- curated[curated$FOUND_BY %in% c("Approved Name", "CAS-RN", "Expert Validated Synonym"),]
-ind <- match(fullSampChemInfo$Raw_Name, curated$Raw_Name)
+# Read in file of curated chemicals (generated by Tony) that now has DTXSIDs we can use to query the dashboard for other metadata
+curated_in <- read_xlsx(paste(myPath, "data", "xcxtChemsWithoutCCDmatch_TonyCurated.xlsx", sep = "/"))
+# Pull the unique, curated DTXSIDs to perform a second query of the dashboard
+curatedDTXSIDs <- unique(curated_in$DTXSID)
+# Save these DTXSIDs to get ToxPrints, InChIKeys, etc
+write.table(curatedDTXSIDs, file = paste(myPath, "data", "houseProdSSA_curatedChems_DTXSIDs.txt", sep = "/"), quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+# Read in dashboard query file and add the chemical identifiers to our full feature data object
+curated_out <- read_xlsx(paste(myPath, "data", "houseProdSSA_curatedChems_CCDquery_byDTXSID.xlsx", sep = "/"), sheet = 2)
+# Add dashboard data to curated_in
+ind <- match(curated_in$DTXSID, curated_out$DTXSID)
 ind2 <- which(!is.na(ind))
-fullSampChemInfo[ind2,c("DTXSID", "PREFERRED_NAME", "CASRN")] <- curated[ind[ind2], c("DTXSID", "PREFERRED_NAME", "Raw_CAS")]
+curated_in <- cbind(curated_in, "CASRN" = NA) 
+curated_in[ind2, c("DTXSID", "PREFERRED_NAME", "CASRN")] <- curated_out[ind[ind2], c("DTXSID", "PREFERRED_NAME", "CASRN")]
+# Now add to fullSampChemInfo
+ind <- match(fullSampChemInfo$Raw_Name, curated_in$Raw_Name)
+ind2 <- which(!is.na(ind))
+fullSampChemInfo[ind2,c("DTXSID", "PREFERRED_NAME", "CASRN")] <- curated_in[ind[ind2], c("DTXSID", "PREFERRED_NAME", "CASRN")]
+# Some entries are "-".  Replace with NA.
+ind <- fullSampChemInfo == "-"
+fullSampChemInfo[ind] <- NA
 
-# Save for supplement
+
+# Fill in the missing data in the main dashboard output table that was returned by searching for raw chemical name
+# so that we have a quick reference with the raw and curated chemical identifiers
+# Information is in curated_out, so add raw name in the input column to that object from curated_in for consistency
+ind <- match(curated_out$DTXSID, curated_in$DTXSID)
+ind2 <- which(!is.na(ind))
+curated_out$INPUT[ind2] <- curated_in$Raw_Name[ind[ind2]]
+# Now add these rows to the tps object
+ind <- match(tps$INPUT, curated_out$INPUT)
+ind2 <- which(!is.na(ind))
+tps[ind2,] <- curated_out[ind[ind2],]
+# Clean up
+colnames(tps)[1] <- "Raw_Name"
+tps$FOUND_BY <- NULL
+
+# Insert a placeholder DTXSID for the chemicals that still don't have a match
+# Will carry these through all my other data objects so all data uses DTXSID identifiers
+ind <- which(is.na(tps$DTXSID))
+placeholders <- paste(rep("DTXSID_unk_", length(ind)), as.character(1:length(ind)), sep = "")
+# Add these to the tps object and the fullSampChemInfo object
+tps$DTXSID[ind] <- placeholders
+temp <- tps[ind,]
+ind2 <- match(fullSampChemInfo$Raw_Name, temp$Raw_Name)
+ind3 <- which(!is.na(ind2))
+fullSampChemInfo$DTXSID[ind3] <- temp$DTXSID[ind2[ind3]]
+
+# Save tps as my master toxprints file
+save(tps, file = paste(myPath, "data", "chemicalData_fromDashboard_rawAndCuratedMatches.RData", sep = "/"))
+
+# Save fullSampChemInfo for supplement
 write.table(fullSampChemInfo, file = paste(myPath, "data", "fullSetOfSamplesWithAllChems.txt", sep= "/"), 
               sep = "\t", row.names = FALSE)
+
+rm(list=setdiff(ls(), c("myPath", "prodGroups")))
 
 ```
 
@@ -165,6 +225,58 @@ better observed in the more dilute assay. Use dimensionality reduction on chemic
 occurrence to see if different dilutions of different products clearly separate.
 
 ```{r dilutionEffect}
+### Start with the confirmed/tentative chemicals
+# Read in the data object that has our full chemical by sample matrices
+load(paste(myPath, "data", "chemXsamp_matrices_xcxt_full.RData", sep = "/"))
+
+sampCats <- chemXsamp_matrices_xcxt$category
+binmat <- chemXsamp_matrices_xcxt$binary
+
+# Remove blanks 
+ind <- grep("SB", colnames(binmat))
+binmat[,ind] <- NULL
+sampCats <- sampCats[-ind]
+
+##### Chemical Pre-Filtering #####
+chemcounts <- unlist(apply(binmat, 1, function(x) sum(!x == 0)))
+
+# Get rid of chemicals only in 1 sample
+ind <- chemcounts < 2
+binmat <- binmat[!ind,]
+chemcounts <- chemcounts[!ind]
+
+# Now extract dilutions, which are included in the sample names
+dilus <- strsplit(colnames(binmat), "_(?!.*_)", perl = TRUE)
+dilus <- do.call("rbind", dilus)
+dilus <- dilus[,2]
+
+# Add names and transpose
+#colnames(binmat) <- sampCats
+binmat <- t(binmat)
+
+# Use TSNE
+library(tsne)
+set.seed(115)
+my.tsne <- tsne(binmat, initial_dims = 2)
+my.tsne <- data.frame(my.tsne)
+pdb <- cbind(my.tsne, "Dilution" = dilus, "Category" = sampCats)
+library(plotly)
+plot_ly(data = pdb, x = ~X1, y = ~X2, type = 'scatter', mode = 'markers',  color = sampCats, symbol = dilus)
+# Use ggplot
+pdb$Dilution <- factor(pdb$Dilution, levels = c("1", "4", "5", "10", "20", "25", "50", "100", "125"), ordered = TRUE)
+pdb$Category <- factor(pdb$Category)
+# Save plot
+mycol <- ggthemes::excel_new_pal(theme = "Office Theme")[length(levels(pdb$Dilution))]
+pdf(file = paste(myPath, "plots", "TSNE_byDilution_allCatSamples_xcxt.pdf", sep = "/"), 
+    width = 8, height = 6)
+  ggplot(data = pdb, aes(x = X1, y = X2, shape = Category, color = Dilution)) +
+    geom_point() +
+    ggthemes::scale_color_gdocs(length(levels(pdb$Dilution))) +
+    guides(color = guide_legend(title = "Dilution"))
+dev.off()
+
+
+### Now look at the chemicals we don't retain for downstream analyses
 # Read in the data object that has our full chemical by sample matrices
 load(paste(myPath, "data", "chemXsamp_matrices_ns-xtui-xtuiPCB-xu_full.RData", sep = "/"))
 
@@ -202,6 +314,10 @@ pdb <- cbind(my.tsne, "Dilution" = dilus, "Category" = sampCats)
 library(plotly)
 plot_ly(data = pdb, x = ~X1, y = ~X2, type = 'scatter', mode = 'markers',  color = sampCats, symbol = dilus)
 
+pdb$Dilution <- factor(pdb$Dilution)
+pdb$Category <- factor(pdb$Category)
+ggplot(data = pdb, aes(x = X1, y = X2, shape = Category, color = Dilution)) +
+  geom_point() 
 
 ```
 
@@ -287,7 +403,7 @@ for (i in 1:length(rawGroups)){
                       "group" = chemXsamp_group_red[,ind], "prod_names" = allSamps$`Customer ID`[ind])
 }
 names(prodList) <- prodGroups
-# Save
+# Save this object for downstream analysis
 #save(prodList, file = paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
 
 ```
@@ -300,80 +416,90 @@ machine learning model to classify samples into their product
 categories.
 
 ```{r combineDupsReps}
-load(paste(myPath, "data", "masterSampleList.RData", sep = "/"))
-ind <- grep("SOL",allSamps$`Customer ID`)
-allSamps <- allSamps[-ind,]
+# Get curated table of group levels and brands
+prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands_v2.xlsx", 
+                                                sep = "/")))
+# Remove blanks
+prodOnt <- prodOnt[!prodOnt$Group3 == "blank",]
+# Change NA brand to "unknown"
+prodOnt$`Anon Brand` <- as.character(prodOnt$`Anon Brand`)
+indNA <- prodOnt$`Anon Brand` == "NA"
+prodOnt$`Anon Brand`[indNA] <- "unknown"
+# Load prodList
+load(paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
 
-# Combine duplicate samples and those from the same product
-chemXsamp_binary_red2 <- c()
-chemXsamp_conc_red2 <- c()
-chemXsamp_group_red2 <- c()
-DUPs <- sampNames[grep("DUP", sampNames)]
-for (i in 1:length(DUPs)){
-  # Can do easily b/c they share a sample name
-  indS <- grep(substr(DUPs[i], 1, nchar(DUPs[i])-4), colnames(chemXsamp_binary_red))
-  chemXsamp_binary_red2 <- cbind(chemXsamp_binary_red2, unlist(apply(chemXsamp_binary_red[,indS], 1, max)))
-  chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, unlist(apply(chemXsamp_conc_red[,indS], 1, 
-                                                                 function(x) mean(x, na.rm = TRUE))))
-  chemXsamp_group_red2 <- cbind(chemXsamp_group_red2, unlist(apply(chemXsamp_group_red[,indS], 1, 
-                                                               function(x) ifelse(sum(is.na(x)) == 2, NA, 
-                                                                                  ifelse(sum(is.na(x)) == 1,
-                                                                                  x[!is.na(x)],
-                                                                                  ifelse("xc" %in% x, "xc", "xt"))))))
-}
-colnames(chemXsamp_binary_red2) <- substr(DUPs, 1, nchar(DUPs)-4)
-colnames(chemXsamp_conc_red2) <- substr(DUPs, 1, nchar(DUPs)-4)
-colnames(chemXsamp_group_red2) <- substr(DUPs, 1, nchar(DUPs)-4)
-row.names(chemXsamp_binary_red2) <- row.names(chemXsamp_binary_red)
-row.names(chemXsamp_conc_red2) <- row.names(chemXsamp_binary_red)
-row.names(chemXsamp_group_red2) <- row.names(chemXsamp_binary_red)
-allSamps <- allSamps[!allSamps$`System ID` %in% substr(DUPs, 1, nchar(DUPs)-4),]
+# Step through each product category, combine duplicates and repeats, then concatenate
+# all into 1 big matrix.  All matrices in prodList have the same number of rows (chemicals),
+# so this makes concatenating them easier.
 
-
-# Combine samples that are repeats of the same product
-REPs <- allSamps$`Customer ID`[duplicated(allSamps$`Customer ID`)]
-for (i in 1:length(REPs)){
-  # Find sample IDs with this product name and combine
-  indR <- allSamps$`System ID`[allSamps$`Customer ID` == REPs[i]]
-  indS <- match(indR, sampNames)
-  allSamps <- allSamps[!allSamps$`System ID` %in% indR,]
-  chemXsamp_binary_red2 <- cbind(chemXsamp_binary_red2, 
-                                 unlist(apply(chemXsamp_binary_red[,indS], 1, function(x) max(x, na.rm = TRUE))))
-  chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, 
-                               unlist(apply(chemXsamp_conc_red[,indS], 1, function(x) mean(x, na.rm = TRUE))))
-  chemXsamp_group_red2 <- cbind(chemXsamp_group_red2, 
-                                unlist(apply(chemXsamp_group_red[,indS], 1, 
-                                             function(x) ifelse(sum(is.na(x)) == 2, NA, 
-                                              ifelse(sum(is.na(x)) == 1, x[!is.na(x)],
-                                               ifelse("xc" %in% x, "xc", "xt"))))))
+# First combine duplicates
+binary <- list()
+conc <- list()
+for (i in 1:length(prodGroups)){
+  # Use the master sample table to rename the sample names to our anonymized names
+  ind <- match(colnames(prodList[[i]]$binary), prodOnt$MySysID)
+  temp_binary <- prodList[[i]]$binary
+  colnames(temp_binary) <- prodOnt$`Anon Sample 2`[ind]
+  temp_conc <- prodList[[i]]$conc
+  colnames(temp_conc) <- prodOnt$`Anon Sample 2`[ind]
   
-  colnames(chemXsamp_binary_red2)[dim(chemXsamp_binary_red2)[2]] <- sampNames[indS[1]]
-  colnames(chemXsamp_conc_red2)[dim(chemXsamp_binary_red2)[2]] <- sampNames[indS[1]]
-  colnames(chemXsamp_group_red2)[dim(chemXsamp_binary_red2)[2]] <- sampNames[indS[1]]
+  # Combine
+  temp_binary_comb <- c()
+  temp_conc_comb <- c()
+  DUPs <- colnames(temp_binary)[grep("dup", colnames(temp_binary))]
+  drop <- c()
+  for (j in 1:length(DUPs)){
+    indS <- which(substr(DUPs[j], 1, nchar(DUPs[j])-4) == colnames(temp_binary))
+    indDup <- which(colnames(temp_binary) == DUPs[j])
+    temp_binary_comb <- cbind(temp_binary_comb, unlist(apply(temp_binary[,c(indS, indDup)], 1, max)))
+    temp_conc_comb <- cbind(temp_conc_comb, unlist(apply(temp_conc[,c(indS, indDup)], 1, 
+                                                                   function(x) mean(x, na.rm = TRUE))))
+    colnames(temp_binary_comb)[dim(temp_binary_comb)[2]] <- substr(DUPs[j], 1, nchar(DUPs[j])-4)
+    colnames(temp_conc_comb)[dim(temp_conc_comb)[2]] <- substr(DUPs[j], 1, nchar(DUPs[j])-4)
+    drop <- c(drop, indS, indDup)
+  }
+  binary[[i]] <- cbind(temp_binary[,-drop], temp_binary_comb)
+  conc[[i]] <- cbind(temp_conc[,-drop], temp_conc_comb)
+}
+  
+# Now combine repeats
+for (i in 1:length(binary)){
+  drop <- c()
+  REPs <- colnames(binary[[i]])[grep("rep", colnames(binary[[i]]))]
+  temp_binary_comb <- c()
+  temp_conc_comb <- c()
+  for (j in 1:length(REPs)){
+    indS <- which(substr(REPs[j], 1, nchar(REPs[j])-4) == colnames(binary[[i]]))
+    indRep <- which(colnames(binary[[i]]) == REPs[j])
+    temp_binary_comb <- cbind(temp_binary_comb, unlist(apply(binary[[i]][,c(indS, indRep)], 1, max)))
+    temp_conc_comb <- cbind(temp_conc_comb, unlist(apply(conc[[i]][,c(indS, indRep)], 1, 
+                                                                   function(x) mean(x, na.rm = TRUE))))
+    colnames(temp_binary_comb)[dim(temp_binary_comb)[2]] <- substr(REPs[j], 1, nchar(REPs[j])-4)
+    colnames(temp_conc_comb)[dim(temp_conc_comb)[2]] <- substr(REPs[j], 1, nchar(REPs[j])-4)
+    drop <- c(drop, indS, indRep)
+  }
+  binary[[i]] <- cbind(binary[[i]][,-drop], temp_binary_comb)
+  conc[[i]] <- cbind(conc[[i]][,-drop], temp_conc_comb)
+  # Re-order columns
+  ind <- as.numeric(substr(colnames(binary[[i]]), 8, nchar(colnames(binary[[i]]))))
+  ind <- order(ind)
+  binary[[i]] <- binary[[i]][,ind]
+  conc[[i]] <- conc[[i]][,ind]
 }
 
-# Now add in the single sample products
-singles <- allSamps$`System ID`
-chemXsamp_binary_red2 <- cbind(chemXsamp_binary_red2, 
-                               chemXsamp_binary_red[,colnames(chemXsamp_binary_red) %in% singles])
-chemXsamp_conc_red2 <- cbind(chemXsamp_conc_red2, 
-                             chemXsamp_conc_red[,colnames(chemXsamp_binary_red) %in% singles])
-chemXsamp_group_red2 <- cbind(chemXsamp_group_red2, 
-                              chemXsamp_group_red[,colnames(chemXsamp_binary_red) %in% singles])
+# Save these two matrices 
+names(binary) <- prodGroups
+names(conc) <- prodGroups
+allComb_BinAndConc <- list("binary" = binary, "conc" = conc)
+save(allComb_BinAndConc, file = paste(myPath, "data", "allCombDilDupRep_BinAndConcMats.RData", sep = "/"))
 
-# Put back in order
-load(paste(myPath, "data", "masterSampleList.RData", sep = "/"))
-ind <- match(colnames(chemXsamp_binary_red2), allSamps$`System ID`)
-prodOrd <- allSamps$Product[ind]
-prodOrd2 <- order(prodOrd)
-chemXsamp_binary_red2 <- chemXsamp_binary_red2[,prodOrd2]
-chemXsamp_conc_red2 <- chemXsamp_conc_red2[,prodOrd2]
-chemXsamp_group_red2 <- chemXsamp_group_red2[,prodOrd2]
-
-# Save these in case we need them later
-allProdTypesMat <- list("binary" = chemXsamp_binary_red2, "conc" = chemXsamp_conc_red2, 
-                        "group" = chemXsamp_group_red2, "prodType" = prodOrd[prodOrd2])
-#save(allProdTypesMat, file = paste(myPath, "data", "allProdTypesMat_combDilDupRep.RData", sep = "/"))
+# Now concatenate them into a single matrix with all samples and have a corresponding
+# vector designating which samples are which category
+binaryMat <- do.call(cbind, binary)
+concMat <- do.call(cbind, conc)
+prodType <- paste(prodGroups, unlist(lapply(binary, function(x) dim(x)[2])))
+allComb_BinAndConc_concat <- list("binary" = binary, "conc" = conc, "prodType" = prodType)
+save(allComb_BinAndConc_concat, file = paste(myPath, "data", "allCombDilDupRep_BinAndConcMats_concat.RData", sep = "/"))
 
 ```
 
@@ -400,20 +526,35 @@ that chemical as well with a probability of 1.
 load(file = paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
 
 # Read in dashboard query file that has the toxprints and process.  Input for function 
-# is a tab-separated file with ID and the toxprints
-tps <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_full.xlsx", sep = "/"), sheet = 2)
-#colnames(tps)[1:50]
-tps <- tps[,c(1:7,38:dim(tps)[2])]
+# to predict uses is a tab-separated file with ID and the toxprints
+# Need to pull both dashboard files (matched and curated)
+tps1 <- read_xlsx(paste(myPath, "data/houseProdSSA_chems_CCDquery_byName_2024-05-03.xlsx", sep = "/"), sheet = 2)
+tps2 <- read_xlsx(paste(myPath, "data/houseProdSSA_curatedChems_CCDquery_byDTXSID.xlsx", sep = "/"), sheet = 2)
+tps <- rbind(tps1, tps2)
+
+# Reduce to identifiers and ToxPrints
+colnames(tps)[1:50]
+# Keep up to QSAR SMILES and then just tps (starts at 47th column)
+tps <- tps[,c(1:7,47:dim(tps)[2])]
+
 # Check for rows that didn't match. Can't get predicted uses without a proper ID.
-#as.data.frame(table(tps$FOUND_BY))
-todrop <- c("Searched by Synonym: Found 0 results", "Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
+as.data.frame(table(tps$FOUND_BY))
+# There are a lot of different values this column can have, but if there is no match,
+# the toxprints will be NA
+sum(is.na(tps$`atom:element_main_group`))  # 91 chemicals
+todrop <- is.na(tps$`atom:element_main_group`)
+curatedTPs <- tps[!todrop,]  # 457 chemicals
+# There are cases where one chemical returned multiple rows. Usually has Approved Name - Warning
+# mapped to two or more chemicals. These are accompanied by 1 or 2 other rows that we can drop.
+todrop <- c("Integrated Source Name - WARNING: Synonym mapped to two or more chemicals",
             "Synonym - WARNING: Synonym mapped to two or more chemicals")
-curatedTPs <- tps[!tps$FOUND_BY %in% todrop,]  # Down from 495 to 426
-# There are a couple of duplicate DTXSIDs which means the TPs for those are the same. Drop duplicates.
-curatedTPs <- curatedTPs[!duplicated(curatedTPs$DTXSID),]
+curatedTPs <- curatedTPs[!curatedTPs$FOUND_BY %in% todrop,]
+# Drop any remaining duplicated DTXSIDs
+curatedTPs <- curatedTPs[!duplicated(curatedTPs$DTXSID),]  # final set of 449 chemicals
+rm(tps1, tps2, tps, todrop)
 
 
-# Find which chemicals already have predictions
+# Find which chemicals already have predicted functional uses in ChemExpo
 fuseDB <- read.csv(file = paste(myPath, "data/ChemExpo_bulk_functional_uses_20230817.csv", sep = "/"))
 # Reduce this big matrix to just our chemicals
 ind <- (fuseDB$DTXSID %in% curatedTPs$DTXSID) 
@@ -440,21 +581,19 @@ as.data.frame(a[order(a, decreasing = TRUE)])
 
 
 ### Switch to predicted uses
-# Get predictions for the rest. First line is for only predicting for chemicals not in FUse. Latter is for predicting for all, which is what I used.
+# Get predictions for the rest. First line is for only predicting for chemicals not in FUse. 
+# Latter is for predicting for all, which is what I used for the manuscript.
 #chems4qsurs <- curatedTPs[!curatedTPs$DTXSID %in% temp$DTXSID, !colnames(curatedTPs) %in% 
 #                           c("INPUT", "FOUND_BY", "PREFERRED_NAME", "CASRN", "INCHIKEY", "QSAR_READY_SMILES")]
 chems4qsurs <- curatedTPs[, !colnames(curatedTPs) %in% 
                            c("INPUT", "FOUND_BY", "PREFERRED_NAME", "CASRN", "INCHIKEY", "QSAR_READY_SMILES")]
 colnames(chems4qsurs)[1] <- "M_NAME"
-# Need to save this b/c the input is a file location
+# Need to save this b/c the input for the prediction function is a file location
 write.table(chems4qsurs, file = paste(myPath, "data/chems2predFUfor_TPs.tsv", sep = "/"), sep = "\t", row.names = FALSE)
 
 # Following Suggested Code in the QSUR R Package ReadMe 
 TPfile <- paste(myPath, "data", "chems2predFUfor_TPs.tsv", sep = "/")
 chems <- read_toxprints(io = TPfile, source = "chemotyper")
-
-# Toxprints were not available for 3 chemicals.  Remove these rows.  When using all my chems, this is only 5
-#chems <- chems[!is.na(chems$atom.element_main_group),]
 
 # Load the QSUR models
 qsurs <- qsur_models()
@@ -480,8 +619,7 @@ preds[,-1] <- apply(preds[,-1], 2, function(x) ifelse(x >= 0.8, x, 0))
 preds[is.na(preds)] <- 0
 
 # Put chemical column as row names and remove it
-#row.names(preds) <- preds$chemical_id
-#preds$chemical_id <- NULL
+preds <- as.data.frame(preds)
 # How many chemicals are predicted for each use
 a <- apply(preds, 2, function(x) sum(x > 0.5))
 as.data.frame(a[order(a, decreasing = TRUE)])
@@ -538,9 +676,12 @@ if (length(todrop) > 0){
 }
 
 # Save these predictions.  First add chemical names so I can match with other matrices.
+# Use the object I saved with all raw and curated chemical identifiers
+load(file = paste(myPath, "data", "rawAndCuratedChemIdentifiers_xcxt.RData", sep = "/"))  # loads chemIdentifiers object
 ind <- match(use.pred.rep$DTXSID, curatedTPs$DTXSID)
+ind <- match(use.pred.rep$DTXSID, chemIdentifiers$DTXSID)
 use.pred.rep <- as.data.frame(use.pred.rep)
-row.names(use.pred.rep) <- curatedTPs$INPUT[ind]
+row.names(use.pred.rep) <- curatedTPs$PREFERRED_NAME[ind]
 use.pred.rep <- cbind("DTXSID" = use.pred.rep$DTXSID, "CASRN" = curatedTPs$CASRN[ind], use.pred.rep[,-1])
 #save(use.pred.rep, file = paste(myPath, "results", "predAndKnownFuncUse_chemsAcrossAllSamps_probs_v2.RData", sep = "/"))
 
