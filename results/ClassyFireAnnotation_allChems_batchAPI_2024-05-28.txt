@@ -1,0 +1,439 @@
+"DTXSID"	"PREFERRED_NAME"	"CASRN"	"kingdom"	"superclass"	"class"	"subclass"	"level 5"	"level 6"	"level 7"	"level 8"
+"DTXSID7027205"	"Octamethylcyclotetrasiloxane"	"556-67-2"	"Organic compounds"	"Organometallic compounds"	"Organometalloid compounds"	"Organosilicon compounds"	"Organoheterosilanes"	NA	NA	NA
+"DTXSID1027184"	"Decamethylcyclopentasiloxane"	"541-02-6"	"Organic compounds"	"Organometallic compounds"	"Organometalloid compounds"	"Organosilicon compounds"	"Organoheterosilanes"	NA	NA	NA
+"DTXSID5020607"	"Di(2-ethylhexyl) phthalate"	"117-81-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID6020359"	"Cyclohexanone"	"108-94-1"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Cyclic ketones"	NA	NA
+"DTXSID8020090"	"Aniline"	"62-53-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Aniline and substituted anilines"	NA	NA	NA	NA
+"DTXSID7024952"	"N-Butyl-1-butanamine"	"111-92-2"	"Organic compounds"	"Organic nitrogen compounds"	"Organonitrogen compounds"	"Amines"	"Secondary amines"	"Dialkylamines"	NA	NA
+"DTXSID6021828"	"Acetophenone"	"98-86-2"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Aryl ketones"	"Phenylketones"	"Alkyl-phenylketones"
+"DTXSID7024586"	"Benzothiazole"	"95-16-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID0026913"	"Dodecane"	"112-40-3"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID6027266"	"Tridecane"	"629-50-5"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID0020155"	"Benzyl isothiocyanate"	"622-78-6"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID4020161"	"Biphenyl"	"92-52-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Biphenyls and derivatives"	NA	NA	NA	NA
+"DTXSID1027267"	"Tetradecane"	"629-59-4"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID7021520"	"2-[2-(2-Butoxyethoxy)ethoxy]ethanol"	"143-22-6"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Dialkyl ethers"	"Polyethylene glycols"	NA	NA
+"DTXSID5026918"	"1-Dodecanol"	"112-53-8"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohols"	NA	NA	NA	NA
+"DTXSID2021151"	"2-Phenylphenol"	"90-43-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Biphenyls and derivatives"	NA	NA	NA	NA
+"DTXSID2020216"	"Butylated hydroxytoluene"	"128-37-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID8041668"	"Bibenzyl"	"103-29-7"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Stilbenes"	NA	NA	NA	NA	NA
+"DTXSID40219972"	"2,6-Dibromo-p-toluidine"	"6968-24-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Toluenes"	"Aminotoluenes"	NA	NA	NA
+"DTXSID6027268"	"Pentadecane"	"629-62-9"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID5059610"	"Benz[cd]indol-2(1H)-one"	"130-00-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Isoindoles and derivatives"	"Isoindolines"	"Isoindolones"	NA	NA	NA
+"DTXSID5021590"	"Dodecanoic acid"	"143-07-7"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acids and conjugates"	"Medium-chain fatty acids"	NA	NA	NA
+"DTXSID7021780"	"Diethyl phthalate"	"84-66-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID70274236"	"2-(Methylthio)benzothiazole"	"615-22-5"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID1027635"	"2,2,4-Trimethyl-1,3-pentanediol diisobutyrate"	"6846-50-0"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Dicarboxylic acids and derivatives"	NA	NA	NA	NA
+"DTXSID0021961"	"Benzophenone"	"119-61-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzophenones"	NA	NA	NA	NA
+"DTXSID6061315"	"Benzothiazolone"	"934-34-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID8029153"	"Benzyl benzoate"	"120-51-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID1020807"	"2-Mercaptobenzothiazole"	"149-30-4"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID2021781"	"Dibutyl 1,2-benzenedicarboxylate"	"84-74-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID3052644"	"bis(Hydroxyethyl) terephthalate"	"959-26-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Phthalic acid and derivatives"	"Phthalate esters"	"p-Phthalate esters"	NA
+"DTXSID2026446"	"Acetyl tributyl citrate"	"77-90-7"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Tetracarboxylic acids and derivatives"	NA	NA	NA	NA
+"DTXSID3020205"	"Benzyl butyl phthalate"	"85-68-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID1021952"	"Triphenyl phosphate"	"115-86-6"	"Organic compounds"	"Organic acids and derivatives"	"Organic phosphoric acids and derivatives"	"Phosphate esters"	"Aryl phosphates"	"Aryl phosphotriesters"	NA	NA
+"DTXSID4020870"	"2,2'-Methylenebis(4-methyl-6-tert-butylphenol)"	"119-47-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Diphenylmethanes"	NA	NA	NA	NA
+"DTXSID4059122"	"Carbamodithioic acid, diethyl-, 2-benzothiazolyl ester"	"95-30-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID40325446"	"2,2'-Bibenzothiazole"	"4271-09-4"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID101019984"	"gamma-Tocotrienol"	"14101-61-2"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Quinone and hydroquinone lipids"	"Vitamin E compounds"	"Tocotrienols"	NA	NA
+"DTXSID90284099"	"NSC35582"	"6270-36-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID30862739"	"2H-1-Benzopyran-6-ol, 3,4-dihydro-2,5,7,8-tetramethyl-2-(4,8,12-trimethyl-3,7,11-tridecatrien-1-yl)-"	"1721-51-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Quinone and hydroquinone lipids"	"Vitamin E compounds"	"Tocotrienols"	NA	NA
+"DTXSID0064591"	"Heptatriacontane"	"7194-84-5"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID3022114"	"N,N-Dibutylformamide"	"761-65-9"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid amides"	"Tertiary carboxylic acid amides"	NA	NA
+"DTXSID1073288"	"2(3H)-Benzothiazolethione, 3-methyl-"	"2254-94-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID2027886"	"2-(2-Hydroxy-3,5-di-tert-pentylphenyl)benzotriazole"	"25973-55-1"	"Organic compounds"	"Organoheterocyclic compounds"	"Azoles"	"Triazoles"	"Phenyltriazoles"	"Phenyl-1,2,3-triazoles"	NA	NA
+"DTXSID50880915"	"binaphthyl sulfone"	"32390-26-4"	"Organic compounds"	"Benzenoids"	"Naphthalenes"	NA	NA	NA	NA	NA
+"DTXSID3022401"	"Cholesterol"	"57-88-5"	"Organic compounds"	"Lipids and lipid-like molecules"	"Steroids and steroid derivatives"	"Cholestane steroids"	"Cholesterols and derivatives"	NA	NA	NA
+"DTXSID9052509"	"4-Hydroxybenzonitrile"	"767-00-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzonitriles"	NA	NA	NA	NA
+"DTXSID5021124"	"Phenol"	"108-95-2"	"Organic compounds"	"Benzenoids"	"Phenols"	"1-hydroxy-4-unsubstituted benzenoids"	NA	NA	NA	NA
+"DTXSID9025661"	"alpha-Methylstyrene"	"98-83-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropenes"	NA	NA	NA	NA
+"DTXSID6024913"	"Decane"	"124-18-5"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID9021689"	"Undecane"	"1120-21-4"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID8020913"	"Naphthalene"	"91-20-3"	"Organic compounds"	"Benzenoids"	"Naphthalenes"	NA	NA	NA	NA	NA
+"DTXSID4020240"	"Caprolactam"	"105-60-2"	"Organic compounds"	"Organoheterocyclic compounds"	"Lactams"	"Caprolactams"	NA	NA	NA	NA
+"DTXSID1021798"	"Quinoline"	"91-22-5"	"Organic compounds"	"Organoheterocyclic compounds"	"Quinolines and derivatives"	NA	NA	NA	NA	NA
+"DTXSID2047644"	"Isoquinoline"	"119-65-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Isoquinolines and derivatives"	NA	NA	NA	NA	NA
+"DTXSID8049208"	"2-Methylbenzothiazole"	"120-75-2"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID4024143"	"1,6-Diisocyanatohexane"	"822-06-0"	"Organic compounds"	"Organic nitrogen compounds"	"Organonitrogen compounds"	"Isocyanates"	NA	NA	NA	NA
+"DTXSID9021847"	"Diphenyl oxide"	"101-84-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Diphenylethers"	NA	NA	NA	NA
+"DTXSID7020348"	"Coumarin"	"91-64-5"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Coumarins and derivatives"	NA	NA	NA	NA	NA
+"DTXSID7027041"	"2,4,7,9-Tetramethyl-5-decyne-4,7-diol"	"126-86-3"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Alpha,beta-unsaturated carbonyl compounds"	"Alpha,beta-unsaturated ketones"	"Ynones"	NA
+"DTXSID2021993"	"Dibenzofuran"	"132-64-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzofurans"	"Dibenzofurans"	NA	NA	NA	NA
+"DTXSID8020961"	"4-Nitrobenzenamine"	"100-01-6"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	NA	NA	NA	NA
+"DTXSID6044355"	"Dibenzylamine"	"103-49-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylmethylamines"	NA	NA	NA	NA
+"DTXSID3061136"	"Benzenemethanamine, N-(phenylmethylene)-"	"780-25-6"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID30291227"	"1-(Benzthiazol-2-ylthio)-propan-2-one"	"23385-34-4"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID10278879"	"Phenyl 4-methylbenzenesulfonate"	"640-60-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzenesulfonic acids and derivatives"	"Benzenesulfonate esters"	NA	NA	NA
+"DTXSID5024477"	"2-Amino-5,6-dichlorobenzothiazole"	"24072-75-1"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID9022445"	"Bis(4-hydroxyphenyl)methane"	"620-92-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Diphenylmethanes"	NA	NA	NA	NA
+"DTXSID0020606"	"Bis(2-ethylhexyl)hexanedioate"	"103-23-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID1025300"	"2-Ethylhexyl diphenyl phosphate"	"1241-94-7"	"Organic compounds"	"Organic acids and derivatives"	"Organic phosphoric acids and derivatives"	"Phosphate esters"	"Aryl phosphates"	"Aryl phosphotriesters"	NA	NA
+"DTXSID8022163"	"Dehydroabietic acid"	"1740-19-8"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Diterpenoids"	NA	NA	NA	NA
+"DTXSID70880917"	"(2,3-diphenylcyclopropyl)methyl phenyl sulfoxide, trans-"	"131758-71-9"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Stilbenes"	NA	NA	NA	NA	NA
+"DTXSID5051521"	"Phenyl isocyanate"	"103-71-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID20344599"	"3-Chloro-1,2-benzisothiazole"	"7716-66-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID40871195"	"1,1'-(3-Methyl-1-propene-1,3-diyl)bis-benzene"	"7614-93-9"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Linear 1,3-diarylpropanoids"	NA	NA	NA	NA	NA
+"DTXSID6025690"	"Musk ketone"	"81-14-1"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Aryl ketones"	"Phenylketones"	"Alkyl-phenylketones"
+"DTXSID30180288"	"delta-Tocotrienol"	"25612-59-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Quinone and hydroquinone lipids"	"Vitamin E compounds"	"Tocotrienols"	NA	NA
+"DTXSID3025122"	"Dimethyl glutarate"	"1119-40-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	"Fatty acid methyl esters"	NA	NA	NA
+"DTXSID4027991"	"1-Hexadecanol"	"36653-82-4"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohols"	"Long-chain fatty alcohols"	NA	NA	NA
+"DTXSID2021602"	"Hexadecanoic acid"	"57-10-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acids and conjugates"	"Long-chain fatty acids"	NA	NA	NA
+"DTXSID1025809"	"Oleic acid"	"112-80-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acids and conjugates"	"Long-chain fatty acids"	NA	NA	NA
+"DTXSID7020182"	"Bisphenol A"	"80-05-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Diphenylmethanes"	"Bisphenols"	NA	NA	NA
+"DTXSID8021642"	"Octadecanoic acid"	"57-11-4"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acids and conjugates"	"Long-chain fatty acids"	NA	NA	NA
+"DTXSID5064592"	"Octatriacontane"	"7194-85-6"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID5025659"	"Methyl salicylate"	"119-36-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	"o-Hydroxybenzoic acid esters"	NA	NA
+"DTXSID80209514"	"Naphthalene, 1-(phenylmethoxy)-"	"607-58-9"	"Organic compounds"	"Benzenoids"	"Naphthalenes"	NA	NA	NA	NA	NA
+"DTXSID8025961"	"Propionic acid"	"79-09-4"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acids"	NA	NA	NA	NA
+"DTXSID0027195"	"Hexadecane"	"544-76-3"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID7047061"	"Heptadecane"	"629-78-7"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID9047172"	"Octadecane"	"593-45-3"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID9047170"	"Nonadecane"	"629-92-5"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID1025227"	"Eicosane"	"112-95-8"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID9047097"	"Heneicosane"	"629-94-7"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID7047063"	"Docosane"	"629-97-0"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID7047699"	"Tricosane"	"638-67-5"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID8060955"	"n-Tetracosane"	"646-31-1"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID0026967"	"Diethylene glycol dibenzoate"	"120-55-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID2060882"	"Pentacosane"	"629-99-2"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID7060883"	"Hexacosane"	"630-01-3"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID6058637"	"Heptacosane"	"593-49-7"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID6058639"	"Octacosane"	"630-02-4"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID2060884"	"Nonacosane"	"630-03-5"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID0060935"	"Triacontane"	"638-68-6"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID0075443"	"Hentriacontane"	"630-04-6"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID5052202"	"Dotriacontane"	"544-85-4"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID5075444"	"Tritriacontane"	"630-05-7"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID7058622"	"Tetratriacontane"	"14167-59-0"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID9074723"	"Pentatriacontane"	"630-07-9"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID7060885"	"Hexatriacontane"	"630-06-8"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID5025819"	"Dibenzyl ether"	"103-50-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzylethers"	NA	NA	NA	NA
+"DTXSID4020533"	"1,4-Dioxane"	"123-91-1"	"Organic compounds"	"Organoheterocyclic compounds"	"Dioxanes"	"1,4-dioxanes"	NA	NA	NA	NA
+"DTXSID0026882"	"Octane"	"111-65-9"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID5020152"	"Benzyl alcohol"	"100-51-6"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyl alcohols"	NA	NA	NA	NA
+"DTXSID5025156"	"N,N'-Dimethylurea"	"96-31-1"	"Organic compounds"	"Organic acids and derivatives"	"Organic carbonic acids and derivatives"	"Ureas"	NA	NA	NA	NA
+"DTXSID9021976"	"2-Phenoxyethanol"	"122-99-6"	"Organic compounds"	"Benzenoids"	"Phenol ethers"	NA	NA	NA	NA	NA
+"DTXSID60210805"	"3-Phenoxy 1-propanol"	"6180-61-6"	"Organic compounds"	"Benzenoids"	"Phenol ethers"	NA	NA	NA	NA	NA
+"DTXSID9074856"	"Trimethyl isocyanurate"	"827-16-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Triazines"	"Triazinones"	NA	NA	NA	NA
+"DTXSID4052550"	"Methyl toluene-4-sulfonate"	"80-48-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzenesulfonic acids and derivatives"	"Benzenesulfonate esters"	NA	NA	NA
+"DTXSID10880714"	"methyl dehydroabietate"	"1235-74-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Diterpenoids"	NA	NA	NA	NA
+"DTXSID20893779"	"Tris(2,4-di-tert-butylphenyl) phosphate"	"95906-11-9"	"Organic compounds"	"Organic acids and derivatives"	"Organic phosphoric acids and derivatives"	"Phosphate esters"	"Aryl phosphates"	"Aryl phosphotriesters"	NA	NA
+"DTXSID6044644"	"N-Isopropylphthalimide"	"304-17-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Isoindoles and derivatives"	"Isoindolines"	"Isoindolones"	"Phthalimides"	NA	NA
+"DTXSID4024646"	"2-Bromo-4,6-dinitroaniline"	"1817-73-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Aniline and substituted anilines"	"Dinitroanilines"	NA	NA	NA
+"DTXSID7021946"	"1-Decanol"	"112-30-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohols"	NA	NA	NA	NA
+"DTXSID1026906"	"N,N-Dimethyldodecan-1-amine"	"112-18-5"	"Organic compounds"	"Organic nitrogen compounds"	"Organonitrogen compounds"	"Amines"	"Tertiary amines"	"Trialkylamines"	NA	NA
+"DTXSID6022422"	"4,4'-Diaminobiphenyl methane"	"101-77-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Diphenylmethanes"	NA	NA	NA	NA
+"DTXSID4074724"	"Nonatriacontane"	"7194-86-7"	"Organic compounds"	"Hydrocarbons"	"Saturated hydrocarbons"	"Alkanes"	NA	NA	NA	NA
+"DTXSID8021804"	"Benzocaine"	"94-09-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID8027456"	"Octadecyl 3-(3,5-di-tert-butyl-4-hydroxyphenyl)propionate"	"2082-79-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohol esters"	NA	NA	NA	NA
+"DTXSID9021841"	"N-Methylaniline"	"100-61-8"	"Organic compounds"	"Organic nitrogen compounds"	"Organonitrogen compounds"	"Amines"	"Aralkylamines"	"Phenylalkylamines"	NA	NA
+"DTXSID60337884"	"7,9-Di-tert-butyl-1-oxaspiro(4,5)deca-6,9-diene-2,8-dione"	"82304-66-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Lactones"	"Gamma butyrolactones"	NA	NA	NA	NA
+"DTXSID9027522"	"Octrizole"	"3147-75-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Azoles"	"Triazoles"	"Phenyltriazoles"	"Phenyl-1,2,3-triazoles"	NA	NA
+"DTXSID8021519"	"2-(2-Butoxyethoxy)ethanol"	"112-34-5"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Dialkyl ethers"	NA	NA	NA
+"DTXSID3021986"	"Tributyl phosphate"	"126-73-8"	"Organic compounds"	"Organic acids and derivatives"	"Organic phosphoric acids and derivatives"	"Phosphate esters"	"Alkyl phosphates"	"Trialkyl phosphates"	NA	NA
+"DTXSID9021924"	"Pyridine"	"110-86-1"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyridines and derivatives"	NA	NA	NA	NA	NA
+"DTXSID7047198"	"Ethyl 2-methylpentanoate"	"39255-32-8"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID8039241"	"Benzaldehyde"	"100-52-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoyl derivatives"	NA	NA	NA	NA
+"DTXSID6022006"	"Hexyl acetate"	"142-92-7"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID1020778"	"D-Limonene"	"5989-27-5"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Menthane monoterpenoids"	NA	NA	NA
+"DTXSID8029317"	"1,1,5-Trimethyl-6-heptenol"	"18479-58-8"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Tertiary alcohols"	NA	NA	NA
+"DTXSID00171567"	"Pyridine, 2-(methylthio)-"	"18438-38-5"	"Organic compounds"	"Organosulfur compounds"	"Thioethers"	"Aryl thioethers"	NA	NA	NA	NA
+"DTXSID7025502"	"Linalool"	"78-70-6"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Acyclic monoterpenoids"	NA	NA	NA
+"DTXSID9026342"	"2-Phenylethanol"	"60-12-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID0020151"	"Benzyl acetate"	"140-11-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyloxycarbonyls"	NA	NA	NA	NA
+"DTXSID3021645"	"Octanoic acid"	"124-07-2"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acids and conjugates"	"Medium-chain fatty acids"	NA	NA	NA
+"DTXSID6041636"	"(+/-)-alpha-Methylbenzyl acetate"	"93-92-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyloxycarbonyls"	NA	NA	NA	NA
+"DTXSID9025297"	"2-Ethylhexyl acrylate"	"103-11-7"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Acrylic acids and derivatives"	"Acrylic acid esters"	NA	NA	NA
+"DTXSID9025580"	"Allyl 2-(isopentyloxy)acetate"	"67634-00-8"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID7026946"	"Linalyl acetate"	"115-95-7"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Acyclic monoterpenoids"	NA	NA	NA
+"DTXSID3041877"	"Dimethylbenzylcarbinyl acetate"	"151-05-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID0020654"	"Geranyl acetate"	"105-87-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohol esters"	NA	NA	NA	NA
+"DTXSID4029270"	"Jasmacyclen"	"5413-60-5"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	NA	NA	NA	NA
+"DTXSID9040635"	"2,2'-Bipyridine"	"366-18-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyridines and derivatives"	"Bipyridines and oligopyridines"	NA	NA	NA	NA
+"DTXSID4022109"	"gamma-Decanolactone"	"706-14-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Lactones"	"Gamma butyrolactones"	NA	NA	NA	NA
+"DTXSID6044808"	"3-(4-tert-Butylphenyl)propanal"	"18127-01-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID7027047"	"alpha-Isomethylionone"	"127-51-5"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	NA	NA	NA	NA
+"DTXSID7042279"	"2-Phenoxyethyl isobutyrate"	"103-60-6"	"Organic compounds"	"Benzenoids"	"Phenol ethers"	NA	NA	NA	NA	NA
+"DTXSID9026500"	"2-(4-Tert-Butylbenzyl)propionaldehyde"	"80-54-6"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID4034287"	"5-Heptyldihydro-2(3H)-furanone"	"104-67-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Lactones"	"Gamma butyrolactones"	NA	NA	NA	NA
+"DTXSID2021947"	"1-Tridecanol"	"112-70-9"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohols"	"Long-chain fatty alcohols"	NA	NA	NA
+"DTXSID0040701"	"Triethyl citrate"	"77-93-0"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Tricarboxylic acids and derivatives"	NA	NA	NA	NA
+"DTXSID1027970"	"4-(4-Hydroxy-4-methylpentyl)cyclohex-3-ene-1-carbaldehyde"	"31906-04-4"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Tertiary alcohols"	NA	NA	NA
+"DTXSID8037750"	"(3Z)-Hexenyl salicylate"	"65405-77-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	"o-Hydroxybenzoic acid esters"	NA	NA
+"DTXSID4026684"	"2-(Phenylmethylene)octanal"	"101-86-0"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Cinnamaldehydes"	NA	NA	NA	NA	NA
+"DTXSID00334554"	"2,2'-Thiodipyridine"	"4262-06-0"	"Organic compounds"	"Organosulfur compounds"	"Thioethers"	"Aryl thioethers"	"Diarylthioethers"	NA	NA	NA
+"DTXSID1041265"	"2-Hexyl-1-decanol"	"2425-77-6"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohols"	NA	NA	NA	NA
+"DTXSID70175517"	"2,2'-Dipyridyl disulfide"	"2127-03-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyridines and derivatives"	NA	NA	NA	NA	NA
+"DTXSID3021851"	"2-Methyl-4-phenylbutan-2-ol"	"103-05-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID2044769"	"Cyclamen aldehyde"	"103-95-7"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Aromatic monoterpenoids"	NA	NA	NA
+"DTXSID8047399"	"Cashmeran"	"33704-61-9"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Cyclic ketones"	"Cyclohexenones"	NA
+"DTXSID9020663"	"Glycerol"	"56-81-5"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbohydrates and carbohydrate conjugates"	"Sugar alcohols"	NA	NA	NA
+"DTXSID5025572"	"Methyl benzoate"	"93-58-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID7041209"	"beta-Terpineol"	"138-87-4"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Menthane monoterpenoids"	NA	NA	NA
+"DTXSID6020143"	"Benzoic acid"	"65-85-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acids"	NA	NA	NA
+"DTXSID0020737"	"Indole"	"120-72-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Indoles and derivatives"	"Indoles"	NA	NA	NA	NA
+"DTXSID7025924"	"Piperonal"	"120-57-0"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzodioxoles"	NA	NA	NA	NA	NA
+"DTXSID5021968"	"3-Ethoxy-4-hydroxybenzaldehyde"	"121-32-4"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Aldehydes"	"Aryl-aldehydes"	"Benzaldehydes"	"Hydroxybenzaldehydes"
+"DTXSID00860469"	"1H-3a,7-Methanoazulene, ethanone deriv."	"68039-35-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	"Cedrane and isocedrane sesquiterpenoids"	NA	NA	NA
+"DTXSID0026838"	"Isopropyl tetradecanoate"	"110-27-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID50276293"	"(1xi)-1-(7-amino-2h-pyrazolo[4,3-d]pyrimidin-3-yl)-1,4-anhydro-5-chloro-5-deoxy-d-ribitol"	"75135-41-0"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbohydrates and carbohydrate conjugates"	"Glycosyl compounds"	"C-glycosyl compounds"	NA	NA
+"DTXSID6051512"	"Isobutyl phenylacetate"	"102-13-6"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID0035160"	"alpha-Ionone"	"127-41-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	NA	NA	NA	NA
+"DTXSID40196936"	"1-(1,3-Benzodioxol-5-yl)acetone"	"4676-39-5"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzodioxoles"	NA	NA	NA	NA	NA
+"DTXSID6051643"	"1-(2,6,6-Trimethyl-1-cyclohexen-1-yl)pent-1-en-3-one"	"127-43-5"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	NA	NA	NA	NA
+"DTXSID7021940"	"1-Octanol"	"111-87-5"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohols"	NA	NA	NA	NA
+"DTXSID5060772"	"Acetic acid, hydroxy-, ethyl ester"	"623-50-7"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID7044764"	"2-Phenylethyl 2-methylpropanoate"	"103-48-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID5024055"	"Dimethyl sulfate"	"77-78-1"	"Organic compounds"	"Organic acids and derivatives"	"Organic sulfuric acids and derivatives"	"Sulfuric acid esters"	"Sulfuric acid diesters"	NA	NA	NA
+"DTXSID3052488"	"Ethyl 2-methylbutyrate"	"7452-79-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID2064787"	"1,3,6-Trioxa-2-silacyclooctane, 2,2-dimethyl-"	"7733-78-0"	"Organic compounds"	"Organometallic compounds"	"Organometalloid compounds"	"Organosilicon compounds"	"Alkoxysilanes"	NA	NA	NA
+"DTXSID70880912"	"levoglucosenone"	"37112-31-5"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyrans"	"Pyranones and derivatives"	"Dihydropyranones"	NA	NA	NA
+"DTXSID3044754"	"Prop-2-en-1-yl heptanoate"	"142-19-8"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID5021754"	"5,5-Dimethylhydantoin"	"77-71-4"	"Organic compounds"	"Organoheterocyclic compounds"	"Azolidines"	"Imidazolidines"	"Imidazolidinones"	"Imidazolidinediones"	"Hydantoins"	NA
+"DTXSID3021641"	"Nonanoic acid"	"112-05-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acids and conjugates"	"Medium-chain fatty acids"	NA	NA	NA
+"DTXSID8044755"	"Prop-2-en-1-yl 3-cyclohexylpropanoate"	"2705-87-5"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID9025453"	"3-Methylbutyl acetate"	"123-92-2"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID7047510"	"Benzyl butyrate"	"103-37-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyloxycarbonyls"	NA	NA	NA	NA
+"DTXSID1031096"	"D-alpha-Tocopheryl acetate"	"58-95-7"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Quinone and hydroquinone lipids"	"Vitamin E compounds"	NA	NA	NA
+"DTXSID5041516"	"2-Ethyl-3-hydroxy-4-pyrone"	"4940-11-8"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyrans"	"Pyranones and derivatives"	NA	NA	NA	NA
+"DTXSID9034286"	"5-Chloro-2-methyl-3(2H)-isothiazolone"	"26172-55-4"	"Organic compounds"	"Organohalogen compounds"	"Aryl halides"	"Aryl chlorides"	NA	NA	NA	NA
+"DTXSID1047609"	"4-Hydroxyoctanoic acid lactone"	"104-50-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Lactones"	"Gamma butyrolactones"	NA	NA	NA	NA
+"DTXSID9027104"	"Hexadecanoic acid, 1-methylethyl ester"	"142-91-6"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID2027254"	"2-Methylbutyl acetate"	"624-41-9"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID5052549"	"Methyl benzenesulphonate"	"80-18-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzenesulfonic acids and derivatives"	"Benzenesulfonate esters"	NA	NA	NA
+"DTXSID6035152"	"1-(Hydroxymethyl)-5,5-dimethylhydantoin"	"116-25-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Azolidines"	"Imidazolidines"	"Imidazolidinones"	"Imidazolidinediones"	"Hydantoins"	NA
+"DTXSID9047128"	"3,3-Dimethylallyl acetate"	"1191-16-8"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID4044791"	"Benzyl propanoate"	"122-63-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyloxycarbonyls"	NA	NA	NA	NA
+"DTXSID6025567"	"Methyl 2-aminobenzoate"	"134-20-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID5038830"	"alpha,alpha-Dimethylphenethyl butyrate"	"10094-34-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID5044495"	"4-(4-Hydroxyphenyl)butan-2-one"	"5471-51-2"	"Organic compounds"	"Benzenoids"	"Phenols"	"1-hydroxy-2-unsubstituted benzenoids"	NA	NA	NA	NA
+"DTXSID1020142"	"6-Phenyl-1,3,5-triazine-2,4-diamine"	"91-76-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Triazines"	"Aminotriazines"	"1,3,5-triazine-2,4-diamines"	NA	NA	NA
+"DTXSID1040112"	"Ethyl heptanoate"	"106-30-9"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID9020617"	"Eugenol"	"97-53-0"	"Organic compounds"	"Benzenoids"	"Phenols"	"Methoxyphenols"	NA	NA	NA	NA
+"DTXSID7047645"	"Methyl 4-methoxybenzoate"	"121-98-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Methoxybenzoic acids and derivatives"	"P-methoxybenzoic acids and derivatives"	NA	NA
+"DTXSID1047653"	"Allyl hexanoate"	"123-68-2"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID70423681"	"1-(4-tert-Butylphenyl)propan-2-one"	"81561-77-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID4022529"	"Methylparaben"	"99-76-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	"p-Hydroxybenzoic acid esters"	"p-Hydroxybenzoic acid alkyl esters"	NA
+"DTXSID4022527"	"Propylparaben"	"94-13-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	"p-Hydroxybenzoic acid esters"	"p-Hydroxybenzoic acid alkyl esters"	NA
+"DTXSID1044809"	"3,7-Dimethyloct-6-en-3-ol"	"18479-51-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Acyclic monoterpenoids"	NA	NA	NA
+"DTXSID2047519"	"Hexyl isobutyrate"	"2349-07-7"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID60342059"	"Cyclohexene, 1,5,5-trimethyl-6-methylene-"	"514-95-4"	"Organic compounds"	"Hydrocarbons"	"Unsaturated hydrocarbons"	"Branched unsaturated hydrocarbons"	NA	NA	NA	NA
+"DTXSID3066847"	"2-Butanone, 1-(1,3-benzodioxol-5-yl)-"	"23023-13-4"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzodioxoles"	NA	NA	NA	NA	NA
+"DTXSID20864267"	"Benzenepropanol, .alpha.-methyl-, 1-acetate"	"10415-88-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID4047200"	"Dihydro-beta-ionone"	"17283-81-7"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	NA	NA	NA	NA
+"DTXSID4038924"	"Hexyl salicylate"	"6259-76-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	"o-Hydroxybenzoic acid esters"	NA	NA
+"DTXSID9041653"	"Methyl 3-methylorsellinate"	"4707-47-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	"p-Hydroxybenzoic acid esters"	"p-Hydroxybenzoic acid alkyl esters"	NA
+"DTXSID8027373"	"1,3,4,6,7,8-Hexahydro-4,6,6,7,8,8-hexamethylcyclopenta[g]-2-benzopyran"	"1222-05-5"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzopyrans"	"2-benzopyrans"	NA	NA	NA	NA
+"DTXSID60161621"	"5-Methyl-5-phenyl-2-hexanone"	"14128-61-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID4021925"	"1,3,5-Trioxane"	"110-88-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Trioxanes"	NA	NA	NA	NA	NA
+"DTXSID7044506"	"2-Phenylethyl acetate"	"103-45-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID4047092"	"cis-Jasmone"	"488-10-8"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Cyclic ketones"	NA	NA
+"DTXSID5047166"	"4-(4-Methoxyphenyl)-2-butanone"	"104-20-1"	"Organic compounds"	"Benzenoids"	"Phenol ethers"	"Anisoles"	NA	NA	NA	NA
+"DTXSID1022007"	"Butyl ether"	"142-96-1"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Dialkyl ethers"	NA	NA	NA
+"DTXSID9020168"	"Bis(chloroethyl) ether"	"111-44-4"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Dialkyl ethers"	NA	NA	NA
+"DTXSID4020616"	"1,8-Cineol"	"470-82-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Oxanes"	NA	NA	NA	NA	NA
+"DTXSID8047000"	"1,2-Bis(2-chloroethoxy)ethane"	"112-26-5"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Dialkyl ethers"	NA	NA	NA
+"DTXSID0021969"	"4-Hydroxy-3-methoxybenzaldehyde"	"121-33-5"	"Organic compounds"	"Benzenoids"	"Phenols"	"Methoxyphenols"	NA	NA	NA	NA
+"DTXSID70168762"	"(R)-(+)-p-(1,2,2-Trimethylcyclopentyl)toluene"	"16982-00-6"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	NA	NA	NA	NA
+"DTXSID50881245"	"cis-thujopsene"	"470-40-6"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	NA	NA	NA	NA
+"DTXSID6040111"	"Ethyl butyrate"	"105-54-4"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID8044753"	"2,6-Dimethylhept-5-enal"	"106-72-9"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Aldehydes"	"Medium-chain aldehydes"	NA	NA
+"DTXSID80866181"	"Butanoic acid, 2-methylbutyl ester"	"51115-64-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID1044774"	"1,4-Dioxacycloheptadecane-5,17-dione"	"105-95-3"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Macrolides and analogues"	NA	NA	NA	NA	NA
+"DTXSID7029110"	"3,7-Dimethyl-3-octanol"	"78-69-3"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Tertiary alcohols"	NA	NA	NA
+"DTXSID4044799"	"2-tert-Butylcyclohexanol"	"13491-79-7"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Secondary alcohols"	"Cyclohexanols"	NA	NA
+"DTXSID40357388"	"(R,R)-(+)-Hydrobenzoin"	"52340-78-0"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Stilbenes"	NA	NA	NA	NA	NA
+"DTXSID3041241"	"1,3-Dioxolane-2-acetic acid, 2-methyl-, ethyl ester"	"6413-10-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID0034229"	"gamma-Nonanolactone"	"104-61-0"	"Organic compounds"	"Organoheterocyclic compounds"	"Lactones"	"Gamma butyrolactones"	NA	NA	NA	NA
+"DTXSID60862969"	"2,6-Dimethylocta-2,6-diene"	"2792-39-4"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Acyclic monoterpenoids"	NA	NA	NA
+"DTXSID2047068"	"cis-3,7-Dimethyl-2,6-octadien-1-yl acetate"	"141-12-8"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty alcohol esters"	NA	NA	NA	NA
+"DTXSID2020929"	"Niacinamide"	"98-92-0"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyridines and derivatives"	"Pyridinecarboxylic acids and derivatives"	"Pyridinecarboxamides"	"Nicotinamides"	NA	NA
+"DTXSID8029157"	"alpha-Amyl cinnamaldehyde"	"122-40-7"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Cinnamaldehydes"	NA	NA	NA	NA	NA
+"DTXSID0021206"	"1,2-Propylene glycol"	"57-55-6"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Polyols"	"1,2-diols"	NA	NA
+"DTXSID1026665"	"3-Pyridinecarbonitrile"	"100-54-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyridines and derivatives"	"3-pyridinecarbonitriles"	NA	NA	NA	NA
+"DTXSID1024598"	"Benzyl salicylate"	"118-58-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	"o-Hydroxybenzoic acid esters"	NA	NA
+"DTXSID30190387"	"delta-Guaiene"	"3691-11-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	NA	NA	NA	NA
+"DTXSID8047426"	"dl-Carvone"	"99-49-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Menthane monoterpenoids"	NA	NA	NA
+"DTXSID6042232"	"Hydroxycitronellal"	"107-75-5"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Aldehydes"	"Medium-chain aldehydes"	NA	NA
+"DTXSID5044314"	"Methyl (E)-cinnamate"	"1754-62-7"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Cinnamic acids and derivatives"	"Cinnamic acid esters"	NA	NA	NA	NA
+"DTXSID30345451"	"3,3,5,6,7-Pentamethyl-1-indanone"	"16204-69-6"	"Organic compounds"	"Benzenoids"	"Indanes"	"Indanones"	NA	NA	NA	NA
+"DTXSID50999778"	"8-Ethyl-4,6,6,8-tetramethyl-1,3,4,6,7,8-hexahydrocyclopenta[g]isochromene"	"78448-49-4"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzopyrans"	"2-benzopyrans"	NA	NA	NA	NA
+"DTXSID30239866"	"Ethanol, 2-chloro-, benzoate"	"939-55-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID2026997"	"4-Methoxybenzaldehyde"	"123-11-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoyl derivatives"	NA	NA	NA	NA
+"DTXSID1020221"	"4-(1,1-Dimethylethyl)phenol"	"98-54-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID70876133"	"CYCLOHEXENE, 4-METHYL-1-(1-METHYLETHYL)-, (R)-"	"619-52-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Menthane monoterpenoids"	NA	NA	NA
+"DTXSID6020141"	"2,3-Benzofuran"	"271-89-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzofurans"	NA	NA	NA	NA	NA
+"DTXSID4047593"	"alpha-Phellandrene"	"99-83-2"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Menthane monoterpenoids"	NA	NA	NA
+"DTXSID4020086"	"Anethole"	"104-46-1"	"Organic compounds"	"Benzenoids"	"Phenol ethers"	"Anisoles"	NA	NA	NA	NA
+"DTXSID2047725"	"2,2,2-Trichloro-1-phenylethyl acetate"	"90-17-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyloxycarbonyls"	NA	NA	NA	NA
+"DTXSID7022413"	"Isoeugenol"	"97-54-1"	"Organic compounds"	"Benzenoids"	"Phenols"	"Methoxyphenols"	NA	NA	NA	NA
+"DTXSID0044494"	"2-Phenylethyl phenylacetate"	"102-20-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID7040578"	"4-Methoxyamphetamine"	"64-13-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenethylamines"	"Amphetamines and derivatives"	NA	NA	NA
+"DTXSID3038696"	"Ethyl benzoate"	"93-89-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID4052051"	"4-(4-Methyl-3-pentenyl)cyclohex-3-ene-1-carbaldehyde"	"37677-14-8"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Monocyclic monoterpenoids"	NA	NA	NA
+"DTXSID3026691"	"Triacetin"	"102-76-1"	"Organic compounds"	"Lipids and lipid-like molecules"	"Glycerolipids"	"Triradylcglycerols"	"Triacylglycerols"	NA	NA	NA
+"DTXSID6025804"	"1-Octene"	"111-66-0"	"Organic compounds"	"Hydrocarbons"	"Unsaturated hydrocarbons"	"Unsaturated aliphatic hydrocarbons"	NA	NA	NA	NA
+"DTXSID9021554"	"Decanoic acid"	"334-48-5"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acids and conjugates"	"Medium-chain fatty acids"	NA	NA	NA
+"DTXSID30949059"	"2-[5-Methyl-5-(4-methylcyclohex-3-en-1-yl)oxolan-2-yl]propan-2-ol"	"26184-88-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Tetrahydrofurans"	NA	NA	NA	NA	NA
+"DTXSID9036438"	"Bumetrizole"	"3896-11-5"	"Organic compounds"	"Organoheterocyclic compounds"	"Azoles"	"Triazoles"	"Phenyltriazoles"	"Phenyl-1,2,3-triazoles"	NA	NA
+"DTXSID5041487"	"3,7-Dimethyloctan-3-yl acetate"	"20780-48-7"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID0044814"	"2-Ethyl-4-(2',2',3-trimethylcyclopent-3'-enyl)but-2-enol"	"28219-61-6"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Monocyclic monoterpenoids"	NA	NA	NA
+"DTXSID00340978"	"(3-Methylcyclopentyl)benzene"	"5078-75-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID4041818"	"2-sec-Butylcyclohexan-1-one"	"14765-30-1"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Cyclic ketones"	NA	NA
+"DTXSID60871359"	"2,2,4-Trimethylcyclopentan-1-one"	"28056-54-4"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Cyclic ketones"	NA	NA
+"DTXSID6041397"	"Damascenone"	"23696-85-7"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Alpha,beta-unsaturated carbonyl compounds"	"Alpha,beta-unsaturated ketones"	"Enones"	NA
+"DTXSID2049684"	"2-Ethoxynaphthalene"	"93-18-5"	"Organic compounds"	"Benzenoids"	"Naphthalenes"	NA	NA	NA	NA	NA
+"DTXSID8021355"	"alpha-Tocopherol"	"10191-41-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Quinone and hydroquinone lipids"	"Vitamin E compounds"	"Tocopherols"	NA	NA
+"DTXSID00862145"	"Benzenemethanol, .alpha.,4-dimethyl-"	"536-50-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Toluenes"	NA	NA	NA	NA
+"DTXSID60221693"	"Glycine, N,N-dimethyl-, methyl ester"	"7148-06-3"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Amino acids, peptides, and analogues"	"Amino acids and derivatives"	"Alpha amino acids and derivatives"	"Alpha amino acid esters"	NA
+"DTXSID8041246"	"1,3-Propanediol"	"504-63-2"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Primary alcohols"	NA	NA	NA
+"DTXSID1020647"	"Furfural"	"98-01-1"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Aldehydes"	"Aryl-aldehydes"	NA	NA
+"DTXSID7044471"	"Methyl nicotinate"	"93-60-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyridines and derivatives"	"Pyridinecarboxylic acids and derivatives"	"Pyridinecarboxylic acids"	NA	NA	NA
+"DTXSID2027969"	"Tris(2,4-di-tert-butylphenyl) phosphite"	"31570-04-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID3047001"	"Phenylacetaldehyde dimethyl acetal"	"101-48-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID6044357"	"(4-Methoxyphenyl)methanol"	"105-13-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyl alcohols"	NA	NA	NA	NA
+"DTXSID1044770"	"4-Methoxybenzyl acetate"	"104-21-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyloxycarbonyls"	NA	NA	NA	NA
+"DTXSID7026285"	"Veratraldehyde"	"120-14-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Methoxybenzenes"	"Dimethoxybenzenes"	NA	NA	NA
+"DTXSID0051528"	"Diethylene glycol monophenyl ether"	"104-68-7"	"Organic compounds"	"Benzenoids"	"Phenol ethers"	NA	NA	NA	NA	NA
+"DTXSID1060265"	"1-Chlorohexane"	"544-10-5"	"Organic compounds"	"Organohalogen compounds"	"Organochlorides"	NA	NA	NA	NA	NA
+"DTXSID1047601"	"1,1-Dimethylphenylethanol"	"100-86-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID90885242"	"beta-Damascenone"	"23726-93-4"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Alpha,beta-unsaturated carbonyl compounds"	"Alpha,beta-unsaturated ketones"	"Enones"	NA
+"DTXSID2026157"	"Toluene-2,6-diisocyanate"	"91-08-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Toluenes"	"Toluene diisocyanates"	NA	NA	NA
+"DTXSID2052366"	"6,6-Dimethoxy-2,5,5-trimethylhex-2-ene"	"67674-46-8"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Acetals"	NA	NA	NA
+"DTXSID0041270"	"3,5,5-Trimethylhexyl acetate"	"58430-94-7"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID50176643"	"2(5H)-Furanone, 3-methyl-"	"22122-36-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Dihydrofurans"	"Furanones"	"Butenolides"	NA	NA	NA
+"DTXSID2034259"	"2-Methyl-3(2H)-isothiazolone"	"2682-20-4"	"Organic compounds"	"Organoheterocyclic compounds"	"Azoles"	"Thiazoles"	NA	NA	NA	NA
+"DTXSID90985312"	"3-(4-tert-Butylphenyl)-2-methylpropanoic acid"	"66735-04-4"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Phenylpropanoic acids"	NA	NA	NA	NA	NA
+"DTXSID3022906"	"Dexpanthenol"	"81-13-0"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Secondary alcohols"	NA	NA	NA
+"DTXSID6020014"	"Dehydroacetic acid"	"520-45-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyrans"	"Pyranones and derivatives"	"Dihydropyranones"	NA	NA	NA
+"DTXSID4021979"	"2,4-Pentanedione"	"123-54-6"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"1,3-dicarbonyl compounds"	"Beta-diketones"	NA	NA
+"DTXSID3021980"	"Ethyl hexanoate"	"123-66-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID3061188"	"Cyclohexylbenzene"	"827-52-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID9041576"	"Methyl chloroacetate"	"96-34-4"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	"Methyl esters"	NA	NA
+"DTXSID7021318"	"1,1,2,2-Tetrachloroethane"	"79-34-5"	"Organic compounds"	"Organohalogen compounds"	"Organochlorides"	NA	NA	NA	NA	NA
+"DTXSID1044352"	"Methyl phenylacetate"	"101-41-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID2029612"	"Limonene"	"138-86-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Monoterpenoids"	"Menthane monoterpenoids"	NA	NA	NA
+"DTXSID2021284"	"Styrene"	"100-42-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Styrenes"	NA	NA	NA	NA
+"DTXSID0020153"	"Benzyl chloride"	"100-44-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyl halides"	"Benzyl chlorides"	NA	NA	NA
+"DTXSID5025152"	"Dimethyl succinate"	"106-65-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	"Fatty acid methyl esters"	NA	NA	NA
+"DTXSID8025096"	"Dimethyl adipate"	"627-93-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	"Fatty acid methyl esters"	NA	NA	NA
+"DTXSID2021159"	"Phthalic anhydride"	"85-44-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzofurans"	"Benzofuranones"	"Phthalic anhydrides"	NA	NA	NA
+"DTXSID0021254"	"Safrole"	"94-59-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzodioxoles"	NA	NA	NA	NA	NA
+"DTXSID0052594"	"Phthalide"	"87-41-2"	"Organic compounds"	"Organoheterocyclic compounds"	"Isocoumarans"	"Isobenzofuranones"	"Phthalides"	NA	NA	NA
+"DTXSID3022455"	"Dimethyl phthalate"	"131-11-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID3022405"	"2-Hydroxy-4-methoxybenzophenone"	"131-57-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzophenones"	NA	NA	NA	NA
+"DTXSID0023907"	"Benzo(b)fluoranthene"	"205-99-2"	"Organic compounds"	"Benzenoids"	"Phenanthrenes and derivatives"	NA	NA	NA	NA	NA
+"DTXSID8023977"	"2-Chlorotoluene"	"95-49-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Halobenzenes"	"Chlorobenzenes"	NA	NA	NA
+"DTXSID9021639"	"Nonanal"	"124-19-6"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Aldehydes"	"Medium-chain aldehydes"	NA	NA
+"DTXSID7074290"	"1,2-Benzisothiazole"	"272-16-2"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID8044591"	"2-Butyl-1H-isoindole-1,3(2H)-dione"	"1515-72-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Isoindoles and derivatives"	"Isoindolines"	"Isoindolones"	"Phthalimides"	NA	NA
+"DTXSID9022360"	"4-(1,1,3,3-Tetramethylbutyl)phenol"	"140-66-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID1041269"	"(+)-Cedrol"	"77-53-2"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	"Cedrane and isocedrane sesquiterpenoids"	NA	NA	NA
+"DTXSID9044748"	"(1-Hydroxycyclohexyl)(phenyl)methanone"	"947-19-3"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Aryl ketones"	"Phenylketones"	"Alkyl-phenylketones"
+"DTXSID5021758"	"Tris(2-butoxyethyl) phosphate"	"78-51-3"	"Organic compounds"	"Organic acids and derivatives"	"Organic phosphoric acids and derivatives"	"Phosphate esters"	"Alkyl phosphates"	"Trialkyl phosphates"	NA	NA
+"DTXSID9025299"	"2-Ethylhexyl-2-cyano-3,3-diphenylacrylate"	"6197-30-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Diphenylmethanes"	NA	NA	NA	NA
+"DTXSID7075422"	"2(5H)-Furanone"	"497-23-4"	"Organic compounds"	"Organoheterocyclic compounds"	"Dihydrofurans"	"Furanones"	"Butenolides"	NA	NA	NA
+"DTXSID20189164"	"3,3,4,4-Tetramethylsuccinimide"	"3566-61-8"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyrrolidines"	"Pyrrolidones"	"Pyrrolidine-2-ones"	NA	NA	NA
+"DTXSID1024097"	"2-Butoxyethanol"	"111-76-2"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Dialkyl ethers"	NA	NA	NA
+"DTXSID4025587"	"2-Methylcinnamic aldehyde"	"101-39-3"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Cinnamaldehydes"	NA	NA	NA	NA	NA
+"DTXSID2020426"	"Dichloran"	"99-30-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	NA	NA	NA	NA
+"DTXSID3065405"	"2-Bromo-4-nitroaniline"	"13296-94-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	NA	NA	NA	NA
+"DTXSID5026259"	"Tris(2-chloroisopropyl)phosphate"	"13674-84-5"	"Organic compounds"	"Organic acids and derivatives"	"Organic phosphoric acids and derivatives"	"Phosphate esters"	"Alkyl phosphates"	"Trialkyl phosphates"	NA	NA
+"DTXSID5026706"	"1,2-Diphenoxyethane"	"104-66-5"	"Organic compounds"	"Benzenoids"	"Phenol ethers"	NA	NA	NA	NA	NA
+"DTXSID6063062"	"2-Chloro-4,6-dinitroaniline"	"3531-19-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Aniline and substituted anilines"	"Dinitroanilines"	NA	NA	NA
+"DTXSID7052573"	"2,6-Dibromo-4-nitroaniline"	"827-94-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	NA	NA	NA	NA
+"DTXSID60862247"	"Benzaldehyde, (phenylmethylene)hydrazone"	"588-68-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID4021973"	"2-Chloro-4-nitroaniline"	"121-87-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	NA	NA	NA	NA
+"DTXSID8049410"	"Pyrazine"	"290-37-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Diazines"	"Pyrazines"	NA	NA	NA	NA
+"DTXSID3042219"	"Propylbenzene"	"103-65-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID50212813"	"2-Pyrrolecarboxylic acid"	"634-97-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyrroles"	"Pyrrole carboxylic acids and derivatives"	"Pyrrole carboxylic acids"	"Pyrrole 2-carboxylic acids"	NA	NA
+"DTXSID6020692"	"Methenamine"	"100-97-0"	"Organic compounds"	"Organoheterocyclic compounds"	"Triazinanes"	"1,3,5-triazinanes"	NA	NA	NA	NA
+"DTXSID30861722"	"1-propanol, 2-(2-hydroxypropoxy)-"	"106-62-7"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Secondary alcohols"	NA	NA	NA
+"DTXSID90143132"	"Ethyl 4-phenyl butyrate"	"10031-93-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID9040718"	"2,5-Dimethoxy-4-chloroaniline"	"6358-64-1"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Methoxybenzenes"	"Dimethoxybenzenes"	NA	NA	NA
+"DTXSID9037741"	"4-Methylbenzophenone"	"134-84-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzophenones"	NA	NA	NA	NA
+"DTXSID30310366"	"Cycloartanol"	"4657-58-3"	"Organic compounds"	"Lipids and lipid-like molecules"	"Steroids and steroid derivatives"	"Cycloartanols and derivatives"	NA	NA	NA	NA
+"DTXSID5032523"	"1,2-Benzisothiazolin-3-one"	"2634-33-5"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzothiazoles"	NA	NA	NA	NA	NA
+"DTXSID8029315"	"4-(Butan-2-yl)-2,6-di-tert-butylphenol"	"17540-75-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID3029154"	"Cyclopentanone"	"120-92-3"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Cyclic ketones"	NA	NA
+"DTXSID40964238"	"2-Phenylprop-2-enal"	"495-10-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylacetaldehydes"	NA	NA	NA	NA
+"DTXSID80905044"	"(2,2-Dichloroethyl)benzene"	"4412-39-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID1026241"	"3,3,5-Trimethylcyclohexyl salicylate"	"118-56-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	"o-Hydroxybenzoic acid esters"	NA	NA
+"DTXSID4038893"	"Phenol, 2-(5-chloro-2H-benzotriazol-2-yl)-4,6-bis(1,1-dimethylethyl)-"	"3864-99-1"	"Organic compounds"	"Organoheterocyclic compounds"	"Azoles"	"Triazoles"	"Phenyltriazoles"	"Phenyl-1,2,3-triazoles"	NA	NA
+"DTXSID3027293"	"2-Ethylhexyl 2-methyl-2-propenoate"	"688-84-6"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	"Alpha,beta-unsaturated carboxylic esters"	"Enoate esters"	NA
+"DTXSID9044746"	"Propan-2-yl benzoate"	"939-48-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID00164030"	"4-Benzyloxybenzoic acid"	"1486-51-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acids"	NA	NA	NA
+"DTXSID0040703"	"4-tert-Butylbenzoic acid"	"98-73-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID5021889"	"4-Methyl-2-pentanone"	"108-10-1"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	NA	NA	NA
+"DTXSID50194488"	"4-Piperidone"	"41661-47-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Piperidines"	"Piperidinones"	NA	NA	NA	NA
+"DTXSID3044750"	"4-Methoxy-2-nitroaniline"	"96-96-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	"Nitrophenyl ethers"	NA	NA	NA
+"DTXSID50179336"	"2-Naphthalenecarboxylic acid, methyl ester"	"2459-25-8"	"Organic compounds"	"Benzenoids"	"Naphthalenes"	"Naphthalenecarboxylic acids and derivatives"	"Naphthalenecarboxylic acids"	NA	NA	NA
+"DTXSID1021823"	"2,4-Dinitroaniline"	"97-02-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Aniline and substituted anilines"	"Dinitroanilines"	NA	NA	NA
+"DTXSID40175685"	"1H-Isoindole-1,3(2H)-dione, 2-(4-methylphenyl)-"	"2142-03-2"	"Organic compounds"	"Organoheterocyclic compounds"	"Isoindoles and derivatives"	"Isoindolines"	"Isoindolones"	"Phthalimides"	NA	NA
+"DTXSID6063692"	"2,3-Epoxy-2,3-dimethylbutane"	"5076-20-0"	"Organic compounds"	"Organoheterocyclic compounds"	"Epoxides"	NA	NA	NA	NA	NA
+"DTXSID2074326"	"2-Oxazolidinone"	"497-25-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Azolines"	"Oxazolines"	NA	NA	NA	NA
+"DTXSID3025338"	"Formanilide"	"103-70-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Anilides"	NA	NA	NA	NA
+"DTXSID9041491"	"3-Phenyl-2-propen-1-ol"	"104-54-1"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Cinnamyl alcohols"	NA	NA	NA	NA	NA
+"DTXSID70880634"	"cyclohexane, (2-ethyl-1-methyl-1-butenyl)-"	"74810-42-7"	"Organic compounds"	"Hydrocarbons"	"Unsaturated hydrocarbons"	"Branched unsaturated hydrocarbons"	NA	NA	NA	NA
+"DTXSID2022543"	"N-Acetylaminobenzene"	"103-84-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID8040694"	"Butyl benzoate"	"136-60-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID3026514"	"Phthalimide"	"85-41-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Isoindoles and derivatives"	"Isoindolines"	"Isoindolones"	"Phthalimides"	NA	NA
+"DTXSID4021975"	"Diphenylamine"	"122-39-4"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Aniline and substituted anilines"	NA	NA	NA	NA
+"DTXSID8020123"	"Azobenzene"	"103-33-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Azobenzenes"	NA	NA	NA	NA	NA
+"DTXSID30182545"	"4-Acetyl-2,6-dimethoxyphenyl acetate"	"28294-47-5"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Carbonyl compounds"	"Ketones"	"Aryl ketones"	"Phenylketones"	"Alkyl-phenylketones"
+"DTXSID40214528"	"3-Methylbenzophenone"	"643-65-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzophenones"	NA	NA	NA	NA
+"DTXSID80172693"	"2H-Benzotriazole, 2-phenyl-"	"1916-72-9"	"Organic compounds"	"Organoheterocyclic compounds"	"Azoles"	"Triazoles"	"Phenyltriazoles"	"Phenyl-1,2,3-triazoles"	NA	NA
+"DTXSID3022160"	"4-Hydroxyazobenzene"	"1689-82-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Azobenzenes"	NA	NA	NA	NA	NA
+"DTXSID70870979"	"4-Nitroazobenzene"	"2491-52-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Azobenzenes"	NA	NA	NA	NA	NA
+"DTXSID6024460"	"C.I. Solvent Yellow 1"	"60-09-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Azobenzenes"	NA	NA	NA	NA	NA
+"DTXSID2062660"	"Benzenamine, 2-(phenylazo)-"	"2835-58-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Azobenzenes"	NA	NA	NA	NA	NA
+"DTXSID5060518"	"Benzene, 1,1'-sulfonylbis[4-methyl-"	"599-66-6"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Toluenes"	"Tosyl compounds"	NA	NA	NA
+"DTXSID1059238"	"N-Phenyl-4-(phenylazo)aniline"	"101-75-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Azobenzenes"	NA	NA	NA	NA	NA
+"DTXSID0022193"	"Benzyl methacrylate"	"2495-37-6"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzyloxycarbonyls"	NA	NA	NA	NA
+"DTXSID6074417"	"2-Phenylpyridine"	"1008-89-5"	"Organic compounds"	"Organoheterocyclic compounds"	"Pyridines and derivatives"	"Phenylpyridines"	NA	NA	NA	NA
+"DTXSID6020802"	"Melamine"	"108-78-1"	"Organic compounds"	"Organoheterocyclic compounds"	"Triazines"	"1,3,5-triazines"	NA	NA	NA	NA
+"DTXSID3060667"	"Phenol, 2,4-bis(1,1-dimethylethyl)-6-methyl-"	"616-55-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Phenylpropanes"	NA	NA	NA	NA
+"DTXSID3025542"	"Methacrylic acid"	"79-41-4"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acids"	NA	NA	NA	NA
+"DTXSID8021484"	"Phthalic acid"	"88-99-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acids"	NA	NA	NA
+"DTXSID0021414"	"Tris(2-ethylhexyl) phosphate"	"78-42-2"	"Organic compounds"	"Organic acids and derivatives"	"Organic phosphoric acids and derivatives"	"Phosphate esters"	"Alkyl phosphates"	"Trialkyl phosphates"	NA	NA
+"DTXSID8020597"	"Ethylene glycol"	"107-21-1"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Alcohols and polyols"	"Polyols"	"1,2-diols"	NA	NA
+"DTXSID8020462"	"Diethylene glycol"	"111-46-6"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Dialkyl ethers"	NA	NA	NA
+"DTXSID9027520"	"Hexa(methoxymethyl)melamine"	"3089-11-0"	"Organic compounds"	"Organic nitrogen compounds"	"Organonitrogen compounds"	"Amines"	"Tertiary amines"	"Tertiary alkylarylamines"	"Dialkylarylamines"	NA
+"DTXSID1021821"	"2-Butanone oxime"	"96-29-7"	"Organic compounds"	"Organic nitrogen compounds"	"Organonitrogen compounds"	"Oximes"	"Ketoximes"	NA	NA	NA
+"DTXSID10498499"	"Stigmasta-3,5-dien-7-one"	"2034-72-2"	"Organic compounds"	"Lipids and lipid-like molecules"	"Steroids and steroid derivatives"	"Stigmastanes and derivatives"	NA	NA	NA	NA
+"DTXSID4021971"	"1-Chloro-3-nitrobenzene"	"121-73-3"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	NA	NA	NA	NA
+"DTXSID1060683"	"Benzene, 1,3-dichloro-5-nitro-"	"618-62-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	NA	NA	NA	NA
+"DTXSID9073961"	"[1,1'-Biphenyl]-4-carboxaldehyde"	"3218-36-8"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Biphenyls and derivatives"	NA	NA	NA	NA
+"DTXSID00932216"	"Pentachlorophenyl acetate"	"1441-02-7"	"Organic compounds"	"Benzenoids"	"Phenol esters"	NA	NA	NA	NA	NA
+"DTXSID9047679"	"2-Pentylfuran"	"3777-69-3"	"Organic compounds"	"Organoheterocyclic compounds"	"Heteroaromatic compounds"	NA	NA	NA	NA	NA
+"DTXSID40863353"	"2-Methyl-1-benzofuran"	"4265-25-2"	"Organic compounds"	"Organoheterocyclic compounds"	"Benzofurans"	NA	NA	NA	NA	NA
+"DTXSID501310667"	"1-Chloro-3,5-dinitrobenzene"	"618-86-0"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Nitrobenzenes"	NA	NA	NA	NA
+"DTXSID401017125"	"3,6,13,16-tetraoxatricyclo[16.2.2^28,11]tetracosa-1(20),8,10,18,21,23-hexaene-2,7,12,17-tetrone"	"24388-68-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Phthalic acid and derivatives"	"Phthalate esters"	"p-Phthalate esters"	NA
+"DTXSID1026293"	"D&C Violet 2"	"81-48-1"	"Organic compounds"	"Benzenoids"	"Anthracenes"	"Anthraquinones"	NA	NA	NA	NA
+"DTXSID1025564"	"Dimethoxymethane"	"109-87-5"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Acetals"	NA	NA	NA
+"DTXSID7024247"	"Pentachlorobenzene"	"608-93-5"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Halobenzenes"	"Chlorobenzenes"	NA	NA	NA
+"DTXSID9021716"	"2,3,4,6-Tetrachlorophenol"	"58-90-2"	"Organic compounds"	"Benzenoids"	"Phenols"	"Halophenols"	"Chlorophenols"	"P-chlorophenols"	NA	NA
+"DTXSID5058777"	"3,5-Dimethylpyrazole"	"67-51-6"	"Organic compounds"	"Organoheterocyclic compounds"	"Azoles"	"Pyrazoles"	NA	NA	NA	NA
+"DTXSID2021941"	"2-(2-Ethoxyethoxy)ethanol"	"111-90-0"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Dialkyl ethers"	NA	NA	NA
+"DTXSID6047579"	"(3Z)-Hex-3-en-1-yl propanoate"	"33467-74-2"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID701014582"	"trans-4-tert-Butylcyclohexyl acetate"	"1900-69-2"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID90425147"	"(-)-Epicedrol"	"19903-73-2"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	"Cedrane and isocedrane sesquiterpenoids"	NA	NA	NA
+"DTXSID70870919"	"Norphytane"	"1921-70-6"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Diterpenoids"	"Acyclic diterpenoids"	NA	NA	NA
+"DTXSID70862339"	"2,6,10,14-Tetramethylhexadecane"	"638-36-8"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Diterpenoids"	"Acyclic diterpenoids"	NA	NA	NA
+"DTXSID9021845"	"Solketal"	"100-79-8"	"Organic compounds"	"Organic oxygen compounds"	"Organooxygen compounds"	"Ethers"	"Acetals"	"Ketals"	NA	NA
+"DTXSID5025239"	"2,3-Epoxybutane"	"3266-23-7"	"Organic compounds"	"Organoheterocyclic compounds"	"Epoxides"	NA	NA	NA	NA	NA
+"DTXSID6041892"	"Diphenylsulfone"	"127-63-9"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzenesulfonyl compounds"	NA	NA	NA	NA
+"DTXSID9047205"	"2-Ethylhexyl trans-4-methoxycinnamate"	"83834-59-7"	"Organic compounds"	"Phenylpropanoids and polyketides"	"Cinnamic acids and derivatives"	"Cinnamic acid esters"	NA	NA	NA	NA
+"DTXSID5051579"	"Isopropyl octadecanoate"	"112-10-7"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID1027974"	"4-tert-Butylcyclohexyl acetate"	"32210-23-4"	"Organic compounds"	"Organic acids and derivatives"	"Carboxylic acids and derivatives"	"Carboxylic acid derivatives"	"Carboxylic acid esters"	NA	NA	NA
+"DTXSID0047032"	"(-)-alpha-Cedrene"	"469-61-4"	"Organic compounds"	"Lipids and lipid-like molecules"	"Prenol lipids"	"Sesquiterpenoids"	"Cedrane and isocedrane sesquiterpenoids"	NA	NA	NA
+"DTXSID4029149"	"Methyl hexadecanoate"	"112-39-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	"Fatty acid methyl esters"	NA	NA	NA
+"DTXSID2047640"	"Methyl stearate"	"112-61-8"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	"Fatty acid methyl esters"	NA	NA	NA
+"DTXSID3026724"	"Dibutyl maleate"	"105-76-0"	"Organic compounds"	"Lipids and lipid-like molecules"	"Fatty Acyls"	"Fatty acid esters"	NA	NA	NA	NA
+"DTXSID3039242"	"Benzene"	"71-43-2"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	NA	NA	NA	NA	NA
+"DTXSID4041654"	"2-Ethylhexyl benzoate"	"5444-75-7"	"Organic compounds"	"Benzenoids"	"Benzene and substituted derivatives"	"Benzoic acids and derivatives"	"Benzoic acid esters"	NA	NA	NA
+"DTXSID6027183"	"Dodecamethylcyclohexasiloxane"	"540-97-6"	"Organic compounds"	"Organometallic compounds"	"Organometalloid compounds"	"Organosilicon compounds"	"Organoheterosilanes"	NA	NA	NA
+"DTXSID8059348"	"Cycloheptasiloxane, tetradecamethyl-"	"107-50-6"	"Organic compounds"	"Organometallic compounds"	"Organometalloid compounds"	"Organosilicon compounds"	"Organoheterosilanes"	NA	NA	NA
+"DTXSID0060305"	"Hexadecamethylcyclooctasiloxane"	"556-68-3"	"Organic compounds"	"Organometallic compounds"	"Organometalloid compounds"	"Organosilicon compounds"	"Organoheterosilanes"	NA	NA	NA
+"DTXSID5060308"	"Octadecamethylcyclononasiloxane"	"556-71-8"	"Organic compounds"	"Organometallic compounds"	"Organometalloid compounds"	"Organosilicon compounds"	"Organoheterosilanes"	NA	NA	NA

@@ -105,7 +105,7 @@ processSSAfiles <- function(data_files, myPath, prodGroups){
   }
   # Change some column names
   colnames(fullSampChemInfo)[1:3] <- c("Category", "MySysID", "Customer ID")
-  save(fullSampChemInfo, file = paste(myPath, "data", "fullSetOfSamplesWithAllChems.RData", sep = "/"))
+  #save(fullSampChemInfo, file = paste(myPath, "data", "fullSetOfSamplesWithAllChems.RData", sep = "/"))
   
   
   ## Further process the data to build chemical x sample matrices
@@ -157,7 +157,7 @@ processSSAfiles <- function(data_files, myPath, prodGroups){
   chemList <- chemList[!duplicated(chemList$Name),]
   # Save this set for querying the dashboard
   #write.table(chemList, file = paste(myPath, "data", "uniqueChems_ns-xtui-xtuiPCB-xu_all_samples.txt", sep = "/"), quote = FALSE,
-    #         sep = "\t", na = "NA", row.names = FALSE)
+   #          sep = "\t", na = "NA", row.names = FALSE)
   
   # Now build 3 data frames in the form of chemicals x samples
   sampNames <- c()
@@ -187,7 +187,6 @@ processSSAfiles <- function(data_files, myPath, prodGroups){
   #save(chemXsamp_matrices_other, file = paste(myPath, "data", "chemXsamp_matrices_ns-xtui-xtuiPCB-xu_full.RData", sep = "/"))
   
 }
-
 
 
 
