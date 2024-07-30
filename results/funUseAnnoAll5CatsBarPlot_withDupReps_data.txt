@@ -1,0 +1,16 @@
+"Category"	"Annotation"	"Count"
+"Cotton Clothing"	"Reported Use"	107
+"Shampoo"	"Reported Use"	123
+"Baby Soap"	"Reported Use"	117
+"Fabric Upholstery"	"Reported Use"	165
+"Silicone Kitchen Tools"	"Reported Use"	41
+"Cotton Clothing"	"Predicted Use"	30
+"Shampoo"	"Predicted Use"	42
+"Baby Soap"	"Predicted Use"	44
+"Fabric Upholstery"	"Predicted Use"	46
+"Silicone Kitchen Tools"	"Predicted Use"	15
+"Cotton Clothing"	"Unknown Use"	13
+"Shampoo"	"Unknown Use"	40
+"Baby Soap"	"Unknown Use"	36
+"Fabric Upholstery"	"Unknown Use"	28
+"Silicone Kitchen Tools"	"Unknown Use"	8
