@@ -440,65 +440,6 @@ rm(list=setdiff(ls(), c("myPath", "prodGroups")))
 ```
 
 
-# Make Upset plot
-
-```{r upset}
-# Get sample list
-load(paste(myPath, "data", "masterSampleList.RData", sep = "/"))
-
-# Load matrices for chemical occurrence
-load(paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
-
-# Combine into 1 occurrence matrix
-chemXsamp_binary_red <- c()
-prodind <- c()
-for (i in 1:length(prodGroups)){
-  chemXsamp_binary_red <- cbind(chemXsamp_binary_red, prodList[[i]][[1]]) 
-  prodind <- c(prodind, rep(prodGroups[i], dim(prodList[[i]][[1]])[2]))
-}
-
-# Aggregate by product
-upset_list <- vector("list", length(prodGroups))
-for (i in 1:length(prodGroups)){
-  upset_list[[i]] <- which(unlist(apply(chemXsamp_binary_red[,prodind == prodGroups[i]], 1, sum))  > 0)
-}
-names(upset_list) <- prodGroups
-
-# Chemical counts per product group
-lengths(upset_list)
-
-pdf(file = paste(myPath, "plots", "ProductGroup_chemOccurrence_upsetPlot_v2.pdf", sep = "/"), width = 8, height = 6)
-u <- upset(fromList(upset_list), order.by = "freq", point.size = 3, line.size = 1.5, 
-      mainbar.y.label = "Chemical Intersections", sets.x.label = "Product Type", 
-      text.scale = c(1.5, 1.3, 1.3, 1.1, 1.4, 1.2))
-dev.off()
-
-# Get the set of chemicals that are present in all 5 categories and save for the paper supplement
-chems <- lapply(upset_list, names)
-sharedChems <- Reduce(intersect, chems)
-
-# Add CAS and name
-load(paste(myPath, "data", "chemicalData_fromDashboard_rawAndCuratedMatches.RData", sep = "/"))
-ind <- match(sharedChems, tps$DTXSID)
-sharedChems <- data.frame("DTXSID" = sharedChems, "PREFERRED_NAME" = tps$PREFERRED_NAME[ind], 
-                          "CAS" = tps$CASRN[ind], "Cotton Clothing" = NA, "Shampoo" = NA,
-                          "Baby Soap" = NA, "Fabric Upholstery" = NA, "Silicone Kitchen Tools" = NA)
-# Step through the data to get the number of samples each chemical occurs in
-for (i in 1:dim(sharedChems)[1]){
-  for (j in 1:length(prodGroups)){
-    ind <- which(row.names(prodList[[j]][[1]]) == sharedChems$DTXSID[i])
-    sharedChems[i,(j+3)] <- sum(prodList[[j]][[1]][ind,])  #/dim(prodList[[j]][[1]])[2]
-  }
-}
-# Save
-write.table(sharedChems, file = paste(myPath, "results", "All25sharedChems_withProdCatCounts.txt", sep = "/"), row.names = FALSE)
-
-
-rm(list=setdiff(ls(), c("myPath", "prodGroups")))
-```
-
-
-
 ## Combine Duplicates and Repeats
 
 Will use the resulting set of samples for clustering, upset plots, and
@@ -594,6 +535,66 @@ save(allComb_BinAndConc_concat, file = paste(myPath, "data", "allCombDilDupRep_B
 rm(list=setdiff(ls(), c("myPath", "prodGroups")))
 
 ```
+
+
+
+# Make Upset plot
+
+```{r upset}
+# Get sample list
+load(paste(myPath, "data", "masterSampleList.RData", sep = "/"))
+
+# Load matrices for chemical occurrence
+load(paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
+
+# Combine into 1 occurrence matrix
+chemXsamp_binary_red <- c()
+prodind <- c()
+for (i in 1:length(prodGroups)){
+  chemXsamp_binary_red <- cbind(chemXsamp_binary_red, prodList[[i]][[1]]) 
+  prodind <- c(prodind, rep(prodGroups[i], dim(prodList[[i]][[1]])[2]))
+}
+
+# Aggregate by product
+upset_list <- vector("list", length(prodGroups))
+for (i in 1:length(prodGroups)){
+  upset_list[[i]] <- which(unlist(apply(chemXsamp_binary_red[,prodind == prodGroups[i]], 1, sum))  > 0)
+}
+names(upset_list) <- prodGroups
+
+# Chemical counts per product group
+lengths(upset_list)
+
+pdf(file = paste(myPath, "plots", "ProductGroup_chemOccurrence_upsetPlot_v2.pdf", sep = "/"), width = 8, height = 6)
+u <- upset(fromList(upset_list), order.by = "freq", point.size = 3, line.size = 1.5, 
+      mainbar.y.label = "Chemical Intersections", sets.x.label = "Product Type", 
+      text.scale = c(1.5, 1.3, 1.3, 1.1, 1.4, 1.2))
+dev.off()
+
+# Get the set of chemicals that are present in all 5 categories and save for the paper supplement
+chems <- lapply(upset_list, names)
+sharedChems <- Reduce(intersect, chems)
+
+# Add CAS and name
+load(paste(myPath, "data", "chemicalData_fromDashboard_rawAndCuratedMatches.RData", sep = "/"))
+ind <- match(sharedChems, tps$DTXSID)
+sharedChems <- data.frame("DTXSID" = sharedChems, "PREFERRED_NAME" = tps$PREFERRED_NAME[ind], 
+                          "CAS" = tps$CASRN[ind], "Cotton Clothing" = NA, "Shampoo" = NA,
+                          "Baby Soap" = NA, "Fabric Upholstery" = NA, "Silicone Kitchen Tools" = NA)
+# Step through the data to get the number of samples each chemical occurs in
+for (i in 1:dim(sharedChems)[1]){
+  for (j in 1:length(prodGroups)){
+    ind <- which(row.names(prodList[[j]][[1]]) == sharedChems$DTXSID[i])
+    sharedChems[i,(j+3)] <- sum(prodList[[j]][[1]][ind,])  #/dim(prodList[[j]][[1]])[2]
+  }
+}
+# Save
+write.table(sharedChems, file = paste(myPath, "results", "All25sharedChems_withProdCatCounts.txt", sep = "/"), row.names = FALSE)
+
+
+rm(list=setdiff(ls(), c("myPath", "prodGroups")))
+```
+
 
 
 # Annotate Chemicals
@@ -1545,7 +1546,9 @@ rm(list=setdiff(ls(), c("myPath", "prodGroups")))
 ```
 
 
-# Simple Signature Identification
+# Chemical Signatures of Products
+
+## Simple Signature Identification
 
 This is a simple first-pass way of finding a chemical signature for each
 product type. Use the concentration matrix to get an idea of the
@@ -2114,7 +2117,7 @@ pdb <- cbind(my.tsne, row.names(binmat))
 
 
 
-## Calculate Bioactivity:Exposure Ratios
+# Calculate Bioactivity:Exposure Ratios
 
 [Not complete due to lack of chemical data] Use SEEM predictions and TEST oral rat 
 LD50 predictions along with httk to produce BER values as a means to prioritize 
@@ -2148,7 +2151,7 @@ z <- subset(get_cheminfo(info = "all", species = "Human", model = "pbtk"), DTXSI
 ```
 
 
-## Signatures at Different Category Levels
+# Signatures at Different Category Levels
 
 [Not Updated with Curated Chemicals] Do for multiple different levels, not just the above 5 categories. Any
 different set of groupings can be used, so some manual input is needed

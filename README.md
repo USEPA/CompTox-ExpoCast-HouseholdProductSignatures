@@ -20,11 +20,13 @@ For this work, a list of household consumer product categories and products of c
   + Analysis outcomes
   + Final data tables for figures
 * Rmd/
-  + The single vignette file needed to complete all analyses, titled mainAnalysisPipeline.Rmd
+  + The single vignette file needed to complete all analyses, titled mainAnalysisPipeline.Rmd, and knitted HTML version
 * plots/
   + All figures grouped by analysis type
+* renv/
+  + R environment handling directory used to keep track of the packages and their versions used in this repo
 * other
-  + Work in progress poster presented at the International Society of Exposure Science (ISES) 2023 conference
+  + Posters detailing this work presented at international conferences
   + A file containing references and relevant papers for the poster presented at ISES 2023
  
 
