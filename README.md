@@ -28,5 +28,6 @@ For this work, a list of household consumer product categories and products of c
 * other
   + Posters detailing this work presented at international conferences
   + A file containing references and relevant papers for the poster presented at ISES 2023
+  + Supplemental data file for the manuscript associated with this project
  
 
