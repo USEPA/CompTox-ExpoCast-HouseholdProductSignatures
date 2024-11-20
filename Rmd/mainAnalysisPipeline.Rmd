@@ -1618,6 +1618,14 @@ rm(list=setdiff(ls(), c("myPath", "prodGroups")))
 This is a simple first-pass way of finding a chemical signature for each
 product type. Use the concentration matrix to get an idea of the
 fraction of mass each chemical makes up.
+```{r signature_func}
+subset_to_signature <- function(conc.matrix, threshold = 0.8)
+{
+  rowcounts <- unlist(apply(conc.matrix, 1, function(x) sum(!is.na(x)))) 
+  prevChems <- which(rowcounts/dim(conc.matrix)[2] >= threshold)
+  return(conc.matrix[prevChems,])
+}
+```
 
 ```{r simpleSig}
 # Load prodList
@@ -1630,10 +1638,10 @@ load(paste(myPath, "data", "chemicalData_fromDashboard_rawAndCuratedMatches.RDat
 # plotting and supplemental table generation
 signatures <- vector(mode = "list", length = length(prodList))
 chemnames <- vector(mode = "list", length = length(prodList))
-for (i in 1:length(prodList)){
-  rowcounts <- unlist(apply(prodList[[i]]$conc, 1, function(x) sum(!is.na(x)))) 
-  prevChems <- which(rowcounts/dim(prodList[[i]]$conc)[2] >= 0.8)
-  signatures[[i]] <- prodList[[i]]$conc[prevChems,]
+for (i in 1:length(prodList))
+{
+# Calculate signature here:
+  signatures[[i]] <- subset_to_signature(prodList[[i]]$conc)
   
   # Add chemical names (use raw data name for chemicals without a DTXSID)
   ind <- match(row.names(signatures[[i]]), tps$DTXSID)
@@ -1654,9 +1662,78 @@ names(signatures) <- prodGroups
 names(chemnames) <- prodGroups
 # Save this object for comparison with external data
 save(signatures, file = paste(myPath, "results", "prodCatSignatures_gte0.8sampOccurrence_all.RData", sep = "/"))
+```
 
+```{r chemical_counts}
+count.table <- sapply(signatures,dim)
+rownames(count.table) <- c("Unique Chemicals in Signature","Samples Analyzed in Study")
+print(count.table)
+```
+```{r investigate_sample_size}
+# Load prodList
+load(paste(myPath, "data", "prodList_all5cats_BinaryConcGroupNames.RData", sep = "/"))
 
-# Make a Facet Plot 
+# Load processed dashboard output object
+load(paste(myPath, "data", "chemicalData_fromDashboard_rawAndCuratedMatches.RData", sep = "/"))
+
+# Build signatures. Keep a corresponding list with the chemical names for use in
+# plotting and supplemental table generation
+sample.num <- sort(unique(c(seq(2,43,2),5,23,43)))
+sig.matrix <- matrix(NA,nrow=length(prodList),ncol=length(sample.num))
+rownames(sig.matrix) <- names(prodList)
+colnames(sig.matrix) <- sample.num
+sig.matrix.sd <- sig.matrix
+
+NUM.REPS <- 10
+set.seed(120512)
+for (this.prod in names(prodList))
+{
+  this.data.subset <- prodList[[this.prod]]$conc
+  for (this.sample.num in sample.num)
+  {
+    if (this.sample.num > dim(this.data.subset)[2])
+    {
+      num.chems <- NA 
+    } else {
+      num.chems <- NULL
+      for (this.rep in 1:NUM.REPS)
+      {
+        
+        this.rep <- this.data.subset[,
+                                     sample(1:dim(this.data.subset)[2],
+                                            this.sample.num,
+                                            replace=FALSE)]
+        this.sig <- subset_to_signature(this.rep)
+        num.chems <- c(num.chems, dim(this.sig)[1])
+      }
+    }
+    sig.matrix[this.prod, colnames(sig.matrix)==this.sample.num] <- mean(num.chems)
+    sig.matrix.sd[this.prod, colnames(sig.matrix)==this.sample.num] <- sd(num.chems)
+  }
+}
+```
+```{r make_samplenum_plot}
+samplenum.df <- melt(sig.matrix)
+samplenum.df$SD <- melt(sig.matrix.sd)$value
+colnames(samplenum.df)[1:3] <- c("Product","Samples","Chemicals")
+
+samplenum.plot <- ggplot(samplenum.df, aes(x=Samples, y=Chemicals, 
+                                  shape=Product, color=Product)) + 
+  geom_point(size=3)+
+  geom_errorbar(aes(ymin=Chemicals-SD, ymax=Chemicals+SD), width=.2,
+                 position=position_dodge(0.05))+
+  ylab("Chemicals in Signature")+
+  xlab("Number of Samples Analyzed")
+  theme_bw()
+print(samplenum.plot)
+pdf(file = paste(myPath, "plots", 
+                 "SignatureChemicalswithSamples.pdf", sep = "/"), 
+    width = 12, height = 7)
+  print(samplenum.plot)
+dev.off()
+```
+# Make a Facet Plot
+```{r make_facet_plot}
 # Build the data frame 
 df <- c()
 for (i in 1:length(prodList)){
@@ -1692,6 +1769,7 @@ pdf(file = paste(myPath, "plots", "mostPrevChemsPerProduct_boxplotConc.pdf", sep
   print(g)
 dev.off()
 ```
+
 ```{r calculate_categorgy_chemical_IQR}
 # For supplement, want to get the IQR for each category-chemical pair. Step through the signatures object.
 sigChemsConc <- c()
