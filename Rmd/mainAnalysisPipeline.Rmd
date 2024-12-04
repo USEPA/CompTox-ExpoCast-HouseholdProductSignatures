@@ -29,6 +29,7 @@ want to assess within-product similarity of samples.
 # Load Packages and Data Objects
 
 ```{r setEnv}
+rm(list=ls())
 library(readxl)
 library(tsne)
 library(reshape2)
@@ -74,7 +75,7 @@ upc_file <- "EPA task 10 items_26Feb18.xlsx"
 This function parses the raw data into multiple formats for downstream
 analysis and saves them to the data directory
 
-```{r processRaw}
+```{r processRaw, eval=FALSE}
 source(paste(myPath, "R/processRawData.R", sep = "/"))
 
 ### Before running this, check the save_names assignment at the start of this function to make sure
@@ -115,6 +116,7 @@ as.data.frame(table(fullSampChemInfo$Group))
 # Counts of spectra and chemicals by flag
 indXC <- fullSampChemInfo$Group == "xc"
 indXT <- fullSampChemInfo$Group == "xt"
+indBlanks <- regexpr("SOLBLK",fullSampChemInfo$`Customer ID`)!=-1
 
 # Unique spectra and chemical names with these flags
 length(unique(fullSampChemInfo$Spectrum[indXC]))
@@ -134,6 +136,45 @@ length(unique(fullSampChemInfo$Name[indOther]))
 xcxt_name <- unique(fullSampChemInfo$Name[indXC | indXT])
 write.table(xcxt_name, file = paste(myPath, "data", "uniqueChems_xcxt_allSamples_Name.txt", sep = "/"), 
             quote = FALSE, row.names = FALSE, col.names = FALSE)
+
+cat(paste(length(unique(fullSampChemInfo$Spectrum[!indBlanks])),
+          "features (excluding blanks).\n"))
+cat(paste(length(unique(fullSampChemInfo$Spectrum[!indBlanks &
+                                                    (indXC | 
+                                                        indXT)])),
+          "matched NIST.\n"))
+cat(paste(length(unique(fullSampChemInfo$Spectrum[!indBlanks &
+                                                    indXC])),
+          "Features with Confirmed Identity,\n"))
+cat(paste(length(unique(fullSampChemInfo$Spectrum[!indBlanks &
+                                                    indXT])),
+          "Tentative Matches.\n"))
+cat(paste(length(unique(fullSampChemInfo$Spectrum[!indBlanks &
+                                                    !(indXC | 
+                                                        indXT)])),
+          "unidentified features.\n"))
+
+prodOnt <- as.data.frame(read_xlsx(path = paste(myPath, "data", "masterSampleTable_withLevelsAndBrands_v2.xlsx", 
+                                                sep = "/")))
+# Get rid of blanks:
+prodOnt <- subset(prodOnt,!(Type %in% "Solvent Blank"))
+
+cat(paste(length(unique(prodOnt$'Anon Sample')),
+    "unique samples analyzed.\n"))
+for (this.cat in unique(prodOnt$Group2))
+{
+  this.subset <- subset(prodOnt, Group2==this.cat)
+  unique.samples <- unique(this.subset$'Anon Sample')
+  num.replicates <- sum(regexpr("_rep",unique.samples)!=-1)
+  num.duplicates <- sum(regexpr("_dup",unique.samples)!=-1)
+  cat(paste(length(unique.samples)-num.replicates-num.duplicates,
+  "unique items with",
+  num.duplicates, "duplicate extraction and",
+  num.replicates, "repeat purchases for", 
+  this.cat,"\n"))
+  
+}
+
 ```
 
 ```{r read_dashboard_query_by_name}
@@ -439,8 +480,10 @@ row.names(chemXsamp_group_red) <- row.names(chemXsamp_binary)
 prodList <- list()
 for (i in 1:length(prodGroups)){
   ind <- allSamps$Product == prodGroups[i]
-  prodList[[i]] <- list("binary" = chemXsamp_binary_red[,ind], "conc" = chemXsamp_conc_red[,ind], 
-                      "group" = chemXsamp_group_red[,ind], "prod_names" = allSamps$`Customer ID`[ind])
+  prodList[[i]] <- list("binary" = chemXsamp_binary_red[,ind], 
+                        "conc" = chemXsamp_conc_red[,ind], 
+                      "group" = chemXsamp_group_red[,ind], 
+                      "prod_names" = allSamps$`Customer ID`[ind])
 }
 names(prodList) <- prodGroups
 # Save this object for downstream analysis
@@ -575,11 +618,16 @@ names(upset_list) <- prodGroups
 # Chemical counts per product group
 lengths(upset_list)
 
-pdf(file = paste(myPath, "plots", "ProductGroup_chemOccurrence_upsetPlot_v2.pdf", sep = "/"), width = 8, height = 6)
+pdf(file = paste(myPath, 
+                 "plots", 
+                 "ProductGroup_chemOccurrence_upsetPlot_v2.pdf", sep = "/"), 
+    width = 8, height = 6)
 u <- upset(fromList(upset_list), order.by = "freq", point.size = 3, line.size = 1.5, 
-      mainbar.y.label = "Chemical Intersections", sets.x.label = "Product Type", 
+      mainbar.y.label = "Chemical Intersections", sets.x.label = "Total Chemicals", 
       text.scale = c(1.5, 1.3, 1.3, 1.1, 1.4, 1.2))
 dev.off()
+
+print(u)
 ```
 
 # Get the set of chemicals that are present in all 5 categories and save for the paper supplement
@@ -1110,9 +1158,10 @@ tax_nodes[[1]]
 str(tax_nodes[[1]])
 # Organize nodes and ontology info
 tax_nodes[[1]]$parent_chemont_id <- NA
-chemont_taxnodes <- data.frame('Name' = sapply(tax_nodes, function(t) {t[[1]]}),
-                               'ID' = sapply(tax_nodes, function(t) {t[[2]]}),
-                               'Parent_ID' = sapply(tax_nodes, function(t) {t[[3]]}))
+chemont_taxnodes <- data.frame(
+  'Name' = sapply(tax_nodes, function(t) {t[[1]]}),
+  'ID' = sapply(tax_nodes, function(t) {t[[2]]}),
+  'Parent_ID' = sapply(tax_nodes, function(t) {t[[3]]}))
 head(chemont_taxnodes)
 # Build the ontology
 chemont_taxonomy <- generate_taxonomy_tree(tax_nodes = chemont_taxnodes)
@@ -1133,7 +1182,9 @@ ggtree(chemont_tree) + layout_circular()
 
 # Remove NAs and convert my data to wide form
 myData <- myClassified[!is.na(myClassified$level),]
-myData <- pivot_wider(myData[,c(1:3,5:6)], names_from = "level", values_from = "name")
+myData <- pivot_wider(myData[,c(1:3,5:6)], 
+                      names_from = "level", 
+                      values_from = "name")
 myData <- myData[,c(1:9,11,10)]
 myData <- cbind(myData, "level9" = NA, "level10" = NA, "level11" = NA)
 
@@ -1143,14 +1194,29 @@ myData <- cbind("Chemical" = curatedHPssa$PREFERRED_NAME[ind], myData)
 
 # Look at how our SSA chemicals span the full ontology
 pdf(file = paste(myPath, "plots", "chemsInFullTree_AllChems.pdf", sep = "/"))
-display_subtree(data_1 = myData, name_1 = 'HouseProdSSA')
+display_subtree(data_1 = myData, name_1 = 'HouseProdSSA', show_tips=FALSE, clade_level=2, clade_opts = list(fontsize=4, wrap=10))
 dev.off()
+display_subtree(data_1 = myData, name_1 = 'HouseProdSSA', show_tips=FALSE, clade_level=2, clade_opts = list(fontsize=4, wrap=10))
 ```
 # Visualize the tree spanned by just our chemicals
 ```{r subtree_visualizaton}
-pdf(file = paste(myPath, "plots", "AllMyChems_subtree.pdf", sep = "/"))
-prune_and_display_subtree(prune_to = myData, prune_name = "All Chemicals")
-dev.off()
+    pruned_tree <- prune_tree(tree = chemont_tree,
+                              adjust_branch_length = FALSE,
+                              tax_level_labels = chemont_tax_levels,
+                              keep_descendants = NULL, 
+                              prune_to = myData) 
+
+   Fig3a <- display_subtree(base_tree = pruned_tree, 
+                  show_tips=FALSE,
+                #  layout="rectangular",
+                  base_opts=list(size=0.25),
+                  clade_level=2, 
+                  clade_opts = list(fontsize=5, wrap=25))
+   Fig3a <- Fig3a+ theme(plot.margin = unit(c(2.5,2.5,2.5,2.5), "in"))
+   ggsave( Fig3a, width = 8, height = 8,file = paste(myPath, 
+                   "plots", "AllMyChems_subtree.png", sep = "/")) 
+  
+
 # Make this subtree a tree object we can plot subtrees on
 myFullTree <- prune_tree(tree = chemont_tree, prune_to = myData)
 # Check it is correct by plotting
@@ -1175,7 +1241,10 @@ for (i in 1:length(myProds)){
   
   # Plot subtree
   pdf(file = paste(myPath, "plots", paste("AllMyChems_subtree_with", myProds[i], "Chems.pdf", sep = ""), sep = "/"))
-  print(display_subtree(base_tree = myFullTree, base_name = "All Product Chemicals", data_1 = temp, 
+  print(display_subtree(base_tree = myFullTree, 
+                        base_name = "All Product Chemicals", 
+                        data_1 = temp, 
+                  clade_opts = list(fontsize=4, wrap=30),
                   name_1 = paste(myProds[i], "Chems", sep = " ")))
   dev.off()
 }
@@ -1668,6 +1737,13 @@ save(signatures, file = paste(myPath, "results", "prodCatSignatures_gte0.8sampOc
 count.table <- sapply(signatures,dim)
 rownames(count.table) <- c("Unique Chemicals in Signature","Samples Analyzed in Study")
 print(count.table)
+
+cat(paste("Unique products:", dim(prodList)[1],"\n"))
+cat(paste("Tentative chemical hits (all products):",
+          dim(subset(prodList,regexpr("SB",MySysID)==-1 &
+                       Group=="xt"))))
+                       
+                       
 ```
 ```{r investigate_sample_size}
 # Load prodList
@@ -1721,9 +1797,9 @@ samplenum.plot <- ggplot(samplenum.df, aes(x=Samples, y=Chemicals,
                                   shape=Product, color=Product)) + 
   geom_point(size=3)+
   geom_errorbar(aes(ymin=Chemicals-SD, ymax=Chemicals+SD), width=.2,
-                 position=position_dodge(0.05))+
+                 position=position_dodge(0.2))+
   ylab("Chemicals in Signature")+
-  xlab("Number of Samples Analyzed")
+  xlab("Number of Samples Used for Signature")+
   theme_bw()
 print(samplenum.plot)
 pdf(file = paste(myPath, "plots", 
@@ -2171,7 +2247,10 @@ row_ha <- rowAnnotation(Total_Abundance = anno_barplot(unlist(apply(concmat, 1, 
 # Set missing chemicals back to NA rather than 0
 concmat[concmat == 0] <- NA
 
-pdf(file = paste(myPath, "plots", "abundanceHeatmap_allCombined_sortByConcSampsAndChems.pdf", sep = "/"), 
+pdf(file = paste(myPath, 
+                 "plots", 
+                 "abundanceHeatmap_allCombined_sortByConcSampsAndChems.pdf", 
+                 sep = "/"), 
     width = 11, height = 9)
 print(Heatmap(concmat, name = "Reported Abundance (ug/g)", top_annotation = column_ha, right_annotation = row_ha,
               #left_annotation = row_ha2,
@@ -2179,6 +2258,50 @@ print(Heatmap(concmat, name = "Reported Abundance (ug/g)", top_annotation = colu
         cluster_columns = FALSE, show_row_names = FALSE, show_column_names = FALSE, column_split = sampcats_f))
 dev.off()
 ```
+
+```{r create_prevalence_table}
+prevalence.table <- NULL
+for (this.category in unique(sampcats_f))
+{
+  # Get only the columns for this category:
+  this.subset <- concmat[,sampcats_f==this.category]
+  # Remove chemicals that were not detected:
+  this.subset <- subset(this.subset, 
+                        apply(this.subset,1,function(x) !all(is.na(x))))
+  this.subset <- as.data.frame(this.subset)
+  # Calculate stats:
+  this.mean <- apply(this.subset, 1, function(x) 
+    signif(mean(x, na.rm=TRUE), 3)) 
+  this.median <- apply(this.subset, 1, function(x) 
+    signif(median(x, na.rm=TRUE), 3))
+  this.stddev <- apply(this.subset, 1, function(x) 
+    signif(sd(x, na.rm=TRUE), 3))
+  this.num <- dim(this.subset)[2]
+  this.prevalence <- apply(this.subset, 1, function(x)
+    signif(sum(!is.na(x))/dim(this.subset)[2],3))
+  # Annotate rows:
+  this.subset$Category <- this.category
+  this.subset$Chemical <- rownames(this.subset)
+  this.subset$Num.Products <- this.num
+  this.subset$Prevalence <- this.prevalence
+  this.subset$Mean.Abundance <- this.mean
+  this.subset$Median.Abundance <- this.median
+  this.subset$StdDev.Abundance <- this.stddev
+  prevalence.table <- rbind(prevalence.table, this.subset[,
+                                                          c("Category",
+                                                            "Chemical",
+                                                            "Num.Products",
+                                                            "Prevalence",
+                                                            "Mean.Abundance",
+                                                            "Median.Abundance",
+                                                            "StdDev.Abundance")])
+}
+write.csv(prevalence.table,file=paste(myPath, 
+                 "results", 
+                 "SupTable-ChemPrevalenceByCategory.txt",
+                 sep = "/"))
+```
+
 ```{r examine_common_chemicals}
 # There are blue horizontal lines across the articles. What are these chemicals
 # and do they share any characteristics?
