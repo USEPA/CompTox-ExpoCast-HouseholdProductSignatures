@@ -60,6 +60,7 @@ library(colorRamp2)
 library(rcartocolor)
 library(ggtree)
 library(httk)
+library(ggpubr)
 #myPath <- "/ccte/home1/zstanfie/HouseholdProdSSA"
 #myPath <- "C:/Users/ZSTANFIE/OneDrive - Environmental Protection Agency (EPA)/zstanfield/HhldProdsNTA/HouseholdProdSSA"
 myPath <- "C:/Users/jwambaug/git/CompTox-ExpoCast-HouseholdProductSignatures"
@@ -218,6 +219,7 @@ curatedDTXSIDs <- unique(curated_in$DTXSID)
 write.table(curatedDTXSIDs, file = paste(myPath, "data", "houseProdSSA_curatedChems_DTXSIDs.txt", sep = "/"), 
             quote = FALSE, row.names = FALSE, col.names = FALSE)
 ```
+
 ```{r read_from_dashboard}
 # Read in dashboard query file and add the chemical identifiers to our full feature data object
 curated_out <- read_xlsx(paste(myPath, "data", "houseProdSSA_curatedChems_CCDquery_byDTXSID.xlsx", sep = "/"), sheet = 2)
@@ -1392,6 +1394,7 @@ for (i in 1:length(prodList)){
     }
   }
 }
+save(prodOnt, file = paste(myPath, "data", "allCombinedAnnotated.RData", sep = "/"))
 ```
 # Examine within-product category sample variability
 ```{r examine_within_product_category_variability}
@@ -1734,16 +1737,14 @@ save(signatures, file = paste(myPath, "results", "prodCatSignatures_gte0.8sampOc
 ```
 
 ```{r chemical_counts}
-count.table <- sapply(signatures,dim)
+count.table <- sapply(signatures, dim)
 rownames(count.table) <- c("Unique Chemicals in Signature","Samples Analyzed in Study")
 print(count.table)
 
-cat(paste("Unique products:", dim(prodList)[1],"\n"))
-cat(paste("Tentative chemical hits (all products):",
-          dim(subset(prodList,regexpr("SB",MySysID)==-1 &
-                       Group=="xt"))))
-                       
-                       
+load(file = paste(myPath, "data", "allCombDilDupRep_BinAndConcMats_concat.RData", sep = "/"))
+
+cat(paste("Unique products:", dim(allComb_BinAndConc_concat$conc)[2],"\n"))
+
 ```
 ```{r investigate_sample_size}
 # Load prodList
@@ -1828,7 +1829,7 @@ df <- df[!is.na(df$Conc),]
 srtOrder <- unlist(lapply(signatures, function(x) dim(x)[1]))
 srtOrder <- order(srtOrder, decreasing = TRUE)
 df$Category <- factor(df$Category, levels = names(prodList)[srtOrder], ordered = TRUE)
-g <- ggplot(df, aes(x = reorder_within(Chemical, -Median_conc, Category), y = Conc, fill = Category)) +
+Fig7PanelA <- ggplot(df, aes(x = reorder_within(Chemical, -Median_conc, Category), y = Conc, fill = Category)) +
   geom_boxplot() +
   scale_y_log10() +
   scale_x_reordered() +
@@ -1842,7 +1843,7 @@ g <- ggplot(df, aes(x = reorder_within(Chemical, -Median_conc, Category), y = Co
   theme(text =element_text(size = 13)) +
   theme(legend.text = element_text(size = 10))
 pdf(file = paste(myPath, "plots", "mostPrevChemsPerProduct_boxplotConc.pdf", sep = "/"), width = 12, height = 7)
-  print(g)
+  print(Fig7PanelA)
 dev.off()
 ```
 
@@ -1943,8 +1944,9 @@ sigChemsAll$CPDat_Product_Count <- factor(sigChemsAll$CPDat_Product_Count,
 
 sigChemsAll$Median_conc <- as.numeric(sigChemsAll$Median_conc)
 colnames(sigChemsAll)[3] <- "Chemical"
-g <- ggplot(sigChemsAll, aes(x = reorder_within(Chemical, -Median_conc, Category), 
-                           y = sigChemsAll$EXPOCAST_MEDIAN_EXPOSURE_PREDICTION_MG.KG.BW.DAY, fill = CPDat_Product_Count)) +
+Fig7PanelB <- ggplot(sigChemsAll, aes(x = reorder_within(Chemical, -Median_conc, Category), 
+                           y = sigChemsAll$EXPOCAST_MEDIAN_EXPOSURE_PREDICTION_MG.KG.BW.DAY, 
+                           fill = CPDat_Product_Count)) +
   geom_bar(stat = "identity", width = 0.8) +
   scale_y_log10() +
   scale_x_reordered() +
@@ -1960,7 +1962,7 @@ g <- ggplot(sigChemsAll, aes(x = reorder_within(Chemical, -Median_conc, Category
   theme(text =element_text(size = 13)) +
   theme(legend.text = element_text(size = 10))
 pdf(file = paste(myPath, "plots", "prodCatSignatures_withChemExpoAndSEEM.pdf", sep = "/"), width = 12.3, height = 6.5)
-  print(g)
+  print(Fig7PanelB)
 dev.off()
 ```
 ```{r make_toxicity_plot}
@@ -1968,7 +1970,7 @@ dev.off()
 sigChemsAll$ORAL_RAT_LD50_MOL.KG_TEST_PRED <- as.numeric(sigChemsAll$ORAL_RAT_LD50_MOL.KG_TEST_PRED)
 sigChemsAll$TOXCAST_PERCENT_ACTIVE <- as.numeric(sigChemsAll$TOXCAST_PERCENT_ACTIVE)
 
-g <- ggplot(sigChemsAll, aes(x = reorder_within(Chemical, -Median_conc, Category), 
+Fig7PanelC <- ggplot(sigChemsAll, aes(x = reorder_within(Chemical, -Median_conc, Category), 
                            y = sigChemsAll$ORAL_RAT_LD50_MOL.KG_TEST_PRED, fill = sigChemsAll$TOXCAST_PERCENT_ACTIVE)) +
   geom_bar(stat = "identity", width = 0.8) +
   #scale_y_log10() +
@@ -1977,7 +1979,7 @@ g <- ggplot(sigChemsAll, aes(x = reorder_within(Chemical, -Median_conc, Category
   facet_grid(~Category, scales = "free_x", space = "free",
              labeller = labeller(Category = label_wrap_gen(5))) +
   theme_bw() +
-  guides(fill = guide_legend(title = str_wrap("TOXCAST PERCENT ACTIVE", 15))) +
+  guides(fill = guide_legend(title = str_wrap("Toxcast Percent Active", 15))) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   ylab("Predicted Oral Rat LD50 (mol/kg)") +
   #ggtitle("Chemical Signatures of Product Categories") +
@@ -1985,9 +1987,64 @@ g <- ggplot(sigChemsAll, aes(x = reorder_within(Chemical, -Median_conc, Category
   theme(text =element_text(size = 12.5)) +
   theme(legend.text = element_text(size = 9.5))
 pdf(file = paste(myPath, "plots", "prodCatSignatures_withToxCastPercActiveAndLD50.pdf", sep = "/"), width = 11.6, height = 6.5)
-  print(g)
+  print(Fig7PanelC)
 dev.off()
 ```
+```{R Fig7}
+save(Fig7PanelA, Fig7PanelB, Fig7PanelC, 
+     file = paste(myPath, "plots", 
+                  "Fig7Panels.RData", sep = "/"))
+FONT.SIZE <- 7
+library(scales)
+
+# Function for log10 formatting tick labels:
+scientific_10 <- function(x) {
+  out <- gsub("1e", "10^", scientific_format()(x))
+  out <- gsub("\\+","",out)
+  out <- gsub("10\\^01","10",out)
+  out <- parse(text=gsub("10\\^00","1",out))              }  
+
+Fig7PanelA <- Fig7PanelA +
+  ylab("Abundance (ug/g)") +
+  scale_y_log10(label=scientific_10) +
+  theme(axis.text.x = element_blank(),
+                legend.key.width = unit(0.4, "cm"),
+                text=element_text(size = FONT.SIZE),
+                legend.text=element_text(size=2),
+                legend.position="none",
+                plot.margin = unit(c(0,3,0,0.8), "cm"))
+                
+Fig7PanelB <- Fig7PanelB  +
+  scale_y_log10(label=scientific_10) +
+  guides(fill = guide_legend(title = str_wrap("CPDat Product Count", 15))) + 
+  theme(axis.text.x = element_blank(),
+                legend.key.width = unit(0.75, "cm"),
+                legend.key.height = unit(0.3, "cm"),
+                text=element_text(size = FONT.SIZE),
+                legend.text=element_text(size=FONT.SIZE),
+                plot.margin = unit(c(0,0,0,0.5), "cm"))+
+  ylab("Predicted Median\nExposure (mg/kg/day)")
+
+Fig7PanelC <- Fig7PanelC +
+  guides(fill = guide_legend(title = str_wrap("Toxcast Percent Active", 15))) + 
+  theme(
+                legend.key.width = unit(1, "cm"),
+                legend.key.height = unit(0.5, "cm"),
+                text=element_text(size = FONT.SIZE),
+                legend.text=element_text(size=FONT.SIZE),
+                plot.margin = unit(c(0,0.2,0,0.8), "cm"))
+
+ggarrange(Fig7PanelA,Fig7PanelB,Fig7PanelC,nrow=3,
+          labels=c("A","B","C"),heights=c(1,1,2.2),
+          common.legend=FALSE)
+pdf(file = paste(myPath, "plots", "Fig7.pdf", sep = "/"),
+    width = 7, height = 7)
+ggarrange(Fig7PanelA,Fig7PanelB,Fig7PanelC,nrow=3,
+          labels=c("A","B","C"),heights=c(1,1,2.2),
+          common.legend=FALSE)
+dev.off()
+```
+
 ```{r examine_classyfire_annotations}
 # Look at the ClassyFire annotations of the signature chemicals 
 sigchems <- read.delim(file = paste(myPath, "results", "signatureChemsCuratedData.txt", sep = "/"))
