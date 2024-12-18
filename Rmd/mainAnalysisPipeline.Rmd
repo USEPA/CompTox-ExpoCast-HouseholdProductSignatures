@@ -622,11 +622,12 @@ lengths(upset_list)
 
 pdf(file = paste(myPath, 
                  "plots", 
-                 "ProductGroup_chemOccurrence_upsetPlot_v2.pdf", sep = "/"), 
-    width = 8, height = 6)
+                 "Fig2-ProductGroup_chemOccurrence_upsetPlot.pdf", sep = "/"), 
+    width = 6, height = 3.7, onefile=FALSE)
 u <- upset(fromList(upset_list), order.by = "freq", point.size = 3, line.size = 1.5, 
       mainbar.y.label = "Chemical Intersections", sets.x.label = "Total Chemicals", 
       text.scale = c(1.5, 1.3, 1.3, 1.1, 1.4, 1.2))
+print(u)
 dev.off()
 
 print(u)
@@ -920,7 +921,7 @@ df$Count <- as.numeric(df$Count)
 df$Annotation <- factor(df$Annotation, levels = c("Reported Use", "Predicted Use", "Unknown Use"), 
                         ordered = TRUE)
 df$Category <- factor(df$Category, level = prodGroups, ordered = TRUE)
-g <- ggplot(df, aes(fill = Annotation, y = Count, x = Category)) +
+Fig3b <- ggplot(df, aes(fill = Annotation, y = Count, x = Category)) +
   geom_bar(position = "stack", stat = "identity") +
   #geom_bar(position = "dodge", stat = "identity") +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
@@ -928,9 +929,9 @@ g <- ggplot(df, aes(fill = Annotation, y = Count, x = Category)) +
   labs(title = "Functional Use Distribution of Product Category Chemicals", 
        x = "Product Category", y = "Unique Chemicals")
 pdf(file = paste(myPath, "plots/functionalUse", "funUseAnnoAll5CatsBarPlot_withDupReps.pdf", sep = "/"), width = 8, height = 7)
-  print(g)
+  print(Fig3b)
 dev.off()
-
+save(Fig3b, file = paste(myPath, "plots/functionalUse/Fig3b.RData", sep="/"))
 # Save data for figure 
 write.table(df, file = paste(myPath, "results", 
                              "funUseAnnoAll5CatsBarPlot_withDupReps_data.txt", sep = "/"), 
@@ -1254,6 +1255,31 @@ for (i in 1:length(myProds)){
 # Can visualize a numerical value overlaid on this tree.  Start with just the
 # number of samples each chemical occurs in. Need to add a column to the object
 # myClassified that has the sample count (just sum rows of chemXsamp_binary_full.RData).
+```{r Make_Fig3}
+load(file = paste(myPath, "plots/functionalUse/Fig3b.RData", sep="/"))
+Fig3a <- display_subtree(base_tree = pruned_tree, 
+                  show_tips=FALSE,
+                #  layout="rectangular",
+                  base_opts=list(size=0.25),
+                  clade_level=2, 
+                  clade_opts = list(fontsize=2, wrap=25)) + 
+  theme(plot.margin = unit(c(1,0,0.25,0), "in"))
+Fig3b <- Fig3b + theme(axis.text.x = element_text(size=7),
+                       plot.title= element_text(size=10),
+                       legend.text=element_text(size=7),
+                       legend.title=element_blank())+
+  ggtitle("Functional Use of Chemicals") +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 8))
+ggarrange(Fig3a,Fig3b)
+pdf(paste(myPath, "plots", 
+                  "Fig3-ChemicalClassandUse.pdf", sep = "/"),
+    height=3,
+    width=8)
+ggarrange(Fig3a,Fig3b,
+    labels=c("A","B"))
+dev.off()
+```
+
 ```{r visualize tree, eval=FALSE}
 load(file = paste(myPath, "results", 
                   "classyfire-output.RData", sep = "/"))
@@ -1392,6 +1418,13 @@ for (i in 1:length(prodList)){
         print(a)
       dev.off()
     }
+    if (names(prodList)[i] == "Cotton Clothing"){
+      pdf(file = paste(myPath, "plots", 
+                       "Fig4-CottonClothingSampleSimilarity.pdf", 
+                       sep = "/"))
+        print(a)
+      dev.off()
+    }
   }
 }
 save(prodOnt, file = paste(myPath, "data", "allCombinedAnnotated.RData", sep = "/"))
@@ -1501,6 +1534,7 @@ allRep <- c()
 myOutliers <- list()
 for (i in 1:length(prodList))
 {
+  print(i)
   temp <- prodList[[i]]$conc
   
   # Remove chemicals not in any of the samples
@@ -1540,8 +1574,16 @@ for (i in 1:length(prodList))
   mymax <- quantile(temp, probs = 0.99, na.rm = TRUE)
   
   # Ensure same colors for the continuous mapping
-  total_chem <- circlize::colorRamp2(c(0,max(unlist(apply(temp, 1, function(x) sum(x, na.rm = TRUE))))), c("white", "darkorange3"))
-  total_samp <- circlize::colorRamp2(c(0,max(unlist(apply(temp, 2, function(x) sum(x, na.rm = TRUE))))), c("white", "cadetblue4"))
+  total_chem <- circlize::colorRamp2(c(0,
+                                       max(unlist(apply(temp, 
+                                                        1, 
+                                                        function(x) 
+                                                          sum(x, na.rm = TRUE))))), c("white", "darkorange3"))
+  total_samp <- circlize::colorRamp2(c(0,
+                                       max(unlist(apply(temp, 
+                                                        2, 
+                                                        function(x) 
+                                                          sum(x, na.rm = TRUE))))), c("white", "cadetblue4"))
   
   if (names(prodList)[i] != "Fabric Upholstery"){
     # The columns I want to use for annotations need to be ordered factors. Subset to the product
@@ -1558,22 +1600,45 @@ for (i in 1:length(prodList))
     type_col <- type_col[-2]
     names(type_col) <- levels(annos$Group3)
   
-    column_ha <- HeatmapAnnotation(SubCategory = annos$Group3, Brand = annos$`Anon Brand`,
-                                   Total_Sample_Abund. = unlist(apply(temp, 2, function(x) sum(x, na.rm = TRUE))), 
-                                   Chems_in_Sample = anno_barplot(unlist(apply(temp, 2, function(x) sum(!is.na(x))))),
-                                   col = list("SubCategory" = type_col, "Brand" = brand_col, "Total_Sample_Abund." = total_samp))
+    column_ha <- HeatmapAnnotation(SubCategory = annos$Group3, 
+                                   Brand = annos$`Anon Brand`,
+                                   Total_Sample_Abund. = unlist(apply(temp, 
+                                                                      2, 
+                                                                      function(x) 
+                                                                        sum(x, 
+                                                                            na.rm = TRUE))), 
+                                   Chems_in_Sample = anno_barplot(unlist(apply(temp, 
+                                                                               2, 
+                                                                               function(x) 
+                                                                                 sum(!is.na(x))))),
+                                   col = list("SubCategory" = type_col, 
+                                              "Brand" = brand_col, 
+                                              "Total_Sample_Abund." = total_samp))
   } else {
-    column_ha <- HeatmapAnnotation(Total_Sample_Abund. = unlist(apply(temp, 2, function(x) sum(x, na.rm = TRUE))), 
-                                   Chems_in_Sample = anno_barplot(unlist(apply(temp, 2, function(x) sum(!is.na(x))))),
+    column_ha <- HeatmapAnnotation(Total_Sample_Abund. = unlist(apply(temp, 
+                                                                      2, 
+                                                                      function(x) 
+                                                                        sum(x, 
+                                                                            na.rm = TRUE))), 
+                                   Chems_in_Sample = anno_barplot(unlist(apply(temp, 
+                                                                               2, 
+                                                                               function(x) 
+                                                                                 sum(!is.na(x))))),
                                    col = list("Total_Sample_Abund." = total_samp))
   }
   
-  row_ha <- rowAnnotation(Total_Chem_Abund. = unlist(apply(temp, 1, function(x) sum(x, na.rm = TRUE))),
+  row_ha <- rowAnnotation(Total_Chem_Abund. = unlist(apply(temp, 1, 
+                                                           function(x) 
+                                                             sum(x, na.rm = TRUE))),
                           annotation_name_rot = 90,
-                          Samples_with_Chem = anno_barplot(unlist(apply(temp, 1, function(x) sum(!is.na(x))))),
+                          Samples_with_Chem = anno_barplot(unlist(apply(temp, 
+                                                                        1, 
+                                                                        function(x) 
+                                                                          sum(!is.na(x))))),
                           col = list("Total_Chem_Abund." = total_chem))
   
   # Make plot
+  singleProdCatHeatmaps <- list()
   if(plot){
     # Our categories either have ~20 samples or ~40 samples. 
     # Use 2 different font sized for the sample names in the figures.
@@ -1583,20 +1648,51 @@ for (i in 1:length(prodList))
       myFontSize <- 10.8
     }
   
-    ht <- Heatmap(temp, name = "Abundance (ug/g)", 
-                  top_annotation = column_ha, right_annotation = row_ha, 
-                  row_title = "Chemicals", #left_annotation = left_ha, 
-                  column_title = paste(prodGroups[i], " Samples", sep = ""), 
-                  cluster_rows = FALSE, cluster_columns = FALSE, show_row_names = FALSE, column_names_rot = 90, 
-                  column_names_gp = gpar(fontsize = myFontSize), column_names_max_height = unit(4, "cm"))
+    print(prodGroups[i])
+    singleProdCatHeatmaps <- Heatmap(temp, 
+                                          name = "Abundance (ug/g)", 
+                                          top_annotation = column_ha, 
+                                          right_annotation = row_ha, 
+                                          row_title = "Chemicals", 
+                                          #left_annotation = left_ha, 
+                                          column_title = paste(prodGroups[i], 
+                                                               " Samples", 
+                                                               sep = ""), 
+                                          cluster_rows = FALSE, 
+                                          cluster_columns = FALSE, 
+                                          show_row_names = FALSE, 
+                                          column_names_rot = 90, 
+                                          column_names_gp = gpar(fontsize = 
+                                                                   myFontSize), 
+                                          column_names_max_height = unit(4, "cm"))
     pdf(file = paste(myPath, "plots/singleProdCatConcHeatmaps", 
-                     paste("prodSpecificHeatmap_conc_", prodGroups[i], "_by", myClust, ".pdf", sep = ""),
-                     sep = "/"), width = 11, height = 13)
-      draw(ht)
+                     paste("prodSpecificHeatmap_conc_", 
+                           prodGroups[i], "_by", 
+                           myClust, ".pdf", 
+                           sep = ""),
+                     sep = "/"), 
+        width = 11, 
+        height = 13)
+    draw(singleProdCatHeatmaps)
     dev.off()
+    save(temp, singleProdCatHeatmaps, 
+         prodOnt,
+         brand_col,
+         type_col,
+         annos,
+         total_chem,
+         total_samp,
+         i, prodGroups,
+         myFontSize,
+         file=paste(myPath, "plots/singleProdCatConcHeatmaps", 
+                     paste("prodSpecificHeatmaps-",
+                     prodGroups[i],
+                     ".RData",
+                     sep=""),
+                     sep = "/"))
   }
 
-    # Save chemical outliers that are not colored in the figure due to skewing the entire heatmap to
+  # Save chemical outliers that are not colored in the figure due to skewing the entire heatmap to
   # be blue
   indOutlier <- unique(unlist(apply(temp, 2, function(x) which(x > mymax))))
   myOutliers[[i]] <- temp[indOutlier,]
@@ -1643,6 +1739,69 @@ for (i in 1:length(prodList))
   concTable <- rbind(concTable, c(mymax, avgDup, sdDup, avgDup/mymax, avgRep, sdRep, avgRep/mymax))
   
 }
+```
+
+```{R Make_Fig5}
+load(file=paste(myPath, "plots/singleProdCatConcHeatmaps", 
+                     "prodSpecificHeatmaps-Cotton Clothing.RData",
+                     sep = "/"))
+    LEGEND.FONT <- 8
+    column_ha <- HeatmapAnnotation(SubCategory = annos$Group3, 
+                                   Brand = annos$`Anon Brand`,
+                                   "Total Sample Abund." = unlist(apply(temp, 
+                                                                      2, 
+                                                                      function(x) 
+                                                                        sum(x, 
+                                                                            na.rm = TRUE))), 
+                                   "Chems in Sample" = anno_barplot(unlist(apply(temp, 
+                                                                               2, 
+                                                                               function(x) 
+                                                                                 sum(!is.na(x))))),
+                                   col = list("SubCategory" = type_col, 
+                                              "Brand" = brand_col, 
+                                              "Total_Sample_Abund." = total_samp),
+                          annotation_legend_param = list(title_gp = gpar(fontsize = LEGEND.FONT),
+                                                         labels_gp = gpar(fontsize = LEGEND.FONT)))
+
+  row_ha <- rowAnnotation("Total Chem Abund." = unlist(apply(temp, 1, 
+                                                           function(x) 
+                                                             sum(x, na.rm = TRUE))),
+                          annotation_name_rot = 90,
+                          "Samples with Chem" = anno_barplot(unlist(apply(temp, 
+                                                                        1, 
+                                                                        function(x) 
+                                                                          sum(!is.na(x))))),
+                          col = list("Total_Chem_Abund." = total_chem),
+                          annotation_legend_param = list(title_gp = gpar(fontsize = LEGEND.FONT),
+                                                         labels_gp = gpar(fontsize = LEGEND.FONT)))
+  
+ singleProdCatHeatmaps <- Heatmap(temp, 
+        name = "Abundance (ug/g)", 
+        top_annotation = column_ha, 
+        right_annotation = row_ha, 
+        row_title = "Chemicals", 
+        #left_annotation = left_ha, 
+        column_title = paste(prodGroups[i], 
+                             " Samples", 
+                             sep = ""),
+        cluster_rows = FALSE,
+        cluster_columns = FALSE,
+        show_row_names = FALSE,
+        column_names_rot = 90,
+        column_names_gp = gpar(fontsize = myFontSize), 
+        column_names_max_height = unit(4, "cm"),
+        heatmap_legend_param = list(title_gp = gpar(fontsize = LEGEND.FONT),
+                                    labels_gp = gpar(fontsize = LEGEND.FONT)))
+pdf(file = paste(myPath, "plots/Fig5-CottonHeatmap.pdf",
+                 sep = "/"),
+    width = 8, 
+    height = 8)
+draw(singleProdCatHeatmaps)
+dev.off()
+draw(singleProdCatHeatmaps)
+```
+
+```{R Outliers}
 
 concTable <- as.data.frame(concTable)
 colnames(concTable) <- c("maxAbund", "avgDup", "sdDup", "dupPercMax", "avgRep", "sdRep", "repPercMax")
@@ -1677,7 +1836,6 @@ ind <- match(outlierChems, CFout$DTXSID)
 outlierChems <- CFout[ind,]
 as.data.frame(table(outlierChems$superclass))
 as.data.frame(table(outlierChems$class))
-
 
 rm(list=setdiff(ls(), c("myPath", "prodGroups")))
 ```
@@ -1789,7 +1947,8 @@ for (this.prod in names(prodList))
   }
 }
 ```
-```{r make_samplenum_plot}
+
+```{r Make_Fig6}
 samplenum.df <- melt(sig.matrix)
 samplenum.df$SD <- melt(sig.matrix.sd)$value
 colnames(samplenum.df)[1:3] <- c("Product","Samples","Chemicals")
@@ -1804,8 +1963,8 @@ samplenum.plot <- ggplot(samplenum.df, aes(x=Samples, y=Chemicals,
   theme_bw()
 print(samplenum.plot)
 pdf(file = paste(myPath, "plots", 
-                 "SignatureChemicalswithSamples.pdf", sep = "/"), 
-    width = 12, height = 7)
+                 "Fig6-SignatureChemicalswithSamples.pdf", sep = "/"), 
+    width = 8, height = 3)
   print(samplenum.plot)
 dev.off()
 ```
@@ -1990,7 +2149,8 @@ pdf(file = paste(myPath, "plots", "prodCatSignatures_withToxCastPercActiveAndLD5
   print(Fig7PanelC)
 dev.off()
 ```
-```{R Fig7}
+
+```{R Make_Fig7}
 save(Fig7PanelA, Fig7PanelB, Fig7PanelC, 
      file = paste(myPath, "plots", 
                   "Fig7Panels.RData", sep = "/"))
@@ -2008,36 +2168,39 @@ Fig7PanelA <- Fig7PanelA +
   ylab("Abundance (ug/g)") +
   scale_y_log10(label=scientific_10) +
   theme(axis.text.x = element_blank(),
+        axis.text.y = element_text(size = FONT.SIZE+2),
                 legend.key.width = unit(0.4, "cm"),
                 text=element_text(size = FONT.SIZE),
                 legend.text=element_text(size=2),
                 legend.position="none",
-                plot.margin = unit(c(0,3,0,0.8), "cm"))
+                plot.margin = unit(c(0,2.8,0,0.8), "cm"))
                 
 Fig7PanelB <- Fig7PanelB  +
   scale_y_log10(label=scientific_10) +
   guides(fill = guide_legend(title = str_wrap("CPDat Product Count", 15))) + 
   theme(axis.text.x = element_blank(),
-                legend.key.width = unit(0.75, "cm"),
-                legend.key.height = unit(0.3, "cm"),
-                text=element_text(size = FONT.SIZE),
-                legend.text=element_text(size=FONT.SIZE),
-                plot.margin = unit(c(0,0,0,0.5), "cm"))+
+        axis.text.y = element_text(size = FONT.SIZE+2),
+        legend.key.width = unit(0.75, "cm"),
+        legend.key.height = unit(0.3, "cm"),
+        text=element_text(size = FONT.SIZE),
+        legend.text=element_text(size=FONT.SIZE),
+        plot.margin = unit(c(0,0,0,0.5), "cm")) +
   ylab("Predicted Median\nExposure (mg/kg/day)")
 
 Fig7PanelC <- Fig7PanelC +
   guides(fill = guide_legend(title = str_wrap("Toxcast Percent Active", 15))) + 
   theme(
+    axis.text.y = element_text(size = FONT.SIZE+2),
                 legend.key.width = unit(1, "cm"),
                 legend.key.height = unit(0.5, "cm"),
                 text=element_text(size = FONT.SIZE),
                 legend.text=element_text(size=FONT.SIZE),
-                plot.margin = unit(c(0,0.2,0,0.8), "cm"))
+                plot.margin = unit(c(0,0.3,0,0.8), "cm"))
 
 ggarrange(Fig7PanelA,Fig7PanelB,Fig7PanelC,nrow=3,
           labels=c("A","B","C"),heights=c(1,1,2.2),
           common.legend=FALSE)
-pdf(file = paste(myPath, "plots", "Fig7.pdf", sep = "/"),
+pdf(file = paste(myPath, "plots", "Fig7-Signatures.pdf", sep = "/"),
     width = 7, height = 7)
 ggarrange(Fig7PanelA,Fig7PanelB,Fig7PanelC,nrow=3,
           labels=c("A","B","C"),heights=c(1,1,2.2),
