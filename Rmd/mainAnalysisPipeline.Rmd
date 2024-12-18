@@ -767,7 +767,9 @@ preds <- as.data.frame(preds)
 a <- apply(preds, 2, function(x) sum(x > 0.5))
 as.data.frame(a[order(a, decreasing = TRUE)])
 
-save(qsurs, preds, file = paste(myPath, "results", 
+names.qsurs <- names(qsurs) 
+save(names.qsurs, preds, 
+     file = paste(myPath, "results",
                          "QSURPreds.RData", sep = "/"))
 ```
 
@@ -791,7 +793,8 @@ save(repUseMat, file = paste(myPath, "results", "RepHarmonizedUses_chemsAcrossAl
 # look at each row/chemical. If there is a 1, it is reported. If 0.8 < x < 1, it is predicted. If < 0.8, there
 # is no associated use. To report the most data in the supplement, only aggregate columns that have
 # identical names.
-sharedUses <- intersect(names(qsurs), colnames(repUseMat))
+
+sharedUses <- intersect(names.qsurs, colnames(repUseMat))
 # Keep track of which use column belongs to each and allow for data merging
 repUseMat2 <- repUseMat
 ind <- colnames(repUseMat2) %in% sharedUses
@@ -1964,7 +1967,7 @@ samplenum.plot <- ggplot(samplenum.df, aes(x=Samples, y=Chemicals,
 print(samplenum.plot)
 pdf(file = paste(myPath, "plots", 
                  "Fig6-SignatureChemicalswithSamples.pdf", sep = "/"), 
-    width = 8, height = 3)
+    width = 6, height = 3)
   print(samplenum.plot)
 dev.off()
 ```
